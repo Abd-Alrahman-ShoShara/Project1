@@ -20,7 +20,7 @@ return new class extends Migration
             $table->enum('typeOfRoom',['SingleRoom','DeluxeRoom','SuiteRoom']);
             $table->string('description');
             $table->bigInteger('numberOfRoom');
-            $table->bigInteger('price');
+            $table->bigInteger('price')->default(0);
             $table->timestamps();
         });
 

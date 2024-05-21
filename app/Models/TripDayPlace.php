@@ -22,6 +22,6 @@ class TripDayPlace extends Model
      */
     public function tourismPlace()
     {
-        return $this->belongsTo(TourismPlace::class);
+        return $this->belongsTo(TourismPlace::class,'tourismPlace_id');
     }
 }

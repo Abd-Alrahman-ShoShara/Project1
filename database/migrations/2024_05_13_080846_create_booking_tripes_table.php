@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('trip_id');
             $table->foreign('trip_id')->references('id')->on('trips')->onDelete('cascade');
-            $table->float('price');
+            $table->float('price')->default(0);
             $table->timestamps();
         });
     }

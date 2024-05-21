@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tripPoint_id');
             $table->foreign('tripPoint_id')->references('id')->on('trip_points');
             $table->bigInteger('numberOfTicket');
-            $table->bigInteger('price');
+            $table->bigInteger('price')->default(0);
             $table->timestamps();
         });
 

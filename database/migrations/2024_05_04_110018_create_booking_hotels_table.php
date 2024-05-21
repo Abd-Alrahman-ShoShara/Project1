@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('roomHotel_id')->references('id')->on('room_hotels');
             $table->unsignedBigInteger('trip_id');
             $table->foreign('trip_id')->references('id')->on('trips');
-            $table->double('price');
+            $table->double('price')->default(0);
             $table->bigInteger('numberOfRoom');
             $table->date('checkIn');
             $table->date('checkOut');

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->date('dateOfTicket');
             $table->date('dateEndOfTicket')->nullable();
             $table->string('duration');
-            $table->float('price');
+            $table->float('price')->default(0);
             $table->bigInteger('numOfTickets');
             $table->timestamps();
         });

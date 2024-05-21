@@ -24,6 +24,6 @@ class TripDay extends Model
      */
     public function tripDayPlace()
     {
-        return $this->hasMany(TripDayPlace::class);
+        return $this->hasMany(TripDayPlace::class,'tripDay_id');
     }
 }

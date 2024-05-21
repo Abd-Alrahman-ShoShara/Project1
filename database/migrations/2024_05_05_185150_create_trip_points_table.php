@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('city_id')->references('id')->on('cities');
             $table->unsignedBigInteger('publicTrip_id');
             $table->foreign('publicTrip_id')->references('id')->on('public_trips');
-            $table->bigInteger('price');
+            $table->bigInteger('price')->default(0);
             $table->timestamps();
         });
     }

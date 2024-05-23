@@ -14,18 +14,12 @@ class BookingHotelController extends Controller
     public function addBookingHotel(Request $request, $trip_id) {
         // Validate the input
         $validator = Validator::make($request->all(), [
+            'checkIn' => 'required|date',
+            'checkOut' => 'required|date|after:checkIn',
             'rooms' => 'required|array',
             'rooms.*.roomHotel_id' => 'required|integer|exists:room_hotels,id',
             'rooms.*.numberOfRoom' => 'required|integer|min:1',
-            'rooms.*.checkIn' => 'required|date',
-            'rooms.*.checkOut' => 'required|date|after:rooms.*.checkIn',
         ]);
-        $trip = Trip::find($trip_id);
-        if(!$trip){
-            return response()->json([
-                'message'=>'the trip dose not exiset'
-            ],404);
-        }
 
         if ($validator->fails()) {
             return response()->json([
@@ -33,11 +27,25 @@ class BookingHotelController extends Controller
             ], 422);
         }
 
+        $trip = Trip::find($trip_id);
+        if (!$trip) {
+            return response()->json([
+                'message' => 'The trip does not exist'
+            ], 404);
+        }
+
         // Retrieve the validated input
-        $rooms = $request->input('rooms');
+        $validated = $validator->validated();
+        $rooms = $validated['rooms'];
+        $checkIn = $validated['checkIn'];
+        $checkOut = $validated['checkOut'];
+
         $bookings = [];
         $totalPrice = 0;
-        $numberOfNights = 0;
+
+        $start = Carbon::parse($checkIn);
+        $end = Carbon::parse($checkOut);
+        $numberOfNights = $start->diffInDays($end);
 
         foreach ($rooms as $room) {
             $roomHotel = RoomHotel::find($room['roomHotel_id']);
@@ -47,17 +55,14 @@ class BookingHotelController extends Controller
                 ], 404);
             }
 
-            $start = Carbon::parse($room['checkIn']);
-            $end = Carbon::parse($room['checkOut']);
-            $numberOfNights = $start->diffInDays($end);
             $roomTotalPrice = $room['numberOfRoom'] * $roomHotel->price * $numberOfNights;
 
             $bookingHotelRoom = BookingHotel::create([
                 'trip_id' => $trip_id,
                 'roomHotel_id' => $room['roomHotel_id'],
                 'numberOfRoom' => $room['numberOfRoom'],
-                'checkIn' => $room['checkIn'],
-                'checkOut' => $room['checkOut'],
+                'checkIn' => $checkIn,
+                'checkOut' => $checkOut,
                 'price' => $roomTotalPrice
             ]);
 
@@ -72,4 +77,5 @@ class BookingHotelController extends Controller
             'numberOfNights' => $numberOfNights,
         ], 200);
     }
+
 }

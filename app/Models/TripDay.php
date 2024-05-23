@@ -13,6 +13,11 @@ class TripDay extends Model
        'trip_id',
        'date', 
     ];
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
 
     public function trip()
     {

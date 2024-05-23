@@ -22,4 +22,11 @@ class CityController extends Controller
             'city'=> $city->id,
         ],200);
     } 
+
+    public function allCities(){
+        $cities = City::all();
+        return response()->json([
+            'the Cities : ' => $cities,
+        ]);
+    }
 }

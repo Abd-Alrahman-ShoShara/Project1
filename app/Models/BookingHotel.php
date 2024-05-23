@@ -16,6 +16,11 @@ class BookingHotel extends Model
         'checkIn',
         'checkOut',
     ];
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
     use HasFactory;
     public function trip(){
         return $this->belongsTo(Trip::class);

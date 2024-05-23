@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\BookingHotel;
 use App\Models\BookingTicket;
+use App\Models\CitiesHotel;
+use App\Models\RoomHotel;
 use App\Models\Trip;
 use App\Models\TripDay;
 use Illuminate\Http\Request;
@@ -76,6 +78,20 @@ class TripController extends Controller
     
         // Retrieve the hotel bookings for the trip
         $rooms = BookingHotel::where('trip_id', $trip_id)->get();
+
+        $roomHotel_id = $rooms[0]->roomHotel_id; 
+        $roompmHotel =RoomHotel::find($roomHotel_id) ;
+        $citiesHotel_id=$roompmHotel->citiesHotel_id;
+        $theHotel = CitiesHotel::where('id',$citiesHotel_id)->with('hotel')->get();
+
+         $theHotel = $theHotel->map(function ($theHotel) {
+            $theHotel->features = json_decode($theHotel->features);
+            $theHotel->review = json_decode($theHotel->review);
+            $theHotel->images = json_decode($theHotel->images);
+            return $theHotel;
+        });
+
+
     
         // Calculate the total price of the rooms
         $totalPrice = $rooms->sum('price');
@@ -84,15 +100,27 @@ class TripController extends Controller
         $finalPrice = $totalPrice + $ticket->price;
     
         // Retrieve the trip days and associated trip day places
-        $tripDays = TripDay::where('trip_id', $trip_id)->with(['tripDayPlace.tourismPlace'])->get();
+        $tripDays = TripDay::where('trip_id', $trip_id)
+        ->with(['tripDayPlace.tourismPlace'])
+        ->get();
+    
+    // Decode images for each TripDay
+    $tripDays = $tripDays->map(function ($tripDay) {
+        
+        foreach ($tripDay->tripDayPlace as $place) {
+            $place->tourismPlace->images = json_decode($place->tourismPlace->images);
+        }
+    
+        return $tripDay;
+    });
     
         // Return the response
         return response()->json([
             'Ticket' => $ticket,
-            'Hotels' => $rooms,
+            'Hotels' => $theHotel,
             'TotalRoomPrice' => $totalPrice,
             'TourismPlaces' => $tripDays,
             'FinalPrice' => $finalPrice,
-        ]);
+        ],200);
     }
 }

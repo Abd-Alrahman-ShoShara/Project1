@@ -16,12 +16,17 @@ class CitiesHotel extends Model
         'avarageOfPrice',
         'review',
     ];
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
 
     public function city(){
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(City::class,'city_id');
     } 
     public function hotel(){
-        return $this->belongsTo(Hotel::class);
+        return $this->belongsTo(Hotel::class,'hotel_id');
     } 
     public function trip(){
         return $this->belongsTo(Trip::class);

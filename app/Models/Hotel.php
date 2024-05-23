@@ -13,8 +13,12 @@ class Hotel extends Model
         'name',
         'rate',
     ];
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
 
     public function citiesHotel(){
-        return $this->hasMany(CitiesHotel::class);
+        return $this->hasMany(CitiesHotel::class,'hotel_id');
     } 
 }

@@ -11,6 +11,11 @@ class TripDayPlace extends Model
         'tripDay_id',
         'tourismPlace_id', 
      ];
+     
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
     use HasFactory;
     public function tripDay()
     {

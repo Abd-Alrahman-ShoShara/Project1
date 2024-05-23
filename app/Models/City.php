@@ -12,6 +12,11 @@ class City extends Model
         'name',
         'country',
     ];
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
     public function trip(){
         return $this->hasMany(Trip::class);
     }
@@ -19,7 +24,7 @@ class City extends Model
         return $this->hasMany(CitiesHotel::class);
     }
     public function tripPoint(){
-        return $this->hasMany(TripPoints::class);
+        return $this->hasMany(TripPoint::class);
     }
     public function airPort(){
         return $this->hasMany(Airport::class);

@@ -19,7 +19,14 @@ class AirlineController extends Controller
         ]);
         return response()->json([
             'message'=> ' the airline created successfully',
-            'airport'=> $airline->id,
+            'airline'=> $airline->id,
         ],200);
     } 
+    public function allAirlines(){
+        $airlines=Airline::all();
+        return response()->json([
+            'airline'=> $airlines,
+        ],200);
+        
+    }
 }

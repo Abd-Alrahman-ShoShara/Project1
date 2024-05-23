@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class PublicTrip extends Model
 {
     use HasFactory;
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
     public function tourismPlace(){
         return $this->belongsTo(TourismPlace::class);
     }     public function citiesHotel(){

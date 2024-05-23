@@ -11,7 +11,11 @@ class BookingTicket extends Model
         'trip_id',
         'ticket_id',
         'price',
-
+    ];
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
     ];
     use HasFactory;
 

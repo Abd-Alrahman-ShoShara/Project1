@@ -54,6 +54,12 @@ class AirportController extends Controller
                 'message'=>' the Airports is :',
                 'airPorts'=>$airports,
             ],200);
+    }
+    public function allAirports(){
+        $airports=Airport::with('city')->get();
+        return response()->json([
+            'airports'=> $airports,
+        ],200);
         
     }
 }

@@ -20,6 +20,11 @@ class Ticket extends Model
     'price',
     'numOfTickets',
     ];
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
 
     public function airPort(){
         return $this->belongsTo(Airport::class);

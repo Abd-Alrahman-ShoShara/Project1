@@ -17,6 +17,11 @@ class TourismPlace extends Model
         'recommendedTime',
 
     ];
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
     use HasFactory;
     public function publicTrip(){
         return $this->hasMany(PublicTrip::class);

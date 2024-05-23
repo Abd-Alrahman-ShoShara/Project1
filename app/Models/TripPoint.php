@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TripPoint extends Model
 {
     use HasFactory;
+    
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
     public function userPublicTrip(){
         return $this->hasMany(UserPublicTrip::class);
     }

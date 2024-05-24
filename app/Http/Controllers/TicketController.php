@@ -43,7 +43,7 @@ class TicketController extends Controller
             ], 200);
         }
 
-        $count = mt_rand(1, 3);
+        $count = mt_rand(1, 5);
         $tickets = Ticket::factory()->count($count)->create([
             'airport_id1' => $attr['airport_id1'],
             'airport_id2' => $attr['airport_id2'],

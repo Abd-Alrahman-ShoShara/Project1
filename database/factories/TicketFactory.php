@@ -30,7 +30,6 @@ class TicketFactory extends Factory
         
         return [
           'airLine_id'=> $airlineId,
-          
           'timeOfTicket'=>$this ->faker->time('H:i'),
           'duration'=>$duration,
           'price'=>$price,

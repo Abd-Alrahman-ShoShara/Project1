@@ -27,9 +27,9 @@ class Trip extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
-    public function city(){
-        return $this->belongsTo(City::class);
-    }
+    // public function city(){
+    //     return $this->belongsTo(City::class);
+    // }
     public function bookingHotel(){
         return $this->hasOne(BookingHotel::class);
     }
@@ -43,7 +43,14 @@ class Trip extends Model
     {
         return $this->hasMany(TripDay::class);
     }
-    
+    public function fromCity()
+    {
+        return $this->belongsTo(City::class, 'from');
+    }
+    public function toCity()
+    {
+        return $this->belongsTo(City::class, 'to');
+    }
 
 
 

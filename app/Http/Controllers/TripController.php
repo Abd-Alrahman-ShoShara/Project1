@@ -46,11 +46,11 @@ class TripController extends Controller
             // Increment the date by one day
             $currentDate->modify('+1 day');
         }
-    
+
         // Return the response
         return response()->json([
             'message' => 'The trip was created successfully',
-            'trip_id' => $trip->id,
+            'trip_id' => Trip::where('id',$trip->id)->with('fromCity','toCity')->get(),
         ], 200);
     }
 

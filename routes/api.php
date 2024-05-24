@@ -88,3 +88,5 @@ Route::get('/cityHotels/{trip_id}',[CitiesHotelController::class,'cityHotels']);
 
 Route::post('/bookingTrip/{trip_id}',[BookingTripeController::class,'bookingTrip']);
 
+Route::get('/searchCity/{nameOfCity}',[CityController::class,'searchCity']);
+

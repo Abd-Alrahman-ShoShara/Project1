@@ -29,4 +29,11 @@ class CityController extends Controller
             'the Cities : ' => $cities,
         ]);
     }
+    public function searchCity($name){
+        $theCity=City::where('name','like','%' . $name . '%')->get();
+        return response()->json([
+            'the Cities :' => $theCity,
+        ]);
+    }
+
 }

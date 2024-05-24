@@ -26,9 +26,11 @@ class TicketFactory extends Factory
         $price = $hours > 3 ? mt_rand( 150, 500) : mt_rand( 50, 125);    
         $duration = sprintf('%02d:%02d', $hours, $minutes); 
         $numberOfTickets = mt_rand(1,30);
+        $airlineName = $airline->name;
         
         return [
           'airLine_id'=> $airlineId,
+          // 'airlineName'=>$airlineName,
           'timeOfTicket'=>$this ->faker->time('H:i'),
           'duration'=>$duration,
           'price'=>$price,

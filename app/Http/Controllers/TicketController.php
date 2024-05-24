@@ -20,16 +20,16 @@ class TicketController extends Controller
             'roundOrOne_trip' => 'required',
         ]);
 
-        $alreadyTicket = Ticket::where([
+        $alreadyTickets = Ticket::where([
             ['airport_id1', $attr['airport_id1']],
             ['airport_id2', $attr['airport_id2']],
             ['typeOfTicket', $attr['typeOfTicket']],
             ['roundOrOne_trip', $attr['roundOrOne_trip']],
         ])->get();
 
-        if ($alreadyTicket->isEmpty()) {
+        if ($alreadyTickets->isEmpty()) {
             $count = mt_rand(0, 3);
-
+            
             $tickets = Ticket::factory()->count($count)->create([
                 'airport_id1' => $attr['airport_id1'],
                 'airport_id2' => $attr['airport_id2'],
@@ -38,6 +38,11 @@ class TicketController extends Controller
                 'dateOfTicket' => $trip->dateOfTrip,
                 'dateEndOfTicket' => $trip->dateEndOfTrip,
             ]);
+            $numOfFlights=0;
+            foreach ($tickets as $ticket) {
+                $numOfFlights+=1;
+            }
+
             if ($attr['roundOrOne_trip'] != 'OneWay') {
                 foreach ($tickets as $ticket) {
                    
@@ -45,16 +50,22 @@ class TicketController extends Controller
                     $ticket->save();
                 }
             }
-
             return response()->json([
                 'message' => 'The ticket(s) created successfully',
+                'numOfFlight'=>$numOfFlights,
                 'tickets' => $tickets,
             ],200);
+        }
+        $numOfFlights=0;
+
+        foreach ($alreadyTickets as $alreadyTicket) {
+            $numOfFlights+=1;
         }
 
         return response()->json([
             'message' => 'There are already tickets',
-            'tickets' => $alreadyTicket,
+            'numOfFlight'=>$numOfFlights,
+            'tickets' => $alreadyTickets,
         ],200);
     }
 }

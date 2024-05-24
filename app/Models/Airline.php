@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Airline extends Model
 {
-    protected $fillable =['name'];
+    protected $fillable =['name','image'];
     
     protected $hidden=[
         'created_at',

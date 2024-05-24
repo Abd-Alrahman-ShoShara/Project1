@@ -30,7 +30,7 @@ class Ticket extends Model
         return $this->belongsTo(Airport::class);
     }
     public function airLine(){
-        return $this->belongsTo(Airline::class);
+        return $this->belongsTo(Airline::class,'airline_id');
     }
     public function bookingTicket(){
         return $this->hasOne(BookingTicket::class);

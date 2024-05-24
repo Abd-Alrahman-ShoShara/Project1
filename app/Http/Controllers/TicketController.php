@@ -72,7 +72,7 @@ class TicketController extends Controller
                 ['airport_id2', $attr['airport_id2']],
                 ['typeOfTicket', $attr['typeOfTicket']],
                 ['roundOrOne_trip', $attr['roundOrOne_trip']],
-            ])->with('cc')->get(),
+            ])->with('airLine')->get(),
         ], 200);
     }
 }

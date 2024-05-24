@@ -61,6 +61,7 @@ class TicketController extends Controller
         foreach ($alreadyTickets as $alreadyTicket) {
             $numOfFlights+=1;
         }
+        
 
         return response()->json([
             'message' => 'There are already tickets',

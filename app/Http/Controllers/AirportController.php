@@ -24,10 +24,10 @@ class AirportController extends Controller
             'airport'=> $airport->id,
         ],200);
     } 
-    public function getAirportFrom($id){
-        $trip = Trip::find($id);
+    public function getAirportFrom($trip_id){
+        $trip = Trip::find($trip_id);
         $city = $trip->from;
-        $airports=Airport::where('city_id',$city)->get();
+        $airports=Airport::where('city_id',$city)->with('city')->get();
         if(!$airports){
             return response()->json([
                 'message'=>'There is no airPorts to desplay'
@@ -39,11 +39,11 @@ class AirportController extends Controller
             ],200);
         
     }
-    public function getAirportTo($id){
-        $trip = Trip::find($id);
+    public function getAirportTo($trip_id){
+        $trip = Trip::find($trip_id);
         $city = $trip->to;
         
-        $airports=Airport::where('city_id',$city)->get();
+        $airports=Airport::where('city_id',$city)->with('city')->get();
         
         if(!$airports){
             return response()->json([

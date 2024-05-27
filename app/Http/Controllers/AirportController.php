@@ -20,7 +20,7 @@ class AirportController extends Controller
             'city_id'=>$attr['city_id'],
         ]);
         return response()->json([
-            'message'=> ' the city created successfully',
+            'message'=> ' the airport created successfully',
             'airport'=> $airport->id,
         ],200);
     } 

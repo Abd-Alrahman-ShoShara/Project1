@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NormalUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,25 +15,27 @@ class AuthController extends Controller
     public function register(Request $request){
         $request->validate([
             'name'=>'required|max:255',
-            // 'email'=>'nullable|unique:users|max:255',
-            'phone'=>'required|numeric|unique:users|digits:10',
+            'phone'=>'required|numeric|unique:normal_users|digits:10',
             'password'=>'required|min:6|confirmed',
         ]);
         
         $user=User::create([
             'name'=>$request->name,
-            // 'email'=>$request->email,
+            'type'=>'normal',          
+        ]);
+
+        $normalUser=NormalUser::create([
+            'user_id'=>$user->id,
             'phone'=>$request->phone,
             'password'=>Hash::make($request->password),
         ]);
         
-        
 
         $code = mt_rand(1000, 9999);
-        $user->verification_code = $code;
-        $user->save();
+        $normalUser->verification_code = $code;
+        $normalUser->save();
 
-        $this->sendCode($user['phone'], $code,$user['name']);
+        $this->sendCode($normalUser['phone'], $code,$user['name']);
 
         return response([
             'message' => 'User registered successfully. Please enter the verification code.',
@@ -50,15 +53,17 @@ class AuthController extends Controller
     ]);
 
     $user = User::findOrFail($request->user_id);
-    if(!$user){
+    $normalUser = NormalUser::where('user_id',$request->user_id)->first();
+
+    if(!$normalUser){
         return response()->json([
             'message'=>'the user not found',
         ],404);
     }
 
-    if ($user->verification_code == $request->code) {
-        $user->is_verified = true;
-        $user->save();
+    if ($normalUser->verification_code == $request->code) {
+        $normalUser->is_verified = true;
+        $normalUser->save();
          $token=$user->createToken('auth_token')->accessToken;
         return response([
             'message' => 'Verification successful. User is now verified.',
@@ -79,9 +84,15 @@ class AuthController extends Controller
             'password'=>'required|min:6',
         ]);
 
-        $user=User::where('phone',$request->phone)->first();
+        $normalUser=NormalUser::where('phone',$request->phone)->first();
 
-        if(!$user|| !Hash::check($request->password,$user->password)){
+        $user_id=$normalUser->user_id;
+        $user = User::findOrFail($user_id);
+
+        // $normalUser = NormalUser::where('user_id',$request->user_id);
+
+
+        if(!$normalUser|| !Hash::check($request->password,$normalUser->password)){
             return response([
                 'message'=>'The provided credentials are incorrect'
             ],422);
@@ -96,51 +107,51 @@ class AuthController extends Controller
         
     }
 
-    public function logout(){
-        User::find(Auth::id())->tokens()->delete();
-        return response([
-            'message'=>'Logged out sucesfully'
-        ],200);
-    }
-
+    
     public function forgetPassword(Request $request){
         $request->validate([
             'phone'=>'required|numeric|digits:10',
         ]);
-
-        $user=User::where('phone',$request->phone)->first();
-        if(!$user){
+        
+        $normalUser=NormalUser::where('phone',$request->phone)->first();
+        
+        if(!$normalUser){
             return response()->json([
                 'message'=>'the phone number is wrong'
             ],404);
         }
         $code = mt_rand(1000, 9999);
-        $user->verification_code = $code;
-        $user->save();
-
-        $this->sendCode($user['phone'], $code,$user['name']);
-
+        $normalUser->verification_code = $code;
+        $normalUser->save();
+        $user_id=$normalUser->user_id;
+        $user = User::findOrFail($user_id);
+        
+        
+        $this->sendCode($normalUser['phone'], $code,$user['name']);
+        
         return response([
             'message' => 'The code was sent. Please enter it to verification.',
             'user_id' => $user->id,
-           
+            
         ],200);
-
+        
     }
-
+    
     public function verifyForgetPassword(Request $request){
-
+        
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'code' => 'required|numeric',
         ]);
-    
-        $user = User::findOrFail($request->user_id);
-    
-        if ($user->verification_code == $request->code) {
-
+        
+        // $user = User::findOrFail($request->user_id);
+        
+        $normalUser = NormalUser::where('user_id',$request->user_id)->first();
+        
+        if ($normalUser->verification_code == $request->code) {
+            
             //  $token=$user->createToken('auth_token')->accessToken;
-
+            
             return response([
                 'message' => 'Verification successful. enter the new password.',
                 
@@ -150,45 +161,59 @@ class AuthController extends Controller
                 'message' => 'Invalid verification code.',
             ], 422);
         }
-    
+        
     }
     public function resatPassword(Request $request){
         $request->validate([
             'user_id' => 'required|exists:users,id', 
             'password'=>'required|min:6|confirmed',
         ]);
-         $user = User::findOrFail($request->user_id);
-         $user-> update(['password' => Hash::make($request['password'])]);
-         
+        $user = User::findOrFail($request->user_id);
+        $normalUser = NormalUser::where('user_id',$request->user_id)->first();
+        
+        $normalUser-> update(['password' => Hash::make($request['password'])]);
+        
         $token=$user->createToken('auth_token')->accessToken;
-
-         return response()->json([
-        'message'=> 'the password is updated',
-        'token'=>$token,
-         ],200);
-
+        
+        return response()->json([
+            'message'=> 'the password is updated',
+            'token'=>$token,
+        ],200);
+        
     }
     public function resatPasswordEnternal(Request $request){
         $request->validate([
             'password' => 'required|min:6', 
             'NewPassword'=>'required|min:6|confirmed',
         ]);
+        $user_id=auth()->user()->id;
+        $normalUser = NormalUser::where('user_id',$user_id)->first();
         
-
-         if(Hash::check($request->password,auth()->user()->password) ){
-            auth()->user()->update(['password' => Hash::make($request['NewPassword'])]);
+        
+        if(Hash::check($request->password,$normalUser->password) ){
+            $normalUser->update(['password' => Hash::make($request['NewPassword'])]);
             return response()->json([
                 'message'=> 'the password is updated',
-                 ],200);
-         }
-         return response()->json([
-        'message'=> 'the old password is wrong',
-         ],422);
-
+            ],200);
+        }
+        return response()->json([
+            'message'=> 'the old password is wrong',
+        ],422);
+        
     }
-
-
-
+    public function logout(){
+        User::find(Auth::id())->tokens()->delete();
+        return response([
+            'message'=>'Logged out sucesfully'
+        ],200);
+    }
+    
+    
+    
+    
+    
+    
+    
     public function sendCode($phoneNumber, $code, $name)
     {
         require_once(base_path('vendor/autoload.php'));
@@ -202,4 +227,5 @@ class AuthController extends Controller
         $client->sendChatMessage($to, $body);
         // return $this->success(null, 'we send the code');
     }
+
 }

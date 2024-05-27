@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AirlineController;
 use App\Http\Controllers\AirportController;
 use App\Http\Controllers\AuthController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\BookingTicketController;
 use App\Http\Controllers\BookingTripeController;
 use App\Http\Controllers\CitiesHotelController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\GoogleUserController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\RoomHotelController;
 use App\Http\Controllers\TicketController;
@@ -25,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->group( function () {
     Route::post('/logout',[AuthController::class,'logout']);
+    Route::post('/logoutAdmin',[AdminController::class,'logoutAdmin']);
 
     Route::post('/createTrip',[TripController::class,'createTrip']);
     
@@ -33,6 +36,14 @@ Route::middleware('auth:api')->group( function () {
 
 
 Route::post('/register',[AuthController::class,'register']);
+
+Route::post('/googleRegister',[GoogleUserController::class,'googleRegister']);
+
+Route::post('/admin/login', [AdminController::class, 'login']);
+
+Route::post('/updateAdmin', [AdminController::class, 'updateAdmin'])->middleware('auth:api');
+
+Route::post('/updateAdminPassword', [AdminController::class, 'updateAdminPassword'])->middleware('auth:api');
 
 Route::post('/verifyCode',[AuthController::class,'verifyCode']);
 

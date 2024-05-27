@@ -19,21 +19,22 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'password',
-        'phone',
+        'type',
         'points',
         'wallet',
-        'verification_code',
-        'is_verified',
     ];
-
+    public function googleUser(){
+        return $this->hasOne(GoogleUser::class,'user_id');
+    } 
+    public function normalUser(){
+        return $this->hasOne(NormalUser::class,'user_id');
+    } 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 

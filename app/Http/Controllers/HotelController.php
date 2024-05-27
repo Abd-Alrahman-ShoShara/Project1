@@ -27,10 +27,9 @@ class HotelController extends Controller
     
     public function allCitiesHotel()
     {
-        // Retrieve all CitiesHotel records with their associated Hotel
-        $hotels = CitiesHotel::with('hotel')->get();
 
-        // Iterate over each CitiesHotel record and decode the required fields
+        $hotels = CitiesHotel::with('hotel','city')->get();
+
         $hotels = $hotels->map(function ($citiesHotel) {
             $citiesHotel->features = json_decode($citiesHotel->features);
             $citiesHotel->review = json_decode($citiesHotel->review);

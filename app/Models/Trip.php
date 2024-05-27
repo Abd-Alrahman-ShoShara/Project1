@@ -52,6 +52,4 @@ class Trip extends Model
         return $this->belongsTo(City::class, 'to');
     }
 
-
-
 }

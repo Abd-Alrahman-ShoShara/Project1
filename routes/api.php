@@ -95,6 +95,8 @@ Route::get('/allCities',[CityController::class,'allCities']);
 
 Route::get('/allCitiesHotel',[HotelController::class,'allCitiesHotel']);
 
+Route::get('/allHotel',[HotelController::class,'allHotel']);
+
 Route::get('/cityHotels/{trip_id}',[CitiesHotelController::class,'cityHotels']);
 
 Route::post('/bookingTrip/{trip_id}',[BookingTripeController::class,'bookingTrip']);

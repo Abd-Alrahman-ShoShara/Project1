@@ -41,5 +41,13 @@ class HotelController extends Controller
             'hotel' => $hotels,
         ], 200);
     }
+    public function allHotel()
+    {
+
+        $hotels = Hotel::all();
+        return response()->json([
+            'hotel' => $hotels,
+        ], 200);
+    }
 
 }

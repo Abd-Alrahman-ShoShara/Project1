@@ -12,7 +12,7 @@ class AirlineController extends Controller
     {
         $attr = $request->validate([
             'name' => 'required|unique:airlines',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
         ]);
 
         // Store the uploaded image

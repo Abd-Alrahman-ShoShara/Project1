@@ -64,7 +64,7 @@ class CitiesHotelController extends Controller
             return $citiesHotel;
         });
         return response()->json([
-          
+            'numberOfHotel:'=>$hotels->count(),
             'hotel'=> $hotels,
         ],200);
     }

@@ -10,12 +10,12 @@ class HotelController extends Controller
 {
     public function addHotel(Request $request){
         $attr =$request->validate([
-            'name'=>'required',
-            'rate'=>'required',
+            'name'=>'required|string',
+            'rate'=>'required|numeric|between:1,5',
 
         ]);
         $hotel = Hotel::create([
-            
+
             'name'=>$attr['name'],
             'rate'=>$attr['rate'],
         ]);
@@ -24,7 +24,7 @@ class HotelController extends Controller
             'hotel'=> $hotel->id,
         ],200);
     }
-    
+
     public function allCitiesHotel()
     {
 

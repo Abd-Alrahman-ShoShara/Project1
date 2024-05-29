@@ -54,7 +54,7 @@ class AdminController extends Controller
         ]);
 
         $userAdmin = Auth::user()->update([
-            'name'=>$request->name, 
+            'name'=>$request->name,
         ]);
         $normalAdmin=NormalUser::where('user_id',Auth::user()->id)->update(['phone'=>$request->phone,]);
 
@@ -66,28 +66,28 @@ class AdminController extends Controller
         return response()->json([
             'message'=>'something wronge',
         ]);
-        
+
 
     }
     public function updateAdminPassword(Request $request)
     {
         $request->validate([
-            'password' => 'required|min:6', 
+            'password' => 'required|min:6',
             'NewPassword'=>'required|min:6|confirmed',
         ]);
         $user_id=auth()->user()->id;
         $normalUser = NormalUser::where('user_id',$user_id)->first();
 
 
-         if(Hash::check($request->password,$normalUser->password) ){
+        if(Hash::check($request->password,$normalUser->password) ){
             $normalUser->update(['password' => Hash::make($request['NewPassword'])]);
             return response()->json([
                 'message'=> 'the password is updated',
-                 ],200);
-         }
-         return response()->json([
+                ],200);
+        }
+        return response()->json([
         'message'=> 'the old password is wrong',
-         ],422);
+        ],422);
 
     }
 

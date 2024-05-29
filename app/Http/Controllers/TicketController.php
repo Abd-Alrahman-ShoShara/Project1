@@ -29,16 +29,13 @@ class TicketController extends Controller
             ['typeOfTicket', $attr['typeOfTicket']],
             ['roundOrOne_trip', $attr['roundOrOne_trip']],
         ])->with('airLine')->get();
-        
+
         if ($alreadyTickets->isNotEmpty()) {
-            
-            $numOfFlights=0;
-            foreach ($alreadyTickets as $alreadyTicket) {
-            $numOfFlights += 1;
-            }
+
+
             return response()->json([
                 'message' => 'There are already tickets',
-                'numberOfFlights'=>$numOfFlights,
+                'numberOfFlights' => $alreadyTickets->count(),
                 'tickets' => $alreadyTickets,
             ], 200);
         }
@@ -52,10 +49,7 @@ class TicketController extends Controller
             'dateOfTicket' => $trip->dateOfTrip,
             'dateEndOfTicket' => $trip->dateEndOfTrip,
         ]);
-        $numOfFlights=0;
-        foreach ($tickets as $ticket) {
-            $numOfFlights += 1;
-        }
+
 
         if ($attr['roundOrOne_trip'] == 'RoundTrip') {
             foreach ($tickets as $ticket) {
@@ -63,16 +57,17 @@ class TicketController extends Controller
                 $ticket->save();
             }
         }
+        $ticket1=Ticket::where([
+            ['airport_id1', $attr['airport_id1']],
+            ['airport_id2', $attr['airport_id2']],
+            ['typeOfTicket', $attr['typeOfTicket']],
+            ['roundOrOne_trip', $attr['roundOrOne_trip']],
+        ])->with('airLine')->get();
 
         return response()->json([
             'message' => 'The ticket(s) created successfully',
-            'numberOfFlights'=>$numOfFlights,
-            'tickets' => Ticket::where([
-                ['airport_id1', $attr['airport_id1']],
-                ['airport_id2', $attr['airport_id2']],
-                ['typeOfTicket', $attr['typeOfTicket']],
-                ['roundOrOne_trip', $attr['roundOrOne_trip']],
-            ])->with('airLine')->get(),
+            'numberOfFlights' =>$ticket1->count(),
+            'tickets' =>$ticket1,
         ], 200);
     }
 }

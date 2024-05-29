@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('citiesHotel_id');
             $table->foreign('citiesHotel_id')->references('id')->on('cities_hotels');
             $table->enum('typeOfRoom',['SingleRoom','DeluxeRoom','SuiteRoom']);
-            $table->string('description');
+            $table->text('description');
             $table->bigInteger('numberOfRoom');
             $table->bigInteger('price')->default(0);
             $table->timestamps();

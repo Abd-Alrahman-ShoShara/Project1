@@ -16,10 +16,10 @@ return new class extends Migration
             $table->id();
             $table->string('images')->nullable();
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->string('openingHours');
             $table->string('recommendedTime')->nullable();
-            $table->enum('type',['Sports','Entertainment','Culitural','Natural','Relaxation','Restaurants','Historical','Shopping']);
+            $table->enum('type',['Sports','Entertainment','Culitural','Natural','Relaxation','Restaurants','Historical','Shopping'])->nullable();
             $table->unsignedBigInteger('city_id');
             $table->foreign('city_id')->references('id')->on('cities');
             $table->timestamps();

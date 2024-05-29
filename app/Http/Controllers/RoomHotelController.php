@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class RoomHotelController extends Controller
 {
     public function addRoomsHotel(Request $request,$citiesHotel_id){
-        
+
         $citiesHotel = CitiesHotel::find($citiesHotel_id);
         if(!$citiesHotel){
             return response()->json([
@@ -34,5 +34,12 @@ class RoomHotelController extends Controller
             'message'=> ' the room created successfully',
             'room'=> $room,
         ],200);
-    } 
+    }
+    public function getRooms($citiesHotel_id){
+        $roomHotel=RoomHotel::where('citiesHotel_id',$citiesHotel_id)->get();
+        return response()->json([
+            'numOfRoom'=> $roomHotel->count(),
+            'room'=> $roomHotel,
+        ],200);
+    }
 }

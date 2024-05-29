@@ -18,10 +18,10 @@ class AuthController extends Controller
             'phone'=>'required|numeric|unique:normal_users|digits:10',
             'password'=>'required|min:6|confirmed',
         ]);
-        
+
         $user=User::create([
             'name'=>$request->name,
-            'type'=>'normal',          
+            'type'=>'normal',
         ]);
 
         $normalUser=NormalUser::create([
@@ -29,7 +29,7 @@ class AuthController extends Controller
             'phone'=>$request->phone,
             'password'=>Hash::make($request->password),
         ]);
-        
+
 
         $code = mt_rand(1000, 9999);
         $normalUser->verification_code = $code;
@@ -40,7 +40,7 @@ class AuthController extends Controller
         return response([
             'message' => 'User registered successfully. Please enter the verification code.',
             'user_id' => $user->id,
-           
+
         ],200);
     }
     /////////////////////////////////////////////
@@ -104,17 +104,17 @@ class AuthController extends Controller
             'token'=>$token
         ],200);
 
-        
+
     }
 
-    
+
     public function forgetPassword(Request $request){
         $request->validate([
             'phone'=>'required|numeric|digits:10',
         ]);
-        
+
         $normalUser=NormalUser::where('phone',$request->phone)->first();
-        
+
         if(!$normalUser){
             return response()->json([
                 'message'=>'the phone number is wrong'
@@ -125,71 +125,71 @@ class AuthController extends Controller
         $normalUser->save();
         $user_id=$normalUser->user_id;
         $user = User::findOrFail($user_id);
-        
-        
+
+
         $this->sendCode($normalUser['phone'], $code,$user['name']);
-        
+
         return response([
             'message' => 'The code was sent. Please enter it to verification.',
             'user_id' => $user->id,
-            
+
         ],200);
-        
+
     }
-    
+
     public function verifyForgetPassword(Request $request){
-        
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'code' => 'required|numeric',
         ]);
-        
+
         // $user = User::findOrFail($request->user_id);
-        
+
         $normalUser = NormalUser::where('user_id',$request->user_id)->first();
-        
+
         if ($normalUser->verification_code == $request->code) {
-            
+
             //  $token=$user->createToken('auth_token')->accessToken;
-            
+
             return response([
                 'message' => 'Verification successful. enter the new password.',
-                
+
             ],200);
         } else {
             return response([
                 'message' => 'Invalid verification code.',
             ], 422);
         }
-        
+
     }
     public function resatPassword(Request $request){
         $request->validate([
-            'user_id' => 'required|exists:users,id', 
+            'user_id' => 'required|exists:users,id',
             'password'=>'required|min:6|confirmed',
         ]);
         $user = User::findOrFail($request->user_id);
         $normalUser = NormalUser::where('user_id',$request->user_id)->first();
-        
+
         $normalUser-> update(['password' => Hash::make($request['password'])]);
-        
+
         $token=$user->createToken('auth_token')->accessToken;
-        
+
         return response()->json([
             'message'=> 'the password is updated',
             'token'=>$token,
         ],200);
-        
+
     }
     public function resatPasswordEnternal(Request $request){
         $request->validate([
-            'password' => 'required|min:6', 
+            'password' => 'required|min:6',
             'NewPassword'=>'required|min:6|confirmed',
         ]);
         $user_id=auth()->user()->id;
         $normalUser = NormalUser::where('user_id',$user_id)->first();
-        
-        
+
+
         if(Hash::check($request->password,$normalUser->password) ){
             $normalUser->update(['password' => Hash::make($request['NewPassword'])]);
             return response()->json([
@@ -199,7 +199,7 @@ class AuthController extends Controller
         return response()->json([
             'message'=> 'the old password is wrong',
         ],422);
-        
+
     }
     public function logout(){
         User::find(Auth::id())->tokens()->delete();
@@ -207,13 +207,13 @@ class AuthController extends Controller
             'message'=>'Logged out sucesfully'
         ],200);
     }
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
     public function sendCode($phoneNumber, $code, $name)
     {
         require_once(base_path('vendor/autoload.php'));
@@ -222,10 +222,36 @@ class AuthController extends Controller
         $client = new WhatsAppApi($ultramsg_token, $instance_id);
         $number = "+963" . substr($phoneNumber, 1, 9);
         $to = $number;
-        
+
         $body = 'Hi ' . $name . ', your verification code is: ' . $code ;
         $client->sendChatMessage($to, $body);
         // return $this->success(null, 'we send the code');
     }
 
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+
+
+    public function updateName(Request $request){
+        $request->validate([
+            'name'=>'required|string',
+        ]);
+        $user=Auth::user()->update([
+            'name'=>$request->name,
+        ]);
+        return response([
+            'message'=>'updated successfully',
+            'user'=>$user
+        ],200);
+    }
+
+
+    public function deleteAccount(){
+        $user = Auth::user();
+        $user->delete();
+
+        return response()->json(['message' => 'Account deleted successfully'], 200);    }
 }

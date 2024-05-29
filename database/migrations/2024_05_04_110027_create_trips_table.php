@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('from');
-            $table->foreign('from')->references('id')->on('cities');
+            $table->foreign('from')->references('id')->on('cities')->onDelete('cascade');
             $table->unsignedBigInteger('to');
-            $table->foreign('to')->references('id')->on('cities');
+            $table->foreign('to')->references('id')->on('cities')->onDelete('cascade');
             $table->date('dateOfTrip');
             $table->date('dateEndOfTrip');
             $table->bigInteger('numOfPersons');

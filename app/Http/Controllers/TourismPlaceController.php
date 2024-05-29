@@ -19,7 +19,7 @@ class TourismPlaceController extends Controller
             'description' => 'required',
             'openingHours' => 'required',
             'recommendedTime' => 'required',
-            'type' => 'required',
+            'type' => 'nullable',
         ]);
 
         $imageUrls = [];

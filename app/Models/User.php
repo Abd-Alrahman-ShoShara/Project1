@@ -25,10 +25,11 @@ class User extends Authenticatable
     ];
     public function googleUser(){
         return $this->hasOne(GoogleUser::class,'user_id');
-    } 
+    }
     public function normalUser(){
         return $this->hasOne(NormalUser::class,'user_id');
-    } 
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -52,6 +53,10 @@ class User extends Authenticatable
     }
     public function userPublicTrip(){
         return $this->hasMany(UserPublicTrip::class);
+    }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
 

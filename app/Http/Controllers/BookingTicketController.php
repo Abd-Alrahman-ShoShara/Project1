@@ -9,11 +9,13 @@ use Illuminate\Http\Request;
 
 class BookingTicketController extends Controller
 {
-    
+
     public function choseTicket($trip_id,$ticket_id){
+        $true=BookingTicket::where('trip_id',$trip_id)->first();
+        if(!$true){
         $trip = Trip::find($trip_id);
         $ticket = Ticket::find($ticket_id);
-        $finalPrice = $trip->numOfPersons * $ticket->price; 
+        $finalPrice = $trip->numOfPersons * $ticket->price;
         $TokenTicket = BookingTicket::create([
         'trip_id'=>$trip_id,
         'ticket_id'=>$ticket_id,
@@ -22,7 +24,10 @@ class BookingTicketController extends Controller
         return response()->json([
             'message'=> ' added to your plane',
             'The Ticket_id :'=>$TokenTicket,
-        ]);
+        ],200);}
+        return response()->json([
+            'message'=> 'you have already booked',
+        ],403);
     }
-    
+
 }

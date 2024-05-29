@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('hotel_id');
             $table->foreign('hotel_id')->references('id')->on('hotels');
             $table->string('images')->nullable();
-            $table->string('description');
+            $table->text('description');
             $table->string('features');
             $table->bigInteger('avarageOfPrice');
             $table->string('review');

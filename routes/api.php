@@ -11,6 +11,8 @@ use App\Http\Controllers\CitiesHotelController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\GoogleUserController;
 use App\Http\Controllers\HotelController;
+use App\Http\Controllers\NormalUserController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoomHotelController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TourismPlaceController;
@@ -18,6 +20,8 @@ use App\Http\Controllers\TripController;
 use App\Http\Controllers\TripDayPlaceController;
 use App\Models\BookingTripe;
 use App\Models\CitiesHotel;
+use App\Models\NormalUser;
+use App\Models\Room;
 use App\Models\TripDay;
 use Illuminate\Support\Facades\Route;
 
@@ -30,20 +34,21 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/logoutAdmin',[AdminController::class,'logoutAdmin']);
 
     Route::post('/createTrip',[TripController::class,'createTrip']);
-    
+
     Route::post('/resatPasswordEnternal',[AuthController::class,'resatPasswordEnternal']);
 });
 
-
-Route::post('/register',[AuthController::class,'register']);
-
-Route::post('/googleRegister',[GoogleUserController::class,'googleRegister']);
 
 Route::post('/admin/login', [AdminController::class, 'login']);
 
 Route::post('/updateAdmin', [AdminController::class, 'updateAdmin'])->middleware('auth:api');
 
 Route::post('/updateAdminPassword', [AdminController::class, 'updateAdminPassword'])->middleware('auth:api');
+
+Route::post('/register',[AuthController::class,'register']);
+
+Route::post('/googleRegister',[GoogleUserController::class,'googleRegister']);
+
 
 Route::post('/verifyCode',[AuthController::class,'verifyCode']);
 
@@ -54,6 +59,19 @@ Route::post('/forgetPassword',[AuthController::class,'forgetPassword']);
 Route::post('/verifyForgetPassword',[AuthController::class,'verifyForgetPassword']);
 
 Route::post('/resatPassword',[AuthController::class,'resatPassword']);
+
+Route::post('/updateName',[AuthController::class,'updateName'])->middleware('auth:api');
+
+Route::post('/updatePhone',[NormalUserController::class,'updatePhone'])->middleware('auth:api');
+
+Route::post('/verifyNewPhone',[NormalUserController::class,'verifyNewPhone'])->middleware('auth:api');
+
+Route::post('/addReview',[ReviewController::class,'addReview'])->middleware('auth:api');
+Route::get('/allReview',[ReviewController::class,'allReview']);
+
+Route::delete('/deleteAccount',[AuthController::class,'deleteAccount'])->middleware('auth:api');
+
+///////////////////////////////////////////////////////////////////////
 
 Route::post('/addCity',[CityController::class,'addCity']);
 
@@ -98,6 +116,8 @@ Route::get('/allCitiesHotel',[HotelController::class,'allCitiesHotel']);
 Route::get('/allHotel',[HotelController::class,'allHotel']);
 
 Route::get('/cityHotels/{trip_id}',[CitiesHotelController::class,'cityHotels']);
+
+Route::get('/getRooms/{citiesHotel_id}',[RoomHotelController::class,'getRooms']);
 
 Route::post('/bookingTrip/{trip_id}',[BookingTripeController::class,'bookingTrip']);
 

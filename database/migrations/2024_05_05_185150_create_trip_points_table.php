@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('trip_points', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('city_id');
-            $table->foreign('city_id')->references('id')->on('cities');
+            $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
             $table->unsignedBigInteger('publicTrip_id');
-            $table->foreign('publicTrip_id')->references('id')->on('public_trips');
+            $table->foreign('publicTrip_id')->references('id')->on('public_trips')->onDelete('cascade');
             $table->bigInteger('price')->default(0);
             $table->timestamps();
         });

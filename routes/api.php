@@ -74,10 +74,13 @@ Route::delete('/deleteAccount',[AuthController::class,'deleteAccount'])->middlew
 ///////////////////////////////////////////////////////////////////////
 
 Route::post('/addCity',[CityController::class,'addCity']);
+Route::post('/deleteCity/{city_id}',[CityController::class,'deleteCity']);
 
 Route::post('/addAirPort',[AirportController::class,'addAirPort']);
+Route::post('/deleteAirport/{airport_id}',[AirportController::class,'deleteAirport']);
 
 Route::post('/addAirLine',[AirlineController::class,'addAirLine']);
+Route::post('/deleteAirline/{airline_id}',[AirlineController::class,'deleteAirline']);
 
 Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);
 
@@ -92,8 +95,10 @@ Route::get('/getAirportTo/{trip_id}',[AirportController::class,'getAirportTo']);
 Route::post('/choseTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'choseTicket']);
 
 Route::post('/addHotel',[HotelController::class,'addHotel']);
+Route::post('/deleteHotel/{hotel_id}',[HotelController::class,'deleteHotel']);
 
 Route::post('/addCitiesHotel',[CitiesHotelController::class,'addCitiesHotel']);
+Route::post('/deleteCitieshotel/{citieshotel_id}',[CitiesHotelController::class,'deleteCitieshotel']);
 
 Route::post('/addRoomsHotel/{citiesHotel_id}',[RoomHotelController::class,'addRoomsHotel']);
 
@@ -122,4 +127,6 @@ Route::get('/getRooms/{citiesHotel_id}',[RoomHotelController::class,'getRooms'])
 Route::post('/bookingTrip/{trip_id}',[BookingTripeController::class,'bookingTrip']);
 
 Route::get('/searchCity/{nameOfCity}',[CityController::class,'searchCity']);
+
+Route::get('/allTrips',[TripController::class,'allTrips']);
 

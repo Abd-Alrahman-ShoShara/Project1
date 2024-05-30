@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('public_trips', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tourismPlaces_idArray');
-            $table->foreign('tourismPlaces_idArray')->references('id')->on('tourism_places');
+            $table->foreign('tourismPlaces_idArray')->references('id')->on('tourism_places')->onDelete('cascade');
             $table->unsignedBigInteger('cititesHotel_id');
-            $table->foreign('cititesHotel_id')->references('id')->on('cities_hotels');
+            $table->foreign('cititesHotel_id')->references('id')->on('cities_hotels')->onDelete('cascade');
             $table->bigInteger('dateOfTripe');
             $table->bigInteger('discountType');
             $table->timestamps();

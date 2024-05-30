@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('images');
             $table->unsignedBigInteger('publicTrip_id');
-            $table->foreign('publicTrip_id')->references('id')->on('public_trips');
+            $table->foreign('publicTrip_id')->references('id')->on('public_trips')->onDelete('cascade');
             $table->string('description');
             $table->bigInteger('discount-value');
             $table->timestamps();

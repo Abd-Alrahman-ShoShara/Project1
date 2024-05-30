@@ -62,4 +62,14 @@ class AirportController extends Controller
         ],200);
         
     }
+
+    public function deleteAirport($airpot_id){
+        $airpot =Airport::find($airpot_id);
+        if(!$airpot){
+            return response()->json(['message' => 'airpot is not found'], 404);
+        }
+        $airpot->delete(); 
+
+       return response()->json(['message' => ' deleted successfully'], 200);    
+   }
 }

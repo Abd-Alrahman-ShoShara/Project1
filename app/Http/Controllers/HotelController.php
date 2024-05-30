@@ -50,4 +50,14 @@ class HotelController extends Controller
         ], 200);
     }
 
+    public function deleteHotel($hotel_id){
+        $hotel =Hotel::find($hotel_id);
+        if(!$hotel){
+            return response()->json(['message' => 'hotel is not found'], 404);
+        }
+        $hotel->delete(); 
+
+       return response()->json(['message' => ' deleted successfully'], 200);    
+   }
+
 }

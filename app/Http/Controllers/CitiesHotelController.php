@@ -69,5 +69,14 @@ class CitiesHotelController extends Controller
         ],200);
     }
 
+    public function deleteCitieshotel($citieshotel_id){
+        $citieshotel =CitiesHotel::find($citieshotel_id);
+        if(!$citieshotel){
+            return response()->json(['message' => 'hotel is not found'], 404);
+        }
+        $citieshotel->delete(); 
+
+       return response()->json(['message' => ' deleted successfully'], 200);    
+   }
     
 }

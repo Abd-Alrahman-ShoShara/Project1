@@ -40,4 +40,13 @@ class CityController extends Controller
         ]);
     }
 
+    public function deleteCity($city_id){
+        $city =City::find($city_id);
+         
+       if(!$city){
+           return response()->json(['message' => 'city is not found'], 404);
+       }
+       $city->delete();
+       return response()->json(['message' => ' deleted successfully'], 200);    
+   }
 }

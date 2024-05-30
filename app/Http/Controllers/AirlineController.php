@@ -40,6 +40,15 @@ class AirlineController extends Controller
         return response()->json([
             'airline'=> $airlines,
         ],200);
-        
+    }
+
+    public function deleteAirline($airline_id){
+         $airline =Airline::find($airline_id);
+         if(!$airline){
+             return response()->json(['message' => 'airline is not found'], 404);
+            }
+            $airline->delete(); 
+
+        return response()->json(['message' => ' deleted successfully'], 200);    
     }
 }

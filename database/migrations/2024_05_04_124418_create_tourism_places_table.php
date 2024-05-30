@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('recommendedTime')->nullable();
             $table->enum('type',['Sports','Entertainment','Culitural','Natural','Relaxation','Restaurants','Historical','Shopping'])->nullable();
             $table->unsignedBigInteger('city_id');
-            $table->foreign('city_id')->references('id')->on('cities');
+            $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -19,6 +19,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TourismPlaceController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\TripDayPlaceController;
+use App\Http\Controllers\UserPublicTripController;
 use App\Models\BookingTripe;
 use App\Models\CitiesHotel;
 use App\Models\NormalUser;
@@ -134,4 +135,8 @@ Route::get('/allTrips',[TripController::class,'allTrips']);
 ////////////////////////////////////////////////////////////////  public trip
 
 Route::post('/createPublicTrip',[PublicTripController::class,'createPublicTrip']);
+
+Route::post('/addPointsToTrip/{publicTrip_id}',[PublicTripController::class,'addPointsToTrip']);
+
+Route::post('/bookingPublicTrip',[UserPublicTripController::class,'bookingPublicTrip'])->middleware('auth:api');
 

@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(HotelSeeder::class);
         $this->call(CitiesHotelSeeder::class);
         $this->call(AdminSeeder::class);
+        $this->call(ClassificationSeeder::class);
     }
 }

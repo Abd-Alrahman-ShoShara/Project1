@@ -18,11 +18,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('image');
             $table->text('description');
-            $table->unsignedBigInteger('cititesHotel_id');
-            $table->foreign('cititesHotel_id')->references('id')->on('cities_hotels')->onDelete('cascade');
-            $table->date('dateOfTripe');
-            $table->date('dateEndOfTripe');
-            $table->bigInteger('discountType');
+            $table->unsignedBigInteger('citiesHotel_id');
+            $table->foreign('citiesHotel_id')->references('id')->on('cities_hotels')->onDelete('cascade');
+            $table->date('dateOfTrip');
+            $table->date('dateEndOfTrip');
+            $table->boolean('display')->default(false);
+            $table->bigInteger('discountType')->default(0);
             $table->timestamps();
         });
 

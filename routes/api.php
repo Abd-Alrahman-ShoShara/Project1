@@ -12,6 +12,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\GoogleUserController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\NormalUserController;
+use App\Http\Controllers\PublicTripController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoomHotelController;
 use App\Http\Controllers\TicketController;
@@ -129,4 +130,8 @@ Route::post('/bookingTrip/{trip_id}',[BookingTripeController::class,'bookingTrip
 Route::get('/searchCity/{nameOfCity}',[CityController::class,'searchCity']);
 
 Route::get('/allTrips',[TripController::class,'allTrips']);
+
+////////////////////////////////////////////////////////////////  public trip
+
+Route::post('/createPublicTrip',[PublicTripController::class,'createPublicTrip']);
 

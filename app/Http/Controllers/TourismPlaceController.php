@@ -15,7 +15,7 @@ class TourismPlaceController extends Controller
     {
         $attr = $request->validate([
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
-            'name' => 'required',
+            'name' => 'required|unique:tourism_places',
             'description' => 'required',
             'openingHours' => 'required',
             'recommendedTime' => 'required',

@@ -35,4 +35,7 @@ class PublicTrip extends Model
     public function publicTripPlace(){
         return $this->hasMany(PublicTripPlace::class);
     } 
+    public function publicTripClassification(){
+        return $this->hasMany(PublicTripClassification::class);
+    } 
 }

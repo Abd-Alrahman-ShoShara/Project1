@@ -11,7 +11,7 @@ class UserPublicTrip extends Model
     protected $fillable = [
         'user_id',
         'tripPoint_id',
-        'numberOfTicket',
+        'numberOfTickets',
         'price',
     ];
     public function user(){

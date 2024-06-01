@@ -42,7 +42,7 @@ class TourismPlaceController extends Controller
             'description' => $attr['description'],
             'openingHours' => $attr['openingHours'],
             'recommendedTime' => $attr['recommendedTime'],
-            'type' => $attr['type'],
+            'type' => $request->type,
             'city_id' => $city_id,
         ]);
         return response()->json([

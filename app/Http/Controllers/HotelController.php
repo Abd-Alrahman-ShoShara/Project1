@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Airport;
 use App\Models\CitiesHotel;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
@@ -59,5 +60,28 @@ class HotelController extends Controller
 
        return response()->json(['message' => ' deleted successfully'], 200);    
    }
+
+   public function getHotelInfo($hotel_id){
+    return response([
+        'airpot'=>Hotel::find($hotel_id),
+    ]);
+}
+public function updateAirport(Request $request,$airport_id){
+    $airport=Airport::find($airport_id);
+
+    $attr =$request->validate([
+        'name'=>'required|unique:airports,name,' .$airport->id,
+        'city_id'=>'required|integer',
+    
+    ]);
+    $airport->update([
+        'name'=>$attr['name'],
+        'city_id'=>$attr['city_id'],
+    ]);
+    return response()->json([
+        'message'=> ' the city updated successfully',
+        'airpot'=> $airport,
+    ],200);
+} 
 
 }

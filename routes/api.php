@@ -20,11 +20,7 @@ use App\Http\Controllers\TourismPlaceController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\TripDayPlaceController;
 use App\Http\Controllers\UserPublicTripController;
-use App\Models\BookingTripe;
-use App\Models\CitiesHotel;
-use App\Models\NormalUser;
-use App\Models\Room;
-use App\Models\TripDay;
+
 use Illuminate\Support\Facades\Route;
 
 
@@ -41,6 +37,7 @@ Route::middleware('auth:api')->group( function () {
 });
 
 
+Route::get('/adminInfo', [AdminController::class, 'adminInfo']);
 Route::post('/admin/login', [AdminController::class, 'login']);
 
 Route::post('/updateAdmin', [AdminController::class, 'updateAdmin'])->middleware('auth:api');
@@ -76,12 +73,18 @@ Route::delete('/deleteAccount',[AuthController::class,'deleteAccount'])->middlew
 ///////////////////////////////////////////////////////////////////////
 
 Route::post('/addCity',[CityController::class,'addCity']);
+Route::get('/getCityInfo/{city_id}',[CityController::class,'getCityInfo']);
+Route::post('/updateCity/{city_id}',[CityController::class,'updateCity']);
 Route::post('/deleteCity/{city_id}',[CityController::class,'deleteCity']);
 
 Route::post('/addAirPort',[AirportController::class,'addAirPort']);
+Route::get('/getAirportInfo/{airport_id}',[AirportController::class,'getAirportInfo']);
+Route::post('/updateAirport/{airport_id}',[AirportController::class,'updateAirport']);
 Route::post('/deleteAirport/{airport_id}',[AirportController::class,'deleteAirport']);
 
 Route::post('/addAirLine',[AirlineController::class,'addAirLine']);
+Route::get('/getAirlineInfo/{airline_id}',[AirlineController::class,'getAirlineInfo']);
+Route::post('/updateAirline/{airline_id}',[AirlineController::class,'updateAirline']);
 Route::post('/deleteAirline/{airline_id}',[AirlineController::class,'deleteAirline']);
 
 Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);

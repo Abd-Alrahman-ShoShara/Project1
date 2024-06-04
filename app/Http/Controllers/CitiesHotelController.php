@@ -69,6 +69,15 @@ class CitiesHotelController extends Controller
         ],200);
     }
 
+    public function cityHotelDetails($citieshotel_id){
+        $citieshotel=CitiesHotel::find($citieshotel_id);
+        if(!$citieshotel_id){
+            return response()->json(['message'=>'the id is wrong']);
+        }
+        return response()->json(['the citieshotel:'=>$citieshotel]);
+
+    }
+
     public function deleteCitieshotel($citieshotel_id){
         $citieshotel =CitiesHotel::find($citieshotel_id);
         if(!$citieshotel){

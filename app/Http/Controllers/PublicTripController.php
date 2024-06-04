@@ -98,5 +98,4 @@ class PublicTripController extends Controller
         ], 201);
     }
 
-
 }

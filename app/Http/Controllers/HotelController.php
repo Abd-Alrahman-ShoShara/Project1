@@ -30,7 +30,6 @@ class HotelController extends Controller
     
     public function allHotel()
     {
-
         $hotels = Hotel::all();
         return response()->json([
             'hotel' => $hotels,

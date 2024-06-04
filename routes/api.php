@@ -28,49 +28,53 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth:api')->group( function () {
-    Route::post('/logout',[AuthController::class,'logout']);
-    Route::post('/logoutAdmin',[AdminController::class,'logoutAdmin']);
-
+    
     Route::post('/createTrip',[TripController::class,'createTrip']);
-
-    Route::post('/resatPasswordEnternal',[AuthController::class,'resatPasswordEnternal']);
+    
 });
 
 
 Route::get('/adminInfo', [AdminController::class, 'adminInfo']);
 Route::post('/admin/login', [AdminController::class, 'login']);
-
 Route::post('/updateAdmin', [AdminController::class, 'updateAdmin'])->middleware('auth:api');
-
 Route::post('/updateAdminPassword', [AdminController::class, 'updateAdminPassword'])->middleware('auth:api');
+Route::post('/logoutAdmin',[AdminController::class,'logoutAdmin'])->middleware('auth:api');
 
-Route::post('/register',[AuthController::class,'register']);
+
 
 Route::post('/googleRegister',[GoogleUserController::class,'googleRegister']);
 
-
+Route::post('/register',[AuthController::class,'register']);
 Route::post('/verifyCode',[AuthController::class,'verifyCode']);
-
 Route::post('/login',[AuthController::class,'login']);
-
 Route::post('/forgetPassword',[AuthController::class,'forgetPassword']);
-
 Route::post('/verifyForgetPassword',[AuthController::class,'verifyForgetPassword']);
-
 Route::post('/resatPassword',[AuthController::class,'resatPassword']);
 
+
+///////////////////////////////////////////////// profile Routs ///////////////////////////////////////////
+
 Route::post('/updateName',[AuthController::class,'updateName'])->middleware('auth:api');
-
 Route::post('/updatePhone',[NormalUserController::class,'updatePhone'])->middleware('auth:api');
-
 Route::post('/verifyNewPhone',[NormalUserController::class,'verifyNewPhone'])->middleware('auth:api');
+Route::post('/resatPasswordEnternal',[AuthController::class,'resatPasswordEnternal'])->middleware('auth:api');
+
 
 Route::post('/addReview',[ReviewController::class,'addReview'])->middleware('auth:api');
 Route::get('/allReview',[ReviewController::class,'allReview']);
+Route::get('/userInfo',[AuthController::class,'userInfo'])->middleware('auth:api');
+
 
 Route::delete('/deleteAccount',[AuthController::class,'deleteAccount'])->middleware('auth:api');
 
-///////////////////////////////////////////////////////////////////////
+Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:api');
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////// Dashboard Routs ///////////////////////////////////////////
+
 
 Route::post('/addCity',[CityController::class,'addCity']);
 Route::get('/getCityInfo/{city_id}',[CityController::class,'getCityInfo']);
@@ -117,7 +121,7 @@ Route::post('/updateTourismPlace/{tourismPlace_id}',[TourismPlaceController::cla
 Route::post('/deleteTourismPlace/{tourismPlace_id}',[TourismPlaceController::class,'deleteTourismPlace']);
 Route::get('/getTourismPlacesWep/{city_id}',[TourismPlaceController::class,'getTourismPlacesWep']);
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);
 

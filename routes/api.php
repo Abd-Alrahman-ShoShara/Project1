@@ -76,22 +76,36 @@ Route::post('/addCity',[CityController::class,'addCity']);
 Route::get('/getCityInfo/{city_id}',[CityController::class,'getCityInfo']);
 Route::post('/updateCity/{city_id}',[CityController::class,'updateCity']);
 Route::post('/deleteCity/{city_id}',[CityController::class,'deleteCity']);
+Route::get('/allCities',[CityController::class,'allCities']);
+
 
 Route::post('/addAirPort',[AirportController::class,'addAirPort']);
 Route::get('/getAirportInfo/{airport_id}',[AirportController::class,'getAirportInfo']);
 Route::post('/updateAirport/{airport_id}',[AirportController::class,'updateAirport']);
 Route::post('/deleteAirport/{airport_id}',[AirportController::class,'deleteAirport']);
+Route::get('/allAirports',[AirportController::class,'allAirports']);
 
 Route::post('/addAirLine',[AirlineController::class,'addAirLine']);
 Route::get('/getAirlineInfo/{airline_id}',[AirlineController::class,'getAirlineInfo']);
 Route::post('/updateAirline/{airline_id}',[AirlineController::class,'updateAirline']);
 Route::post('/deleteAirline/{airline_id}',[AirlineController::class,'deleteAirline']);
-
-Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);
-
 Route::get('/allAirlines',[AirlineController::class,'allAirlines']);
 
-Route::get('/allAirports',[AirportController::class,'allAirports']);
+
+Route::post('/addHotel',[HotelController::class,'addHotel']);
+Route::get('/getHotelInfo/{hotel_id}',[HotelController::class,'getHotelInfo']);
+Route::post('/updateHotel/{hotel_id}',[HotelController::class,'updateHotel']);
+Route::post('/deleteHotel/{hotel_id}',[HotelController::class,'deleteHotel']);
+Route::get('/allHotel',[HotelController::class,'allHotel']);
+
+
+Route::post('/addCitiesHotel',[CitiesHotelController::class,'addCitiesHotel']);
+Route::get('/getCitiesHotelInfo/{citiesHotel_id}',[CitiesHotelController::class,'getCitiesHotelInfo']);
+Route::post('/updateCitiesHotel/{citiesHotel_id}',[CitiesHotelController::class,'updateCitiesHotel']);
+Route::post('/deleteCitiesHotel/{citieshotel_id}',[CitiesHotelController::class,'deleteCitiesHotel']);
+Route::get('/allCitiesHotel',[CitiesHotelController::class,'allCitiesHotel']);
+
+Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);
 
 Route::get('/getAirportFrom/{trip_id}',[AirportController::class,'getAirportFrom']);
 
@@ -99,11 +113,7 @@ Route::get('/getAirportTo/{trip_id}',[AirportController::class,'getAirportTo']);
 
 Route::post('/choseTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'choseTicket']);
 
-Route::post('/addHotel',[HotelController::class,'addHotel']);
-Route::post('/deleteHotel/{hotel_id}',[HotelController::class,'deleteHotel']);
 
-Route::post('/addCitiesHotel',[CitiesHotelController::class,'addCitiesHotel']);
-Route::post('/deleteCitieshotel/{citieshotel_id}',[CitiesHotelController::class,'deleteCitieshotel']);
 
 Route::post('/addRoomsHotel/{citiesHotel_id}',[RoomHotelController::class,'addRoomsHotel']);
 
@@ -119,11 +129,10 @@ Route::post('/getTourismPlaces/{trip_id}',[TourismPlaceController::class,'getTou
 
 Route::get('/getUserPlane/{trip_id}',[TripController::class,'getUserPlane']);
 
-Route::get('/allCities',[CityController::class,'allCities']);
 
-Route::get('/allCitiesHotel',[HotelController::class,'allCitiesHotel']);
 
-Route::get('/allHotel',[HotelController::class,'allHotel']);
+
+
 
 Route::get('/cityHotels/{trip_id}',[CitiesHotelController::class,'cityHotels']);
 

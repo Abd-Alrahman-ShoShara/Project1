@@ -69,17 +69,8 @@ class CitiesHotelController extends Controller
         ],200);
     }
 
-    public function cityHotelDetails($citieshotel_id){
-        $citieshotel=CitiesHotel::find($citieshotel_id);
-        if(!$citieshotel_id){
-            return response()->json(['message'=>'the id is wrong']);
-        }
-        return response()->json(['the citieshotel:'=>$citieshotel]);
-
-    }
     public function allCitiesHotel()
     {
-
         $hotels = CitiesHotel::with('hotel', 'city')->get();
 
         $hotels = $hotels->map(function ($citiesHotel) {
@@ -108,7 +99,7 @@ class CitiesHotelController extends Controller
 
    public function getCitiesHotelInfo($citiesHotel_id)
 {
-    $citiesHotel = CitiesHotel::find($citiesHotel_id)->with('city','hotel')->first();
+    $citiesHotel = CitiesHotel::where('id',$citiesHotel_id)->with('city','hotel')->first();
 
     
     $citiesHotel->images = json_decode($citiesHotel->images, true);
@@ -129,7 +120,6 @@ class CitiesHotelController extends Controller
 
     // Validate the request data
     $attr = $request->validate([
-        'city_id' => 'required|integer',
         'hotel_id' => 'required|integer',
         'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
         'description' => 'required|string',
@@ -163,7 +153,7 @@ class CitiesHotelController extends Controller
 
     // Update the CitiesHotel record
     $citiesHotel->update([
-        'city_id' => $attr['city_id'],
+        
         'hotel_id' => $attr['hotel_id'],
         'description' => $attr['description'],
         'features' => json_encode($attr['features']),

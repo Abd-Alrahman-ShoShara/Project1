@@ -111,12 +111,11 @@ Route::post('/updateRoomHotel/{roomHotel_id}',[RoomHotelController::class,'updat
 Route::post('/deleteRoomHotel/{roomHotel_id}',[RoomHotelController::class,'deleteRoomHotel']);
 Route::get('/getRooms/{citiesHotel_id}',[RoomHotelController::class,'getRooms']);
 
-Route::post('/addTourismPlaces/{city_id}',[TourismPlaceController::class,'addTourismPlaces']);
-Route::get('/getRoomHotelInfo/{roomHotel_id}',[RoomHotelController::class,'getRoomHotelInfo']);
-Route::post('/updateRoomHotel/{roomHotel_id}',[RoomHotelController::class,'updateRoomHotel']);
-Route::post('/deleteRoomHotel/{roomHotel_id}',[RoomHotelController::class,'deleteRoomHotel']);
+Route::post('/addTourismPlace/{city_id}',[TourismPlaceController::class,'addTourismPlace']);
+Route::get('/getTourismPlaceInfo/{tourismPlace_id}',[TourismPlaceController::class,'getTourismPlaceInfo']);
+Route::post('/updateTourismPlace/{tourismPlace_id}',[TourismPlaceController::class,'updateTourismPlace']);
+Route::post('/deleteTourismPlace/{tourismPlace_id}',[TourismPlaceController::class,'deleteTourismPlace']);
 Route::get('/getTourismPlacesWep/{city_id}',[TourismPlaceController::class,'getTourismPlacesWep']);
-
 
 
 
@@ -125,6 +124,7 @@ Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTick
 Route::get('/getAirportFrom/{trip_id}',[AirportController::class,'getAirportFrom']);
 
 Route::get('/getAirportTo/{trip_id}',[AirportController::class,'getAirportTo']);
+
 
 Route::post('/choseTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'choseTicket']);
 

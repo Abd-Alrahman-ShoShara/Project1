@@ -28,9 +28,9 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth:api')->group( function () {
-    
+
     Route::post('/createTrip',[TripController::class,'createTrip']);
-    
+
 });
 
 
@@ -121,6 +121,18 @@ Route::post('/updateTourismPlace/{tourismPlace_id}',[TourismPlaceController::cla
 Route::post('/deleteTourismPlace/{tourismPlace_id}',[TourismPlaceController::class,'deleteTourismPlace']);
 Route::get('/getTourismPlacesWep/{city_id}',[TourismPlaceController::class,'getTourismPlacesWep']);
 
+Route::post('/addPublicTrip',[PublicTripController::class,'addPublicTrip']);
+Route::get('/getPublicTripInfo/{TripPoint_id}', [PublicTripController::class,'getPublicTripInfo']);
+Route::post('/updatePublicTrip/{publicTrip_id}',[PublicTripController::class,'updatePublicTrip']);
+Route::post('/deletePublicTrip/{publicTrip_id}',[PublicTripController::class,'deletePublicTrip']);
+Route::get('/getPublicTrips',[PublicTripController::class,'getPublicTrips']);
+
+Route::post('/addPointsToTrip/{publicTrip_id}',[PublicTripController::class,'addPointsToTrip']);
+Route::get('/getPointInfo/{Point_id}',[PublicTripController::class,'getPointInfo']);
+Route::post('/updatePoint/{Point_id}',[PublicTripController::class,'updatePoint']);
+Route::post('/deletePoint/{Point_id}',[PublicTripController::class,'deletePoint']);
+Route::get('/getPublicTripPoints/{TripPoint_id}',[PublicTripController::class,'getPublicTripPoints']);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);
@@ -161,9 +173,9 @@ Route::get('/allTrips',[TripController::class,'allTrips']);
 
 ////////////////////////////////////////////////////////////////  public trip
 
-Route::post('/createPublicTrip',[PublicTripController::class,'createPublicTrip']);
 
-Route::post('/addPointsToTrip/{publicTrip_id}',[PublicTripController::class,'addPointsToTrip']);
+
+
+
 
 Route::post('/bookingPublicTrip',[UserPublicTripController::class,'bookingPublicTrip'])->middleware('auth:api');
-

@@ -18,20 +18,20 @@ class UserPublicTripController extends Controller
 
         $tripPoint=TripPoint::find($request->tripPoint_id);
         $tripPointPrice=$tripPoint->price;
-        
+
         $totalPrice= $request->numberOfTickets * $tripPointPrice ;
 
         if($request->VIP){
             $totalPrice += 0.3 * $totalPrice;
         }
 
-        
+
         $PointBooking =UserPublicTrip::create([
             'user_id'=>Auth::user()->id,
             'tripPoint_id'=>$request->tripPoint_id,
             'numberOfTickets'=>$request->numberOfTickets,
             'price'=>$totalPrice,
-        ]); 
+        ]);
 
         if($request->numberOfTickets>$tripPoint->numberOfTickets){
             return response([
@@ -40,12 +40,10 @@ class UserPublicTripController extends Controller
         }
         TripPoint::where('id',$request->tripPoint_id)
         ->update(['numberOfTickets'=>$tripPoint->numberOfTickets-$request->numberOfTickets]);
-
-
+        
         return response([
             'message' => 'booking successfully.',
             'theBooking:'=>$PointBooking,
         ], 200);
-        
     }
 }

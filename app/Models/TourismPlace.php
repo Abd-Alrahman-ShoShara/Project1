@@ -33,4 +33,7 @@ class TourismPlace extends Model
     {
         return $this->hasMany(TripDayPlace::class);
     }
+    public function publicTripPlace(){
+        return $this->hasMany(PublicTripPlace::class);
+    } 
 }

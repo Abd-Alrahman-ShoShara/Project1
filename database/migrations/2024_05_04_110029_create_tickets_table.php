@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('airline_id');
-            $table->foreign('airline_id')->references('id')->on('airlines');
+            $table->foreign('airline_id')->references('id')->on('airlines')->onDelete('cascade');
             $table->unsignedBigInteger('airport_id1');
-            $table->foreign('airport_id1')->references('id')->on('airports');
+            $table->foreign('airport_id1')->references('id')->on('airports')->onDelete('cascade');
             $table->unsignedBigInteger('airport_id2');
-            $table->foreign('airport_id2')->references('id')->on('airports');
+            $table->foreign('airport_id2')->references('id')->on('airports')->onDelete('cascade');
             $table->enum('typeOfTicket',['Economy','PremiumEconomy','Business','FirstClass'])->default('Economy');
             $table->time('timeOfticket');
             $table->enum('roundOrOne_trip',['RoundTrip','OneWay'])->default('RoundTrip');

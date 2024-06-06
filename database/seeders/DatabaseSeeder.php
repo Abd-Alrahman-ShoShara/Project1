@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Airport;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -23,5 +25,10 @@ class DatabaseSeeder extends Seeder
         $this->call(HotelSeeder::class);
         $this->call(CitiesHotelSeeder::class);
         $this->call(AdminSeeder::class);
+        $this->call(ClassificationSeeder::class);
+        $this->call(AirlineSeeder::class);
+        $this->call(AirportSeeder::class);
+        $this->call(RoomHotelSeeder::class);
+        $this->call(TourismPlaceSeeder::class);
     }
 }

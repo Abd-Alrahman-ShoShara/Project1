@@ -17,10 +17,10 @@ class RoomHotelController extends Controller
             ]);
         }
             $attr =$request->validate([
-                'typeOfRoom'=>'required',
-                'description'=>'required',
-                'numberOfRoom'=>'required',
-                'price'=>'required',
+                'typeOfRoom'=>'required|string',
+                'description'=>'required|string',
+                'numberOfRoom'=>'required|integer',
+                'price'=>'required|numeric',
             ]);
 
         $room = RoomHotel::create([
@@ -41,5 +41,45 @@ class RoomHotelController extends Controller
             'numOfRoom'=> $roomHotel->count(),
             'room'=> $roomHotel,
         ],200);
+    }
+
+    public function deleteRoomHotel($roomHotel_id)
+    {
+        $roomHotel = RoomHotel::find($roomHotel_id);
+
+        if (!$roomHotel) {
+            return response()->json(['message' => 'roomHotel is not found'], 404);
+        }
+        $roomHotel->delete();
+
+        return response()->json(['message' => ' deleted successfully'], 200);
+    }
+
+    public function getRoomHotelInfo($roomHotel_id)
+    {
+        return response([
+            'roomHotel' => RoomHotel::find($roomHotel_id),
+        ]);
+    }
+    public function updateRoomHotel(Request $request, $roomHotel_id)
+    {
+        $roomHotel = RoomHotel::find($roomHotel_id);
+
+        $attr = $request->validate([
+                'typeOfRoom'=>'required|string',
+                'description'=>'required|string',
+                'numberOfRoom'=>'required|integer',
+                'price'=>'required|numeric',
+        ]);
+        $roomHotel->update([
+            'typeOfRoom'=>$attr['typeOfRoom'],
+            'description'=>$attr['description'],
+            'numberOfRoom'=>$attr['numberOfRoom'],
+            'price'=>$attr['price'],
+        ]);
+        return response()->json([
+            'message' => ' the roomHotel updated successfully',
+            'hotel' => $roomHotel,
+        ], 200);
     }
 }

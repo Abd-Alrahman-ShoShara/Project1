@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('room_hotels', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('citiesHotel_id');
-            $table->foreign('citiesHotel_id')->references('id')->on('cities_hotels');
+            $table->foreign('citiesHotel_id')->references('id')->on('cities_hotels')->onDelete('cascade');
             $table->enum('typeOfRoom',['SingleRoom','DeluxeRoom','SuiteRoom']);
             $table->text('description');
             $table->bigInteger('numberOfRoom');

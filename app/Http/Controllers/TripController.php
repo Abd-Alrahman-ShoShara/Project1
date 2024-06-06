@@ -123,4 +123,14 @@ class TripController extends Controller
             'FinalPrice' => $finalPrice,
         ],200);
     }
+
+
+
+    public function allTrips(){
+        $Trips=Trip::with('user','fromCity','toCity')->get();
+        return response()->json([
+            'Trips'=> $Trips,
+        ],200);
+        
+    }
 }

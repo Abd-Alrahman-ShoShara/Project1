@@ -9,13 +9,21 @@ class PublicTrip extends Model
 {
     use HasFactory;
     
+    protected $fillable=[
+        'name',
+        'image',
+        'description',
+        'citiesHotel_id',
+        'dateOfTrip',
+        'dateEndOfTrip',
+        'discountType',
+    ];
+    
     protected $hidden=[
         'created_at',
         'updated_at',
     ];
-    public function tourismPlace(){
-        return $this->belongsTo(TourismPlace::class);
-    }     public function citiesHotel(){
+    public function citiesHotel(){
         return $this->belongsTo(CitiesHotel::class);
     } 
     public function tripPoint(){
@@ -23,5 +31,11 @@ class PublicTrip extends Model
     } 
     public function attraction(){
         return $this->hasMany(Attraction::class);
+    } 
+    public function publicTripPlace(){
+        return $this->hasMany(PublicTripPlace::class);
+    } 
+    public function publicTripClassification(){
+        return $this->hasMany(PublicTripClassification::class);
     } 
 }

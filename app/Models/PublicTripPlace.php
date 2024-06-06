@@ -5,29 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TripPoint extends Model
+class PublicTripPlace extends Model
 {
     use HasFactory;
-    
     protected $fillable=[
-        'city_id',
+        'tourismPlaces_id',
         'publicTrip_id',
-        'numberOfTickets',
-        'price',
     ];
+    
     protected $hidden=[
         'created_at',
         'updated_at',
     ];
-    public function userPublicTrip(){
-        return $this->hasMany(UserPublicTrip::class);
+    public function tourismPlace(){
+        return $this->belongsTo(TourismPlace::class);
     }
     public function publicTrip(){
         return $this->belongsTo(PublicTrip::class);
-    }
-    public function city(){
-        return $this->belongsTo(City::class);
-    }
-
-
+    }  
 }

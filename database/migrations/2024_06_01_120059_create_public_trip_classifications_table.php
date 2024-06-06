@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trip_points', function (Blueprint $table) {
+        Schema::create('public_trip_classifications', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('city_id');
-            $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
+            $table->unsignedBigInteger('classification_id');
+            $table->foreign('classification_id')->references('id')->on('classifications')->onDelete('cascade');
             $table->unsignedBigInteger('publicTrip_id');
-            $table->foreign('publicTrip_id')->references('id')->on('public_trips')->onDelete('cascade');
-            $table->integer('numberOfTickets')->default(0);
-            $table->bigInteger('price')->default(0);
+            $table->foreign('publicTrip_id')->references('id')->on('public_trips')->onDelete('cascade');       
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trip_points');
+        Schema::dropIfExists('public_trip_classifications');
     }
 };

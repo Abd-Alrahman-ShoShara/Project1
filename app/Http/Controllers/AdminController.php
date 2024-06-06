@@ -97,4 +97,10 @@ class AdminController extends Controller
             'message'=>'Logged out sucesfully'
         ],200);
     }
+
+    public function adminInfo(){
+        return response()->json([
+         'theAdmin:'=>NormalUser::where('role','admin')->select('user_id','phone')->with('user:id,name')->get(),
+        ]);
+    }
 }

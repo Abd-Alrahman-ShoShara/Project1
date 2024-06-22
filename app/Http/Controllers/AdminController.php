@@ -100,7 +100,7 @@ class AdminController extends Controller
 
     public function adminInfo(){
         return response()->json([
-         'theAdmin:'=>NormalUser::where('role','admin')->select('user_id','phone')->with('user:id,name')->get(),
+        'theAdmin:'=>NormalUser::where('role','admin')->select('user_id','phone')->with('user:id,name')->get(),
         ]);
     }
 }

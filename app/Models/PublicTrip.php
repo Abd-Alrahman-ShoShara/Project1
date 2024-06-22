@@ -25,7 +25,7 @@ class PublicTrip extends Model
         'updated_at',
     ];
     public function citiesHotel(){
-        return $this->belongsTo(CitiesHotel::class);
+        return $this->belongsTo(CitiesHotel::class,'citiesHotel_id');
     }
     public function tripPoint(){
         return $this->hasMany(TripPoint::class,'publicTrip_id');
@@ -34,10 +34,13 @@ class PublicTrip extends Model
         return $this->hasMany(Attraction::class);
     }
     public function publicTripPlace(){
-        return $this->hasMany(PublicTripPlace::class);
+        return $this->hasMany(PublicTripPlace::class,'publicTrip_id');
     }
     public function publicTripClassification(){
-        return $this->hasMany(PublicTripClassification::class);
+        return $this->hasMany(PublicTripClassification::class,'classification_id');
     }
-
+    public function favorite()
+    {
+        return $this->hasMany(Favorite::class,'user_id');
+    }
 }

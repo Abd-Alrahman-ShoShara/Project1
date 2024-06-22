@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TripPoint extends Model
 {
     use HasFactory;
-    
+
     protected $fillable=[
         'city_id',
         'publicTrip_id',
@@ -20,10 +20,10 @@ class TripPoint extends Model
         'updated_at',
     ];
     public function userPublicTrip(){
-        return $this->hasMany(UserPublicTrip::class);
+        return $this->hasMany(UserPublicTrip::class,'tripPoint_id');
     }
     public function publicTrip(){
-        return $this->belongsTo(PublicTrip::class);
+        return $this->belongsTo(PublicTrip::class,'publicTrip_id');
     }
     public function city(){
         return $this->belongsTo(City::class);

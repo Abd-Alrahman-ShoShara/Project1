@@ -5,19 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PublicTripClassification extends Model
+class Favorite extends Model
 {
-    use HasFactory;
-    protected $fillable=[
-        'classification_id',
+    protected $fillable = [
+
         'publicTrip_id',
+        'user_id',
+
     ];
-    protected $hidden=[
+    protected $hidden = [
         'created_at',
         'updated_at',
     ];
-    public function classification(){
-        return $this->belongsTo(Classification::class);
+
+    use HasFactory;
+
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
     }
     public function publicTrip(){
         return $this->belongsTo(PublicTrip::class,'publicTrip_id');

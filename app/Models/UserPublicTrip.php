@@ -15,9 +15,12 @@ class UserPublicTrip extends Model
         'price',
     ];
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
     public function tripPoint(){
-        return $this->belongsTo(TripPoint::class);
+        return $this->belongsTo(TripPoint::class,'tripPoint_id');
+    }
+    public function publicTrip(){
+        return $this->hasMany(PublicTrip::class,'public_trips');
     }
 }

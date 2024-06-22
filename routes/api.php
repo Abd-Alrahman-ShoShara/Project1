@@ -9,6 +9,7 @@ use App\Http\Controllers\BookingTicketController;
 use App\Http\Controllers\BookingTripeController;
 use App\Http\Controllers\CitiesHotelController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GoogleUserController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\NormalUserController;
@@ -20,7 +21,8 @@ use App\Http\Controllers\TourismPlaceController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\TripDayPlaceController;
 use App\Http\Controllers\UserPublicTripController;
-
+use App\Http\Controllers\UserTripController;
+use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
 
 
@@ -134,6 +136,13 @@ Route::post('/deletePoint/{Point_id}',[PublicTripController::class,'deletePoint'
 Route::get('/getPublicTripPoints/{TripPoint_id}',[PublicTripController::class,'getPublicTripPoints']);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+Route::get('/allPublicTrips',[PublicTripController::class,'allPublicTrips']);
+
+
+
+
+
+
 
 Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);
 
@@ -141,10 +150,7 @@ Route::get('/getAirportFrom/{trip_id}',[AirportController::class,'getAirportFrom
 
 Route::get('/getAirportTo/{trip_id}',[AirportController::class,'getAirportTo']);
 
-
 Route::post('/choseTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'choseTicket']);
-
-
 
 
 Route::post('/addBookingHotel/{trip_id}',[BookingHotelController::class,'addBookingHotel']);
@@ -179,3 +185,11 @@ Route::get('/allTrips',[TripController::class,'allTrips']);
 
 
 Route::post('/bookingPublicTrip',[UserPublicTripController::class,'bookingPublicTrip'])->middleware('auth:api');
+
+////////////////////////////////////////////my trips /////////////
+
+Route::get('/activeTrips',[UserTripController::class,'activeTrips'])->middleware('auth:api');
+Route::get('/pastTrips',[UserTripController::class,'pastTrips'])->middleware('auth:api');
+Route::get('/favorite',[FavoriteController::class,'favorite'])->middleware('auth:api');
+
+Route::post('/faveOrNot/{publicTrip_id}',[FavoriteController::class,'faveOrNot'])->middleware('auth:api');

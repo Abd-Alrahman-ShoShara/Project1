@@ -58,6 +58,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Review::class);
     }
+    public function favorite()
+    {
+        return $this->hasMany(Favorite::class,'user_id');
+    }
 
 
 }

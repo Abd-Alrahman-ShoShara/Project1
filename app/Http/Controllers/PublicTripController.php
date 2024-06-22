@@ -135,11 +135,12 @@ class PublicTripController extends Controller
     }
 
 
-    public function getPublicTrips(){
+    public function getPublicTrips()
+    {
 
         $publicTrips = PublicTrip::all();
         return response()->json([
-            'hotel' => $publicTrips,
+            'publicTrips' => $publicTrips,
         ], 200);
     }
 
@@ -207,7 +208,7 @@ class PublicTripController extends Controller
     public function getPublicTripInfo($publicTrip_id)
     {
         return response([
-            'publicTrip' => PublicTrip::where('id', $publicTrip_id)->with('tripPoint')->get(),
+            'publicTrip' => PublicTrip::where('id', $publicTrip_id)->with('publicTripPlace.tourismPlace','citiesHotel')->get(),
         ]);
     }
 
@@ -254,5 +255,37 @@ class PublicTripController extends Controller
             'message' => ' the city updated successfully',
             'point' => $point,
         ], 200);
+    }
+
+
+    ////////////////////////////////////////// flutter function /////////////
+
+
+    public function allpublicTrips(Request $request)
+    {
+        $request->validate([
+            'classification_id' => 'nullable|integer',
+        ]);
+
+        if ($request->has('classification_id')) {
+            $thetrips = publicTripClassification::where('classification_id', $request->classification_id)
+                ->with('publicTrip')->get();
+
+            if ($thetrips->isEmpty()) {
+                return response()->json([
+                    'message' => 'There are no trips for the specified classification ID.',
+                ]);
+            }
+
+            return response()->json([
+                'thetrips' => $thetrips,
+            ]);
+        } else {
+            $thetrips = publicTrip::all();
+
+            return response()->json([
+                'thetrips' => $thetrips,
+            ]);
+        }
     }
 }

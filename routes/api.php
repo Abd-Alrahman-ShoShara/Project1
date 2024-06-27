@@ -10,6 +10,7 @@ use App\Http\Controllers\BookingTripeController;
 use App\Http\Controllers\CitiesHotelController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClassificationController;
+use App\Http\Controllers\FAQController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GoogleUserController;
 use App\Http\Controllers\HotelController;
@@ -136,6 +137,12 @@ Route::get('/getPointInfo/{Point_id}',[PublicTripController::class,'getPointInfo
 Route::post('/updatePoint/{Point_id}',[PublicTripController::class,'updatePoint']);
 Route::post('/deletePoint/{Point_id}',[PublicTripController::class,'deletePoint']);
 Route::get('/getPublicTripPoints/{TripPoint_id}',[PublicTripController::class,'getPublicTripPoints']);
+
+Route::post('/addQuastion',[FAQController::class,'addQuastion']);
+Route::get('/getQuastionInfo/{Qusation_id}',[FAQController::class,'getQuastionInfo']);
+Route::post('/updateQuastion/{Qusation_id}',[FAQController::class,'updateQuastion']);
+Route::post('/deleteQuastion/{Qusation_id}',[FAQController::class,'deleteQuastion']);
+Route::get('/allQuastions',[FAQController::class,'allQuastions']);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 Route::get('/allPublicTrips',[PublicTripController::class,'allPublicTrips']);

@@ -11,6 +11,7 @@ class FAQ extends Model
     protected $fillable=[
         'quastion',
         'answer',
+        'type',
     ];
     protected $hidden=[
         'created_at',

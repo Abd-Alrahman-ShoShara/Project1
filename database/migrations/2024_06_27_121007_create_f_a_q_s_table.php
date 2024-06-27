@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('quastion');
             $table->text('answer');
+            $table->enum('type',['Flights','Stays','Activities'])->nullable();
             $table->timestamps();
         });
     }

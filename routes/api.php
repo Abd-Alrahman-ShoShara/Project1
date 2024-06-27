@@ -143,6 +143,7 @@ Route::get('/getQuastionInfo/{Qusation_id}',[FAQController::class,'getQuastionIn
 Route::post('/updateQuastion/{Qusation_id}',[FAQController::class,'updateQuastion']);
 Route::post('/deleteQuastion/{Qusation_id}',[FAQController::class,'deleteQuastion']);
 Route::get('/allQuastions',[FAQController::class,'allQuastions']);
+Route::post('/allQuastionsByType',[FAQController::class,'allQuastionsByType']);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 Route::get('/allPublicTrips',[PublicTripController::class,'allPublicTrips']);

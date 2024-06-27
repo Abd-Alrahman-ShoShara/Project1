@@ -11,11 +11,14 @@ class FAQController extends Controller
         $attr =$request->validate([
             'quastion'=>'required|unique:f_a_q_s|string',
             'answer'=>'required',
+            'type'=>'nullable|in:Flights,Stays,Activities'
 
         ]);
+       // if($request->type==null)
         $quastionAndAnswer = FAQ::create([
             'quastion'=>$attr['quastion'],
             'answer'=>$attr['answer'],
+            'type'=>$request->type,
         ]);
         return response()->json([
             'message'=> ' the quastionAndAnswer created successfully',
@@ -31,7 +34,18 @@ class FAQController extends Controller
 
 
     public function allQuastions(){
+
         $quastionAndAnswers = FAQ::all();
+        return response()->json([
+            'quastionAndAnswers' => $quastionAndAnswers,
+        ]);
+    }
+
+    public function allQuastionsByType(Request $request){
+        $attrs=$request->validate([
+            'type'=>'required|in:Flights,Activities,Stays'
+        ]);
+        $quastionAndAnswers = FAQ::where('type',$attrs['type'])->get();
         return response()->json([
             'quastionAndAnswers' => $quastionAndAnswers,
         ]);

@@ -11,7 +11,12 @@ class Classification extends Model
     protected $fillable=[
         'name',
     ];
+    protected $hidden=[
+        'created_at',
+        'updated_at',
+    ];
+
     public function publicTripClassification(){
         return $this->hasMany(PublicTripClassification::class);
-    } 
+    }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\BookingTicketController;
 use App\Http\Controllers\BookingTripeController;
 use App\Http\Controllers\CitiesHotelController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\ClassificationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GoogleUserController;
 use App\Http\Controllers\HotelController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\TripController;
 use App\Http\Controllers\TripDayPlaceController;
 use App\Http\Controllers\UserPublicTripController;
 use App\Http\Controllers\UserTripController;
+use App\Models\Classification;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
 
@@ -179,6 +181,9 @@ Route::get('/allTrips',[TripController::class,'allTrips']);
 
 ////////////////////////////////////////////////////////////////  public trip
 
+Route::get('/Classifications',[ClassificationController::class,'Classifications']);
+Route::post('/addClassification',[ClassificationController::class,'addClassification']);
+Route::post('/deleteClassification/{classification_id}',[ClassificationController::class,'deleteClassification']);
 
 
 

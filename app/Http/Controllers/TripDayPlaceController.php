@@ -42,5 +42,6 @@ class TripDayPlaceController extends Controller
             'message' => 'The plane created successfully',
             'Planes' => $createdTripDayPlaces,
         ],200);
-    } 
+    }
+     
 }

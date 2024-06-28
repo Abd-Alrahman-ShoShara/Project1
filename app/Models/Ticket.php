@@ -19,6 +19,8 @@ class Ticket extends Model
     'duration',
     'price',
     'numOfTickets',
+    'dateEndOfTicket',
+    'dateOfTicket',
     ];
     
     protected $hidden=[

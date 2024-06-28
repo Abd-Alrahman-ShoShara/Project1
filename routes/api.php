@@ -21,6 +21,7 @@ use App\Http\Controllers\RoomHotelController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TourismPlaceController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\TripDayController;
 use App\Http\Controllers\TripDayPlaceController;
 use App\Http\Controllers\UserPublicTripController;
 use App\Http\Controllers\UserTripController;
@@ -171,9 +172,12 @@ Route::post('/addPlane',[TripDayPlaceController::class,'addPlane']);
 
 Route::post('/getTourismPlaces/{trip_id}',[TourismPlaceController::class,'getTourismPlaces']);
 
+Route::get('/getTripDays/{trip_id}',[TripDayController::class,'getTripDays']);
 Route::get('/getUserPlane/{trip_id}',[TripController::class,'getUserPlane']);
 
 
+Route::post('/updateTicket/{bookingTicket_id}',[BookingTicketController::class,'updateTicket']);
+Route::post('/updateBookingTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'updateBookingTicket']);
 
 
 

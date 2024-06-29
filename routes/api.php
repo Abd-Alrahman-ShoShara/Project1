@@ -176,9 +176,6 @@ Route::get('/getTripDays/{trip_id}',[TripDayController::class,'getTripDays']);
 Route::get('/getUserPlane/{trip_id}',[TripController::class,'getUserPlane']);
 
 
-Route::post('/updateTicket/{bookingTicket_id}',[BookingTicketController::class,'updateTicket']);
-Route::post('/updateBookingTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'updateBookingTicket']);
-
 
 
 
@@ -210,3 +207,6 @@ Route::get('/pastTrips',[UserTripController::class,'pastTrips'])->middleware('au
 Route::get('/favorite',[FavoriteController::class,'favorite'])->middleware('auth:api');
 
 Route::post('/faveOrNot/{publicTrip_id}',[FavoriteController::class,'faveOrNot'])->middleware('auth:api');
+
+Route::post('/updateTicket/{bookingTicket_id}',[BookingTicketController::class,'updateTicket']);
+Route::post('/updateBookingTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'updateBookingTicket']);

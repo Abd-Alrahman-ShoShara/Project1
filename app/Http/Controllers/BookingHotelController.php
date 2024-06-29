@@ -13,19 +13,26 @@ class BookingHotelController extends Controller
 {
     public function addBookingHotel(Request $request, $trip_id) {
         // Validate the input
-        $validator = Validator::make($request->all(), [
+        $validated=$request->validate([
             'checkIn' => 'required|date',
             'checkOut' => 'required|date|after:checkIn',
             'rooms' => 'required|array',
             'rooms.*.roomHotel_id' => 'required|integer|exists:room_hotels,id',
             'rooms.*.numberOfRoom' => 'required|integer|min:1',
         ]);
+        // $validator = Validator::make($request->all(), [
+        //     'checkIn' => 'required|date',
+        //     'checkOut' => 'required|date|after:checkIn',
+        //     'rooms' => 'required|array',
+        //     'rooms.*.roomHotel_id' => 'required|integer|exists:room_hotels,id',
+        //     'rooms.*.numberOfRoom' => 'required|integer|min:1',
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
+        // if ($validated->fails()) {
+        //     return response()->json([
+        //         'errors' => $validated->errors()
+        //     ], 422);
+        // }
 
         $trip = Trip::find($trip_id);
         if (!$trip) {
@@ -35,7 +42,7 @@ class BookingHotelController extends Controller
         }
 
         // Retrieve the validated input
-        $validated = $validator->validated();
+        // $validated = $validator->validated();
         $rooms = $validated['rooms'];
         $checkIn = $validated['checkIn'];
         $checkOut = $validated['checkOut'];

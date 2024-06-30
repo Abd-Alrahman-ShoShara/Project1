@@ -210,3 +210,6 @@ Route::post('/faveOrNot/{publicTrip_id}',[FavoriteController::class,'faveOrNot']
 
 Route::post('/updateTicket/{bookingTicket_id}',[BookingTicketController::class,'updateTicket']);
 Route::post('/updateBookingTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'updateBookingTicket']);
+Route::delete('/deleteTicket/{bookingTicket_id}',[BookingTicketController::class,'deleteTicket']);
+
+Route::post('/updateBookingHotel/{trip_id}',[BookingHotelController::class,'updateBookingHotel']);

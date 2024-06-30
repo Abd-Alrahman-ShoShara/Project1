@@ -139,4 +139,15 @@ class BookingTicketController extends Controller
             'The Ticket_id :' => $newBookingTicket,
         ], 200);
     }
+    public function deleteTicket($bookingTicket_id){
+        $BookingTicket =BookingTicket::find($bookingTicket_id);
+        if(!$BookingTicket){
+            return response()->json(['message' => 'BookingTicket is not found'], 404);
+        }
+        $BookingTicket->delete(); 
+
+       return response()->json(['message' => ' deleted successfully'], 200);    
+   }
+
+    
 }

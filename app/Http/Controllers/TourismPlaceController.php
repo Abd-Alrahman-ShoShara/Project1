@@ -56,7 +56,7 @@ class TourismPlaceController extends Controller
     {
         $tourismPlaces = TourismPlace::where('city_id', $city_id)->get();
 
-        
+
         foreach ($tourismPlaces as $tourismPlace) {
             $tourismPlace->images = json_decode($tourismPlace->images, true);
         }
@@ -100,75 +100,76 @@ class TourismPlaceController extends Controller
         ]);
     }
 
-    public function deleteTourismPlace($tourismPlace_id){
-        $tourismPlace =TourismPlace::find($tourismPlace_id);
-        if(!$tourismPlace){
+    public function deleteTourismPlace($tourismPlace_id)
+    {
+        $tourismPlace = TourismPlace::find($tourismPlace_id);
+        if (!$tourismPlace) {
             return response()->json(['message' => 'hotel is not found'], 404);
         }
-        $tourismPlace->delete(); 
+        $tourismPlace->delete();
 
-       return response()->json(['message' => ' deleted successfully'], 200);    
-   }
-
-
-   public function getTourismPlaceInfo($tourismPlace_id)
-{
-    $tourismPlace = TourismPlace::where('id',$tourismPlace_id)->with('city')->first();
-
-    $tourismPlace->images=json_decode($tourismPlace->images,true);
-    return response([
-        'tourismPlace' => $tourismPlace,
-    ]);
-}
-  
-public function updateTourismPlace(Request $request, $tourismPlace_id)
-{
-
-    $tourismPlace = TourismPlace::findOrFail($tourismPlace_id);
-
-    $attr = $request->validate([
-        'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
-        'name' => 'required|unique:tourism_places,name,' . $tourismPlace->id,
-        'description' => 'required',
-        'openingHours' => 'required',
-        'recommendedTime' => 'required',
-        'type' => 'nullable',
-    ]);
-
-    $imageUrls = [];
-    if ($request->hasFile('images')) {
-        $oldImages = json_decode($tourismPlace->images, true);
-        if ($oldImages) {
-            foreach ($oldImages as $oldImage) {
-                if (file_exists(public_path($oldImage))) {
-                    unlink(public_path($oldImage));
-                }
-            }
-        }
-        foreach ($request->file('images') as $key => $image) {
-            $imageName = time() . $key . '.' . $image->extension();
-            $image->move(public_path('uploads/'), $imageName);
-            $imageUrls[] = URL::asset('uploads/' . $imageName);
-        }
-    } else {
-        $imageUrls = json_decode($tourismPlace->images, true);
+        return response()->json(['message' => ' deleted successfully'], 200);
     }
 
-    
-    $tourismPlace->update([
-        'images' => $imageUrls ? json_encode($imageUrls) : null,
-        'name' => $attr['name'],
-        'description' => $attr['description'],
-        'openingHours' => $attr['openingHours'],
-        'recommendedTime' => $attr['recommendedTime'],
-        'type' => $request->type,
-        
-    ]);
 
-    // Return response
-    return response()->json([
-        'message' => 'The tourism place updated successfully',
-        'tourismPlace' => $tourismPlace,
-    ], 200);
-}
+    public function getTourismPlaceInfo($tourismPlace_id)
+    {
+        $tourismPlace = TourismPlace::where('id', $tourismPlace_id)->with('city')->first();
+
+        $tourismPlace->images = json_decode($tourismPlace->images, true);
+        return response([
+            'tourismPlace' => $tourismPlace,
+        ]);
+    }
+
+    public function updateTourismPlace(Request $request, $tourismPlace_id)
+    {
+
+        $tourismPlace = TourismPlace::findOrFail($tourismPlace_id);
+
+        $attr = $request->validate([
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
+            'name' => 'required|unique:tourism_places,name,' . $tourismPlace->id,
+            'description' => 'required',
+            'openingHours' => 'required',
+            'recommendedTime' => 'required',
+            'type' => 'nullable',
+        ]);
+
+        $imageUrls = [];
+        if ($request->hasFile('images')) {
+            $oldImages = json_decode($tourismPlace->images, true);
+            if ($oldImages) {
+                foreach ($oldImages as $oldImage) {
+                    if (file_exists(public_path($oldImage))) {
+                        unlink(public_path($oldImage));
+                    }
+                }
+            }
+            foreach ($request->file('images') as $key => $image) {
+                $imageName = time() . $key . '.' . $image->extension();
+                $image->move(public_path('uploads/'), $imageName);
+                $imageUrls[] = URL::asset('uploads/' . $imageName);
+            }
+        } else {
+            $imageUrls = json_decode($tourismPlace->images, true);
+        }
+
+
+        $tourismPlace->update([
+            'images' => $imageUrls ? json_encode($imageUrls) : null,
+            'name' => $attr['name'],
+            'description' => $attr['description'],
+            'openingHours' => $attr['openingHours'],
+            'recommendedTime' => $attr['recommendedTime'],
+            'type' => $request->type,
+
+        ]);
+
+        // Return response
+        return response()->json([
+            'message' => 'The tourism place updated successfully',
+            'tourismPlace' => $tourismPlace,
+        ], 200);
+    }
 }

@@ -8,29 +8,30 @@ use App\Models\TripDayPlace;
 
 class TripDayPlaceController extends Controller
 {
-    public function addPlane(Request $request ){
-        $validator = Validator::make($request->all(), [
-            'planes' => 'required|array',
-            'planes.*.tripDay_id' => 'required|integer|exists:trip_days,id',
-            'planes.*.places' => 'required|array',
-            'planes.*.places.*' => 'required|integer|exists:tourism_places,id',
-        ]);
+    public function addPlane(Request $request)
+{
+    $validator = $request->validate([
+        'planes' => 'required|array',
+        'planes.*.tripDay_id' => 'required|integer|exists:trip_days,id',
+        'planes.*.places' => 'required|array',
+        'planes.*.places.*' => 'required|integer|exists:tourism_places,id',
+    ]);
 
+    // Retrieve the validated input
+    $planes = $request->input('planes');
+    $createdTripDayPlaces = [];
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
+    foreach ($planes as $plane) {
+        $tripDay_id = $plane['tripDay_id'];
+        $placesArray = $plane['places'];
 
-        // Retrieve the validated input
-        $planes = $request->input('planes');
-        $createdTripDayPlaces = [];
+        foreach ($placesArray as $tourismPlace_id) {
+            $existingTripDayPlace = TripDayPlace::where([
+                ['tripDay_id', $tripDay_id],
+                ['tourismPlace_id', $tourismPlace_id]
+            ])->first();
 
-        foreach ($planes as $plane) {
-            $tripDay_id = $plane['tripDay_id'];
-            $placesArray = $plane['places'];
-            foreach ($placesArray as $tourismPlace_id) {
+            if (!$existingTripDayPlace) {
                 $tripDayPlace = TripDayPlace::create([
                     'tripDay_id' => $tripDay_id,
                     'tourismPlace_id' => $tourismPlace_id,
@@ -38,10 +39,20 @@ class TripDayPlaceController extends Controller
                 $createdTripDayPlaces[] = $tripDayPlace;
             }
         }
-        return response()->json([
-            'message' => 'The plane created successfully',
-            'Planes' => $createdTripDayPlaces,
-        ],200);
     }
+
+    return response()->json([
+        'message' => 'The plane created successfully',
+        'Planes' => $createdTripDayPlaces,
+    ], 200);
+}
      
+    public function deleteActivities($tripDay_id ){
+        $tripDay =TripDayPlace::where('tripDay_id',$tripDay_id)->delete();
+        if(!$tripDay){
+            return response()->json(['message' => 'TripDayPlace is not found'], 404);
+        }
+        return response()->json(['message' => ' deleted successfully'], 200);
+     
+}
 }

@@ -85,7 +85,6 @@ class BookingHotelController extends Controller
         ], 200);
     }
     public function updateBookingHotel(Request $request, $trip_id) {
-        // Validate the request
         $attr = $request->validate([
             'checkIn' => 'required|date',
             'checkOut' => 'required|date|after:checkIn',
@@ -148,7 +147,6 @@ class BookingHotelController extends Controller
             $bookings[] = $bookingHotelRoom;
         }
         
-    
         return response()->json([
             'message' => 'The rooms were booked successfully',
             'bookings' => $bookings,
@@ -156,5 +154,43 @@ class BookingHotelController extends Controller
             'numberOfNights' => $numberOfNights,
         ], 200);
     }
+    public function deleteBookingHotel($trip_id,$citiesHotel_id)
+{
+    try {
+        // Fetch all booking hotels for the given trip_id and citiesHotel_id with eager loading
+        $bookingHotels = BookingHotel::where('trip_id', $trip_id)
+            ->whereHas('roomHotel', function ($query) use ($citiesHotel_id) {
+                $query->where('citiesHotel_id', $citiesHotel_id);
+            })
+            ->with('roomHotel')
+            ->get();
+
+        // Delete each booking hotel found
+        if ($bookingHotels->isNotEmpty()) {
+            foreach ($bookingHotels as $bookingHotel) {
+                $bookingHotel->delete();
+            }
+        }
+
+        return response()->json([
+            'message' => 'Bookings deleted successfully.',
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Failed to delete bookings.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+public function deleteBookingRoom($boolingHotel_id){
+    $boolingHotel =BookingHotel::find($boolingHotel_id);
+
+    if(!$boolingHotel){
+        return response()->json(['message' => 'quastion is not found'], 404);
+    }
+    $boolingHotel->delete();
+    return response()->json(['message' => ' deleted successfully'], 200);
+}
+    
 
 }

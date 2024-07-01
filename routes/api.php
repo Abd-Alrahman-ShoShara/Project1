@@ -213,3 +213,7 @@ Route::post('/updateBookingTicket/{trip_id}/{ticket_id}',[BookingTicketControlle
 Route::delete('/deleteTicket/{bookingTicket_id}',[BookingTicketController::class,'deleteTicket']);
 
 Route::post('/updateBookingHotel/{trip_id}',[BookingHotelController::class,'updateBookingHotel']);
+Route::delete('/deleteBookingHotel/{trip_id}/{citiesHotel_id}',[BookingHotelController::class,'deleteBookingHotel']);
+Route::delete('/deleteBookingRoom/{boolingHotel_id}',[BookingHotelController::class,'deleteBookingRoom']);
+
+Route::delete('/deleteActivities/{tripDay_id}',[TripDayPlaceController::class,'deleteActivities']);

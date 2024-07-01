@@ -26,7 +26,7 @@ class BookingHotel extends Model
         return $this->belongsTo(Trip::class);
     } 
     public function roomHotel(){
-        return $this->belongsTo(RoomHotel::class);
+        return $this->belongsTo(RoomHotel::class,'roomHotel_id');
     } 
     public function bookingHotel(){
         return $this->hasOne(BookingHotel::class);

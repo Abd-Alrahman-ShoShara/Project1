@@ -24,17 +24,14 @@ return new class extends Migration
             $table->date('dateOfTrip');
             $table->date('dateEndOfTrip');
             $table->bigInteger('numOfPersons');
-            $table->boolean('completed')->default(false);
-            $table->boolean('cancelled')->default(false);
+            $table->enum('state',['UnderConstruction','completed','cancelled'])->default('UnderConstruction');
             $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('trips');

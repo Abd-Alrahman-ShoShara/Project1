@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tripPoint_id');
             $table->foreign('tripPoint_id')->references('id')->on('trip_points')->onDelete('cascade');
             $table->bigInteger('numberOfTickets');
+            $table->enum('state',['completed','cancelled'])->default('completed');
             $table->bigInteger('price')->default(0);
             $table->timestamps();
         });

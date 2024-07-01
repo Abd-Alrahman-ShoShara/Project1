@@ -31,12 +31,12 @@ class BookingTripeController extends Controller
             }
         }
         $theTrip=Trip::find($trip_id);
-        if(!$theTrip->completed){
+        if($theTrip->state=='UnderConstruction'){
             $alltrip = BookingTripe::create([
                 'trip_id'=>$trip_id,
                 'price'=>$totalPrice,
             ]);
-            $theTrip->completed=true;
+            $theTrip->state='completed';
             $theTrip->save();
         }else{
             return response()->json([

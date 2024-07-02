@@ -261,31 +261,56 @@ class PublicTripController extends Controller
     ////////////////////////////////////////// flutter function /////////////
 
 
-    public function allpublicTrips(Request $request)
+    public function allPublicTrips(Request $request)
     {
-        $request->validate([
-            'classification_id' => 'nullable|integer',
+        $attrs = $request->validate([
+            'classification_id' => 'sometimes|integer',
         ]);
 
         if ($request->has('classification_id')) {
-            $thetrips = publicTripClassification::where('classification_id', $request->classification_id)
-                ->with('publicTrip')->get();
+            $classification = $attrs['classification_id'];
 
-            if ($thetrips->isEmpty()) {
+            $theTrips = PublicTrip::
+                whereHas('publicTripClassification', function ($query) use ($classification) {
+                    $query->where('classification_id', $classification);
+                })
+                ->get()->where('display', true);
+
+            if ($theTrips->isEmpty()) {
                 return response()->json([
                     'message' => 'There are no trips for the specified classification ID.',
                 ]);
             }
 
             return response()->json([
-                'thetrips' => $thetrips,
+                'theTrips' => $theTrips,
             ]);
         } else {
-            $thetrips = publicTrip::all();
+            $theTrips = PublicTrip::where('display', true)->get();
 
             return response()->json([
-                'thetrips' => $thetrips,
+                'theTrips' => $theTrips,
             ]);
         }
     }
+    public function displayPublicTrip($publicTrip_id){
+        $publicTrip=PublicTrip::find($publicTrip_id);
+
+        if(!$publicTrip)
+        {
+            return response([
+                'message'=>'publicTrip not found'
+            ],403);
+        }
+
+        $publicTrip->display = $publicTrip->display?false:true;
+        $publicTrip->save();
+        return response()->json([
+            'display' => $publicTrip->display,
+        ]);
+
+    }
+
+
+
 }

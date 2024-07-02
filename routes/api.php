@@ -132,6 +132,7 @@ Route::post('/addPublicTrip',[PublicTripController::class,'addPublicTrip']);
 Route::get('/getPublicTripInfo/{TripPoint_id}', [PublicTripController::class,'getPublicTripInfo']);
 Route::post('/updatePublicTrip/{publicTrip_id}',[PublicTripController::class,'updatePublicTrip']);
 Route::post('/deletePublicTrip/{publicTrip_id}',[PublicTripController::class,'deletePublicTrip']);
+Route::post('/displayPublicTrip/{publicTrip_id}',[PublicTripController::class,'displayPublicTrip']);
 Route::get('/getPublicTrips',[PublicTripController::class,'getPublicTrips']);
 
 Route::post('/addPointsToTrip/{publicTrip_id}',[PublicTripController::class,'addPointsToTrip']);
@@ -148,7 +149,7 @@ Route::get('/allQuastions',[FAQController::class,'allQuastions']);
 Route::post('/allQuastionsByType',[FAQController::class,'allQuastionsByType']);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-Route::get('/allPublicTrips',[PublicTripController::class,'allPublicTrips']);
+Route::post('/allPublicTrips',[PublicTripController::class,'allPublicTrips']);
 
 
 

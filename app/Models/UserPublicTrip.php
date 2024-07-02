@@ -20,7 +20,5 @@ class UserPublicTrip extends Model
     public function tripPoint(){
         return $this->belongsTo(TripPoint::class,'tripPoint_id');
     }
-    public function publicTrip(){
-        return $this->hasMany(PublicTrip::class,'public_trips');
-    }
+
 }

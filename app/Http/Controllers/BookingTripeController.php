@@ -11,42 +11,44 @@ use Illuminate\Http\Request;
 
 class BookingTripeController extends Controller
 {
-    public function bookingTrip($trip_id){
+    public function bookingTrip($trip_id) {
+        $bookingTicket = BookingTicket::where('trip_id', $trip_id)->first();
+        $ticketPrice = $bookingTicket ? $bookingTicket->price : 0;
 
-        $bookingTicket=BookingTicket::where('trip_id',$trip_id)->first();
-        $ticketPrice=$bookingTicket->price;
+        $bookingHotels = BookingHotel::where('trip_id', $trip_id)->get();
+        $hotelPrice = $bookingHotels->sum('price');
+        $hotelPrice = $hotelPrice ?? 0;
 
-        $bookingHotels=BookingHotel::where('trip_id',$trip_id)->get();        
-        $hotelPrice = $bookingHotels->sum('price');     
-        $totalPrice = $hotelPrice + $ticketPrice ;   
-        
+        $totalPrice = $hotelPrice + $ticketPrice;
+
         foreach ($bookingHotels as $bookingHotel) {
             $roomHotel = RoomHotel::find($bookingHotel->roomHotel_id);
-    
+
             // Check if the RoomHotel exists
             if ($roomHotel) {
                 $roomHotel->update([
-                    'numberOfRoom' => $roomHotel->numberOfRoom - $bookingHotel->numberOfRoom, 
+                    'numberOfRoom' => $roomHotel->numberOfRoom - $bookingHotel->numberOfRoom,
                 ]);
             }
         }
-        $theTrip=Trip::find($trip_id);
-        if($theTrip->state=='UnderConstruction'){
+
+        $theTrip = Trip::find($trip_id);
+        if ($theTrip->state == 'UnderConstruction') {
             $alltrip = BookingTripe::create([
-                'trip_id'=>$trip_id,
-                'price'=>$totalPrice,
+                'trip_id' => $trip_id,
+                'price' => $totalPrice,
             ]);
-            $theTrip->state='completed';
+            $theTrip->state = 'completed';
             $theTrip->save();
-        }else{
+        } else {
             return response()->json([
-                'message'=>'the plane is created already',
-            ],422);
+                'message' => 'The trip is already completed.',
+            ], 422);
         }
-            
+
         return response()->json([
-            'message'=>'the plane created successfuly',
-            'plane'=>$alltrip,
-        ],200);
+            'message' => 'The trip was created successfully.',
+            'trip' => $alltrip,
+        ], 200);
     }
 }

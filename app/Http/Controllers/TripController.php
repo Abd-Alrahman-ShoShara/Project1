@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\BookingHotel;
 use App\Models\BookingTicket;
 use App\Models\CitiesHotel;
+use App\Models\PublicTrip;
 use App\Models\RoomHotel;
 use App\Models\Trip;
 use App\Models\TripDay;
+use App\Models\UserPublicTrip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +22,7 @@ class TripController extends Controller
             'from' => 'required|string|max:255',
             'to' => 'required|string|max:255',
             'dateOfTrip' => 'required|date|after_or_equal:today',
-            'dateEndOfTrip' => 'required|date|after:dateOfTrip', 
+            'dateEndOfTrip' => 'required|date|after:dateOfTrip',
             'numOfPersons' => 'required|integer|min:1',
         ]);
 
@@ -32,11 +34,11 @@ class TripController extends Controller
             'dateEndOfTrip' => $attr['dateEndOfTrip'],
             'numOfPersons' => $attr['numOfPersons'],
         ]);
-    
+
 
         $currentDate = new \DateTime($attr['dateOfTrip']);
         $endDate = new \DateTime($attr['dateEndOfTrip']);
-    
+
         // Loop through each day and create a TripDay entry
         while ($currentDate < $endDate) {
             TripDay::create([
@@ -60,27 +62,29 @@ class TripController extends Controller
     {
         // Retrieve the trip
         $trip = Trip::find($trip_id);
-    
+
         if (!$trip) {
             return response()->json([
                 'message' => 'Trip not found',
             ], 404);
         }
-    
+
         // Retrieve the ticket for the trip
         $ticket = BookingTicket::where('trip_id', $trip_id)->first();
-    
-        if (!$ticket) {
-            return response()->json([
-                'message' => 'Booking ticket not found for this trip',
-            ], 404);
-        }
-    
+        $ticketP=$ticket?$ticket->price:0;
+
+        // if (!$ticket) {
+        //     return response()->json([
+        //         'message' => 'Booking ticket not found for this trip',
+        //     ], 404);
+        // }
+
         // Retrieve the hotel bookings for the trip
         $rooms = BookingHotel::where('trip_id', $trip_id)->get();
-    
+
         if ($rooms->isEmpty()) {
             $theHotel = null;
+            $totalPrice=0;
         } else {
             $roomHotel_id = $rooms[0]->roomHotel_id;
             $roompmHotel = RoomHotel::find($roomHotel_id);
@@ -88,25 +92,25 @@ class TripController extends Controller
             $theHotel = CitiesHotel::where('id', $citiesHotel_id)
                 ->with('hotel')
                 ->first();
-    
+
             if ($theHotel) {
                 $theHotel->features = json_decode($theHotel->features);
                 $theHotel->review = json_decode($theHotel->review);
                 $theHotel->images = json_decode($theHotel->images);
             }
+            $totalPrice = $rooms->sum('price');
         }
-    
+
         // Calculate the total price of the rooms
-        $totalPrice = $rooms->sum('price');
-    
+
         // Calculate the final price
-        $finalPrice = $totalPrice + $ticket->price;
-    
+        $finalPrice = $totalPrice + $ticketP;
+
         // Retrieve the trip days and associated trip day places
         $tripDays = TripDay::where('trip_id', $trip_id)
             ->with(['tripDayPlace.tourismPlace'])
             ->get();
-    
+
         // Decode images for each TripDay
         $tripDays = $tripDays->map(function ($tripDay) {
             foreach ($tripDay->tripDayPlace as $place) {
@@ -114,7 +118,7 @@ class TripController extends Controller
             }
             return $tripDay;
         });
-    
+
         // Return the response
         return response()->json([
             'Ticket' => $ticket,
@@ -132,6 +136,33 @@ class TripController extends Controller
         return response()->json([
             'Trips'=> $Trips,
         ],200);
-        
+
     }
+    public function cancelePrivateTripe($trip_id){
+        $cancelledTrip=Trip::find($trip_id);
+        $cancelledTrip->state='cancelled';
+        $cancelledTrip->save();
+        $price=BookingHotel::where('trip_id',$trip_id)->sum('price');
+        $returnPrice=0.5*$price;
+        if($cancelledTrip){
+            return response()->json([
+                'message'=>'cancelled successfully',
+                'thePrice'=>$price,
+                'theReturnPrice'=>$returnPrice,
+            ]);
+        }
+    }
+    public function getCancelledTrip(){
+        $cancelledPrivateTrip=Trip::where([['user_id',Auth::user()->id],['state','cancelled']])->get();
+        $cancelledPublicTrip=UserPublicTrip::where([['user_id',Auth::user()->id],['state','cancelled']])
+        ->with('tripPoint.publicTrip')->get();
+
+        return response()->json([
+
+            'thePrivateCanclledTrip:'=>$cancelledPrivateTrip,
+            'thePublicCanclledTrip:'=>$cancelledPublicTrip,
+
+        ]);
+    }
+
 }

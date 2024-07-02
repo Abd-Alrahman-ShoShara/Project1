@@ -27,6 +27,7 @@ use App\Http\Controllers\UserPublicTripController;
 use App\Http\Controllers\UserTripController;
 use App\Models\Classification;
 use App\Models\Favorite;
+use App\Models\UserPublicTrip;
 use Illuminate\Support\Facades\Route;
 
 
@@ -217,3 +218,9 @@ Route::delete('/deleteBookingHotel/{trip_id}/{citiesHotel_id}',[BookingHotelCont
 Route::delete('/deleteBookingRoom/{boolingHotel_id}',[BookingHotelController::class,'deleteBookingRoom']);
 
 Route::delete('/deleteActivities/{tripDay_id}',[TripDayPlaceController::class,'deleteActivities']);
+
+Route::post('/cancelePrivateTripe/{trip_id}',[TripController::class,'cancelePrivateTripe']);
+Route::post('/cancelePublicTripe/{publicTrip_id}',[UserPublicTripController::class,'cancelePublicTripe'])->middleware('auth:api');
+Route::get('/getCancelledTrip',[TripController::class,'getCancelledTrip'])->middleware('auth:api');
+
+Route::get('/userPublicTripBooking/{publicTrip_id}',[UserTripController::class,'userPublicTripBooking'])->middleware('auth:api');

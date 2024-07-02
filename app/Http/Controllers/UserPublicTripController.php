@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PublicTrip;
 use App\Models\TripPoint;
 use App\Models\UserPublicTrip;
 use Illuminate\Http\Request;
@@ -40,10 +41,30 @@ class UserPublicTripController extends Controller
         }
         TripPoint::where('id',$request->tripPoint_id)
         ->update(['numberOfTickets'=>$tripPoint->numberOfTickets-$request->numberOfTickets]);
-        
+
         return response([
             'message' => 'booking successfully.',
             'theBooking:'=>$PointBooking,
+        ], 200);
+    }
+
+    public function cancelePublicTripe($userPublicTrip_id) {
+
+
+        $cancelledPublicTrip = UserPublicTrip::where('id', $userPublicTrip_id)->first();
+
+        if (!$cancelledPublicTrip) {
+            return response()->json([
+                'message' => ' User public trip not found.',
+            ], 404);
+        }
+
+        $cancelledPublicTrip->state='cancelled';
+        $cancelledPublicTrip->save();
+
+        return response()->json([
+            'message' => 'The public trip was cancelled successfully.',
+            'publicTrip' => $cancelledPublicTrip,
         ], 200);
     }
 }

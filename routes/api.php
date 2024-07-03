@@ -199,7 +199,7 @@ Route::post('/deleteClassification/{classification_id}',[ClassificationControlle
 
 
 
-
+ 
 Route::post('/bookingPublicTrip',[UserPublicTripController::class,'bookingPublicTrip'])->middleware('auth:api');
 
 ////////////////////////////////////////////my trips /////////////
@@ -219,9 +219,10 @@ Route::delete('/deleteBookingHotel/{trip_id}/{citiesHotel_id}',[BookingHotelCont
 Route::delete('/deleteBookingRoom/{boolingHotel_id}',[BookingHotelController::class,'deleteBookingRoom']);
 
 Route::delete('/deleteActivities/{tripDay_id}',[TripDayPlaceController::class,'deleteActivities']);
+Route::delete('/deleteAllActivities/{trip_id}',[TripDayPlaceController::class,'deleteAllAct-ivities']);
 
 Route::post('/cancelePrivateTripe/{trip_id}',[TripController::class,'cancelePrivateTripe']);
-Route::post('/cancelePublicTripe/{publicTrip_id}',[UserPublicTripController::class,'cancelePublicTripe'])->middleware('auth:api');
+Route::post('/cancelPublicTrip/{publicTrip_id}',[UserPublicTripController::class,'cancelPublicTrip']);
 Route::get('/getCancelledTrip',[TripController::class,'getCancelledTrip'])->middleware('auth:api');
 
 Route::get('/userPublicTripBooking/{publicTrip_id}',[UserTripController::class,'userPublicTripBooking'])->middleware('auth:api');

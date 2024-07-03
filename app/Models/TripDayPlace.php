@@ -19,7 +19,7 @@ class TripDayPlace extends Model
     use HasFactory;
     public function tripDay()
     {
-        return $this->belongsTo(TripDay::class);
+        return $this->belongsTo(TripDay::class,'tripDay_id');
     }
 
     /**

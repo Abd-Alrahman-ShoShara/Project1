@@ -157,20 +157,23 @@ class BookingHotelController extends Controller
     public function deleteBookingHotel($trip_id,$citiesHotel_id)
 {
     try {
-        // Fetch all booking hotels for the given trip_id and citiesHotel_id with eager loading
+        $trip=Trip::find($trip_id);
         $bookingHotels = BookingHotel::where('trip_id', $trip_id)
             ->whereHas('roomHotel', function ($query) use ($citiesHotel_id) {
                 $query->where('citiesHotel_id', $citiesHotel_id);
             })
             ->with('roomHotel')
             ->get();
-
-        // Delete each booking hotel found
+            $pp=$bookingHotels->sum('price');
+            
         if ($bookingHotels->isNotEmpty()) {
             foreach ($bookingHotels as $bookingHotel) {
                 $bookingHotel->delete();
             }
         }
+        // if($trip->state=='completed'){
+        // dd(0.5 * $pp);
+        // }
 
         return response()->json([
             'message' => 'Bookings deleted successfully.',

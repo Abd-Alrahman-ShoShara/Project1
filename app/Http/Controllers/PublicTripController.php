@@ -308,7 +308,6 @@ class PublicTripController extends Controller
         return response()->json([
             'display' => $publicTrip->display,
         ]);
-
     }
 
 

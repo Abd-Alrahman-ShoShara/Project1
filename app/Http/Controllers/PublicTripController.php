@@ -300,11 +300,11 @@ public function allPublicTrips(Request $request)
                 return $trip;
             });
 
-        if ($theTrips->isEmpty()) {
-            return response()->json([
-                'message' => 'There are no trips for the specified classification ID.',
-            ]);
-        }
+        // if ($theTrips->isEmpty()) {
+        //     return response()->json([
+        //         'message' => 'There are no trips for the specified classification ID.',
+        //     ]);
+        // }
 
         return response()->json([
             'theTrips' => $theTrips,
@@ -371,22 +371,22 @@ public function allPublicTrips(Request $request)
     //         ]);
     //     }
     // }
-    // public function displayPublicTrip($publicTrip_id){
-    //     $publicTrip=PublicTrip::find($publicTrip_id);
+    public function displayPublicTrip($publicTrip_id){
+        $publicTrip=PublicTrip::find($publicTrip_id);
 
-    //     if(!$publicTrip)
-    //     {
-    //         return response([
-    //             'message'=>'publicTrip not found'
-    //         ],403);
-    //     }
+        if(!$publicTrip)
+        {
+            return response([
+                'message'=>'publicTrip not found'
+            ],403);
+        }
 
-    //     $publicTrip->display = $publicTrip->display?false:true;
-    //     $publicTrip->save();
-    //     return response()->json([
-    //         'display' => $publicTrip->display,
-    //     ]);
-    // }
+        $publicTrip->display = $publicTrip->display?false:true;
+        $publicTrip->save();
+        return response()->json([
+            'display' => $publicTrip->display,
+        ]);
+    }
 
 
 

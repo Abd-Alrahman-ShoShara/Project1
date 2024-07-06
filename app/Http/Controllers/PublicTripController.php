@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classification;
+use App\Models\Favorite;
 use App\Models\PublicTrip;
 use App\Models\publicTripClassification;
 use App\Models\PublicTripPlace;
@@ -261,54 +262,131 @@ class PublicTripController extends Controller
     ////////////////////////////////////////// flutter function /////////////
 
 
-    public function allPublicTrips(Request $request)
-    {
-        $attrs = $request->validate([
-            'classification_id' => 'sometimes|integer',
-        ]);
+public function allPublicTrips(Request $request)
+{
+    $attrs = $request->validate([
+        'classification_id' => 'sometimes|integer',
+    ]);
 
-        if ($request->has('classification_id')) {
-            $classification = $attrs['classification_id'];
+    // Get authenticated user ID
+    $userId = auth()->id();
 
-            $theTrips = PublicTrip::
-                whereHas('publicTripClassification', function ($query) use ($classification) {
-                    $query->where('classification_id', $classification);
-                })
-                ->get()->where('display', true);
+    if ($request->has('classification_id')) {
+        $classification = $attrs['classification_id'];
 
-            if ($theTrips->isEmpty()) {
-                return response()->json([
-                    'message' => 'There are no trips for the specified classification ID.',
-                ]);
-            }
+        $theTrips = PublicTrip::whereHas('publicTripClassification', function ($query) use ($classification) {
+                $query->where('classification_id', $classification);
+            })
+            ->with(['citiesHotel', 'citiesHotel.hotel:id,name'])
+            ->get()
+            ->where('display', true)
+            ->map(function ($trip) use ($userId) {
+                // Calculate average price of trip points
+                $totalPrice = $trip->tripPoint()->sum('price');
+                $numberOfTripPoints = $trip->tripPoint()->count();
+                $averagePrice = $numberOfTripPoints > 0 ? $totalPrice / $numberOfTripPoints : 0;
 
+                // Add the average price to the trip object
+                $trip->averagePrice = $averagePrice;
+
+                // Check if the trip is a favorite
+                $trip->favorite = Favorite::where('user_id', $userId)
+                    ->where('publicTrip_id', $trip->id)
+                    ->exists();
+
+                // Exclude tripPoint from the trip object
+                unset($trip->tripPoint);
+
+                return $trip;
+            });
+
+        if ($theTrips->isEmpty()) {
             return response()->json([
-                'theTrips' => $theTrips,
-            ]);
-        } else {
-            $theTrips = PublicTrip::where('display', true)->get();
-
-            return response()->json([
-                'theTrips' => $theTrips,
+                'message' => 'There are no trips for the specified classification ID.',
             ]);
         }
-    }
-    public function displayPublicTrip($publicTrip_id){
-        $publicTrip=PublicTrip::find($publicTrip_id);
 
-        if(!$publicTrip)
-        {
-            return response([
-                'message'=>'publicTrip not found'
-            ],403);
-        }
-
-        $publicTrip->display = $publicTrip->display?false:true;
-        $publicTrip->save();
         return response()->json([
-            'display' => $publicTrip->display,
+            'theTrips' => $theTrips,
+        ]);
+    } else {
+        $theTrips = PublicTrip::where('display', true)
+            ->with(['citiesHotel', 'citiesHotel.hotel:id,name'])
+            ->get()
+            ->map(function ($trip) use ($userId) {
+                // Calculate average price of trip points
+                $totalPrice = $trip->tripPoint()->sum('price');
+                $numberOfTripPoints = $trip->tripPoint()->count();
+                $averagePrice = $numberOfTripPoints > 0 ? $totalPrice / $numberOfTripPoints : 0;
+
+                // Add the average price to the trip object
+                $trip->averagePrice = $averagePrice;
+
+                // Check if the trip is a favorite
+                $trip->favorite = Favorite::where('user_id', $userId)
+                    ->where('publicTrip_id', $trip->id)
+                    ->exists();
+
+                // Exclude tripPoint from the trip object
+                unset($trip->tripPoint);
+
+                return $trip;
+            });
+
+        return response()->json([
+            'theTrips' => $theTrips,
         ]);
     }
+}
+
+    // public function allPublicTrips(Request $request)
+    // {
+    //     $attrs = $request->validate([
+    //         'classification_id' => 'sometimes|integer',
+    //     ]);
+
+    //     if ($request->has('classification_id')) {
+    //         $classification = $attrs['classification_id'];
+
+    //         $theTrips = PublicTrip::
+    //             whereHas('publicTripClassification', function ($query) use ($classification) {
+    //                 $query->where('classification_id', $classification);
+    //             })->with('citiesHotel', 'citiesHotel.hotel:id,name')
+    //             ->get()->where('display', true);
+
+    //         if ($theTrips->isEmpty()) {
+    //             return response()->json([
+    //                 'message' => 'There are no trips for the specified classification ID.',
+    //             ]);
+    //         }
+
+    //         return response()->json([
+    //             'theTrips' => $theTrips,
+    //         ]);
+    //     } else {
+    //         $theTrips = PublicTrip::where('display', true)->with('citiesHotel', 'citiesHotel.hotel:id,name')->get();
+
+    //         return response()->json([
+    //             'theTrips' => $theTrips,
+    //         ]);
+    //     }
+    // }
+    // public function displayPublicTrip($publicTrip_id){
+    //     $publicTrip=PublicTrip::find($publicTrip_id);
+
+    //     if(!$publicTrip)
+    //     {
+    //         return response([
+    //             'message'=>'publicTrip not found'
+    //         ],403);
+    //     }
+
+    //     $publicTrip->display = $publicTrip->display?false:true;
+    //     $publicTrip->save();
+    //     return response()->json([
+    //         'display' => $publicTrip->display,
+    //     ]);
+    // }
 
 
 

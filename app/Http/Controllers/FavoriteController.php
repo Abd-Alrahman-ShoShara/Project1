@@ -20,7 +20,7 @@ class FavoriteController extends Controller
             ],403);
         }
 
-        $favorite=favorite::where('user_id',auth()->user()->id)->first();
+        $favorite=favorite::where([['user_id',auth()->user()->id],['publicTrip_id',$publicTrip_id]])->first();
 
 
         if(!$favorite)

@@ -149,7 +149,7 @@ Route::get('/allQuastions',[FAQController::class,'allQuastions']);
 Route::post('/allQuastionsByType',[FAQController::class,'allQuastionsByType']);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-Route::post('/allPublicTrips',[PublicTripController::class,'allPublicTrips']);
+Route::post('/allPublicTrips',[PublicTripController::class,'allPublicTrips'])->middleware('auth:api');
 
 
 
@@ -199,7 +199,7 @@ Route::post('/deleteClassification/{classification_id}',[ClassificationControlle
 
 
 
- 
+
 Route::post('/bookingPublicTrip',[UserPublicTripController::class,'bookingPublicTrip'])->middleware('auth:api');
 
 ////////////////////////////////////////////my trips /////////////

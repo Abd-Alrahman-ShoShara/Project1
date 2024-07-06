@@ -209,7 +209,7 @@ class PublicTripController extends Controller
     public function getPublicTripInfo($publicTrip_id)
     {
         return response([
-            'publicTrip' => PublicTrip::where('id', $publicTrip_id)->with('publicTripPlace.tourismPlace','citiesHotel')->get(),
+            'publicTrip' => PublicTrip::where('id', $publicTrip_id)->with('publicTripPlace.tourismPlace','citiesHotel.hotel')->get(),
         ]);
     }
 
@@ -268,7 +268,7 @@ public function allPublicTrips(Request $request)
         'classification_id' => 'sometimes|integer',
     ]);
 
-    // Get authenticated user ID
+    
     $userId = auth()->id();
 
     if ($request->has('classification_id')) {

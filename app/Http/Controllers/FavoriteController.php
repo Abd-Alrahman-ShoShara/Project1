@@ -32,7 +32,7 @@ class FavoriteController extends Controller
 
         return response([
             'message'=>'favorite'
-        ],403);
+        ],200);
         }
 
         //else unlike
@@ -40,7 +40,7 @@ class FavoriteController extends Controller
 
         return response([
             'message'=>'unfavorite'
-        ],403);
+        ],200);
     }
 
     public function favorite()

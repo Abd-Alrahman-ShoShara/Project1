@@ -12,7 +12,7 @@ class BookingTicket extends Model
         'ticket_id',
         'price',
     ];
-    
+
     protected $hidden=[
         'created_at',
         'updated_at',
@@ -21,11 +21,13 @@ class BookingTicket extends Model
 
     public function trip(){
         return $this->belongsTo(Trip::class);
-    }     public function ticket(){
+    }
+
+    public function ticket(){
         return $this->belongsTo(Ticket::class);
-    } 
-    
+    }
+
     public function bookingTrip(){
         return $this->hasOne(BookingTripe::class);
-    } 
+    }
 }

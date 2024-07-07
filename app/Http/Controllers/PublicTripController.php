@@ -333,6 +333,13 @@ public function allPublicTrips(Request $request)
                 return $trip;
             });
 
+            // $theTrips = $theTrips->map(function ($citiesHotel) {
+            //     $citiesHotel->features = json_decode($citiesHotel->features);
+            //     $citiesHotel->review = json_decode($citiesHotel->review);
+            //     $citiesHotel->images = json_decode($citiesHotel->images);
+            //     return $citiesHotel;
+            // });
+
         return response()->json([
             'theTrips' => $theTrips,
         ]);

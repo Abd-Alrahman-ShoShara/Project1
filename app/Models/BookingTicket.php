@@ -20,8 +20,10 @@ class BookingTicket extends Model
     use HasFactory;
 
     public function trip(){
-        return $this->belongsTo(Trip::class);
-    }     public function ticket(){
+        return $this->belongsTo(Trip::class,'trip_id');
+    }
+
+    public function ticket(){
         return $this->belongsTo(Ticket::class,'ticket_id');
     }
 

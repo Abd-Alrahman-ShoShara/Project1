@@ -70,7 +70,7 @@ class TripController extends Controller
         }
 
         // Retrieve the ticket for the trip
-        $ticket = BookingTicket::where('trip_id', $trip_id)->with('ticket')->first();
+        $ticket = BookingTicket::where('trip_id', $trip_id)->with('ticket','ticket.airLine')->first();
         $ticketP=$ticket?$ticket->price:0;
 
         // if (!$ticket) {
@@ -111,13 +111,16 @@ class TripController extends Controller
             ->with(['tripDayPlace.tourismPlace'])
             ->get();
 
-        // Decode images for each TripDay
-        $tripDays = $tripDays->map(function ($tripDay) {
-            foreach ($tripDay->tripDayPlace as $place) {
-                $place->tourismPlace->images = json_decode($place->tourismPlace->images);
+         // Decode images for each TripDay
+    $tripDays = $tripDays->map(function ($tripDay) {
+        foreach ($tripDay->tripDayPlace as $place) {
+            if (isset($place->tourismPlace->images)) {
+                $place->tourismPlace->images = is_string($place->tourismPlace->images)
+                ? json_decode($place->tourismPlace->images) : $place->tourismPlace->images;
             }
-            return $tripDay;
-        });
+        }
+        return $tripDay;
+    });
 
         // Return the response
         return response()->json([

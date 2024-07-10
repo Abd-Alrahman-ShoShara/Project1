@@ -268,7 +268,7 @@ public function allPublicTrips(Request $request)
         'classification_id' => 'sometimes|integer',
     ]);
 
-    
+
     $userId = auth()->id();
 
     if ($request->has('classification_id')) {

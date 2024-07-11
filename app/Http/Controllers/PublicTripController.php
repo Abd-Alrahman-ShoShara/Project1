@@ -251,7 +251,7 @@ class PublicTripController extends Controller
 
         // Fetch the public trip with relationships
         $publicTrip = PublicTrip::where('id', $publicTrip_id)
-            //->with(['publicTripPlace.tourismPlace', 'citiesHotel.hotel'])
+            ->with('citiesHotel.hotel')
             ->get()->map($mm);
 
         // Return the response

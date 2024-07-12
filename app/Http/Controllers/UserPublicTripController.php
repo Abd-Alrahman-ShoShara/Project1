@@ -49,34 +49,33 @@ class UserPublicTripController extends Controller
         ], 200);
     }
 
-  
 
     public function cancelPublicTrip($userPublicTrip_id) {
 
         $cancelledPublicTrip = UserPublicTrip::where('id', $userPublicTrip_id)->first();
-    
+
         if (!$cancelledPublicTrip) {
             return response()->json([
                 'message' => 'User public trip not found.',
             ], 404);
         }
         $tripPoint=TripPoint::find($cancelledPublicTrip->tripPoint_id);
-    
+
         // Fetch the associated public trip to get the trip date
         $publicTrip = PublicTrip::where('id', $tripPoint->publicTrip_id)->first();
-    
+
         if (!$publicTrip) {
             return response()->json([
                 'message' => 'Associated public trip not found.',
             ], 404);
         }
-    
+
         $tripDate = new \DateTime($publicTrip->dateOfTrip);
         $currentDate = new \DateTime();
         $interval = $currentDate->diff($tripDate);
         $daysUntilTrip = $interval->days;
         $refundAmount = 0;
-    
+
         if ($daysUntilTrip > 15) {
             $refundAmount = $cancelledPublicTrip->price;
         } elseif ($daysUntilTrip >= 5 && $daysUntilTrip <= 15) {
@@ -84,20 +83,20 @@ class UserPublicTripController extends Controller
         } else {
             $refundAmount = 0;
         }
-    
+
         // Process the refund
         $this->processRefund($cancelledPublicTrip->user_id, $refundAmount);
-    
+
         $cancelledPublicTrip->state = 'cancelled';
         $cancelledPublicTrip->save();
-    
+
         return response()->json([
             'message' => 'The public trip was cancelled successfully.',
             'refundAmount' => $refundAmount,
             'publicTrip' => $cancelledPublicTrip,
         ], 200);
     }
-    
+
     private function processRefund($userId, $amount) {
         // Fetch the user
         $user = User::find($userId);

@@ -226,3 +226,5 @@ Route::post('/cancelPublicTrip/{publicTrip_id}',[UserPublicTripController::class
 Route::get('/getCancelledTrip',[TripController::class,'getCancelledTrip'])->middleware('auth:api');
 
 Route::get('/userPublicTripBooking/{publicTrip_id}',[UserTripController::class,'userPublicTripBooking'])->middleware('auth:api');
+
+Route::post('/publicTripSortBy',[PublicTripController::class,'publicTripSortBy'])->middleware('auth:api');

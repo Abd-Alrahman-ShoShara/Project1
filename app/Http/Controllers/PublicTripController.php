@@ -390,4 +390,92 @@ class PublicTripController extends Controller
             'display' => $publicTrip->display,
         ]);
     }
+
+    public function publicTripSortBy(Request $request)
+{
+    $attrs = $request->validate([
+        'classification_id' => 'sometimes|integer',
+        'sortBy' => 'required|in:Newest,Closet,Price High to Low,Price Low to High'
+    ]);
+
+    $userId = auth()->id();
+    $mm = function ($trip) use ($userId) {
+        // Calculate average price of trip points
+        $totalPrice = $trip->tripPoint()->sum('price');
+        $numberOfTripPoints = $trip->tripPoint()->count();
+        $averagePrice = $numberOfTripPoints > 0 ? $totalPrice / $numberOfTripPoints : 0;
+
+        // Add the average price to the trip object
+        $trip->averagePrice = $averagePrice;
+
+        // Check if the trip is a favorite
+        $trip->favorite = Favorite::where('user_id', $userId)
+            ->where('publicTrip_id', $trip->id)
+            ->exists();
+
+        // Exclude tripPoint from the trip object
+        //unset($trip->tripPoint);
+
+        return $trip;
+    };
+
+    if ($request->has('classification_id')) {
+        $classification = $attrs['classification_id'];
+
+        if ($attrs['sortBy'] == 'Newest') {
+            $theTrips = PublicTrip::whereHas('publicTripClassification', function ($query) use ($classification) {
+                $query->where('classification_id', $classification);
+            })->orderBy('created_at', 'desc')->get()->map($mm);
+        } elseif ($attrs['sortBy'] == 'Closet') {
+            $theTrips = PublicTrip::whereHas('publicTripClassification', function ($query) use ($classification) {
+                $query->where('classification_id', $classification);
+            })->orderBy('dateOfTrip')->get()->map($mm);
+
+        } elseif ($attrs['sortBy'] == 'Price High to Low') {
+            $theTrips = PublicTrip::whereHas('publicTripClassification', function ($query) use ($classification) {
+                $query->where('classification_id', $classification);
+            })->get()->map($mm)->sortByDesc('averagePrice');
+
+        } elseif ($attrs['sortBy'] == 'Price Low to High') {
+            $theTrips = PublicTrip::whereHas('publicTripClassification', function ($query) use ($classification) {
+                $query->where('classification_id', $classification);
+            })->get()->map($mm)->sortBy('averagePrice');
+        }
+    }else {
+        $theTrips = PublicTrip::where('display', true)
+            ->get()
+            ->map($mm);
+
+            if ($attrs['sortBy'] == 'Newest') {
+                $theTrips = PublicTrip::where('display', true)
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map($mm);
+            } elseif ($attrs['sortBy'] == 'Closet') {
+                $theTrips = PublicTrip::where('display', true)
+                ->orderBy('dateOfTrip')
+                ->get()
+                ->map($mm);
+
+            } elseif ($attrs['sortBy'] == 'Price High to Low') {
+                $theTrips = PublicTrip::where('display', true)
+            ->get()
+            ->map($mm)->sortByDesc('averagePrice');
+
+            } elseif ($attrs['sortBy'] == 'Price Low to High') {
+                $theTrips = PublicTrip::where('display', true)
+            ->get()
+            ->map($mm)->sortBy('averagePrice');
+            }
+        return response()->json([
+            'theTrips' => $theTrips,
+        ]);
+    }
+
+    return response()->json([
+        'theTrips' => $theTrips,
+    ]);
+
+    // Rest of your code...
+}
 }

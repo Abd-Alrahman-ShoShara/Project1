@@ -34,7 +34,7 @@ class UserTripController extends Controller
     {
         $user_id = auth()->user()->id;
         $pastPrivateTrips = Trip::where('user_id', $user_id)
-            ->whereDate('dateOfTrip', '<', now()->startOfDay())
+            ->whereDate('dateOfTrip', '<', now()->startOfDay())->with('toCity:id,name')
             ->get();
 
         $pastPublicTrips = PublicTrip::whereHas('tripPoint.userPublicTrip', function ($query) use ($user_id) {

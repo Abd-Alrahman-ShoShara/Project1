@@ -42,9 +42,12 @@ class UserTripController extends Controller
         })->whereDate('dateOfTrip', '<', now()->startOfDay())
             ->get();
 
-        $AllPastTrips = $pastPrivateTrips->concat($pastPublicTrips);
+        //$AllPastTrips = $pastPrivateTrips->concat($pastPublicTrips);
 
-        return response()->json(['pastTrips' => $AllPastTrips]);
+        return response()->json([
+            'pastPrivateTrips' => $pastPrivateTrips,
+            'pastPublicTrips' => $pastPublicTrips,
+        ]);
     }
 
 

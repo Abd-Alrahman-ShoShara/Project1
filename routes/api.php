@@ -227,4 +227,11 @@ Route::get('/getCancelledTrip',[TripController::class,'getCancelledTrip'])->midd
 
 Route::get('/userPublicTripBooking/{publicTrip_id}',[UserTripController::class,'userPublicTripBooking'])->middleware('auth:api');
 
+
+
 Route::post('/publicTripSortBy',[PublicTripController::class,'publicTripSortBy'])->middleware('auth:api');
+Route::get('/searchPublicTrip/{nameOfPublicTrip}',[PublicTripController::class,'searchPublicTrip'])->middleware('auth:api');
+
+Route::post('/searchTourismPlaces/{trip_id}',[TourismPlaceController::class,'searchTourismPlaces']);
+
+Route::post('/cityHotelsSortBy/{trip_id}',[CitiesHotelController::class,'cityHotelsSortBy']);

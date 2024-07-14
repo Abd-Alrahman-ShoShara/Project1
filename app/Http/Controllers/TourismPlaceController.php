@@ -100,6 +100,50 @@ class TourismPlaceController extends Controller
         ]);
     }
 
+    public function searchTourismPlaces(Request $request, $trip_id)
+    {
+        $class = $request->validate([
+            'type' => 'nullable|string',
+            'search' => 'sometimes|string'
+        ]);
+
+        $trip = Trip::find($trip_id);
+
+        if (!$trip) {
+            return response()->json([
+                'message' => 'Trip not found'
+            ], 404);
+        }
+
+        $toCity = $trip->to;
+
+        $activities = TourismPlace::where('city_id', $toCity);
+
+        if (!empty($class['type'])) {
+            $activities->where('type', $class['type']);
+        }
+
+        if ($request->has('search')) {
+            $activities->where('name', 'like', '%' . $class['search'] . '%');
+        }
+
+        $activities = $activities->get();
+
+        if ($activities->isEmpty()) {
+            return response()->json([
+                'message' => 'There are no places to show'
+            ], 404);
+        }
+
+        foreach ($activities as $activity) {
+            $activity->images = json_decode($activity->images, true);
+        }
+
+        return response()->json([
+            'activities' => $activities,
+        ]);
+    }
+
     public function deleteTourismPlace($tourismPlace_id)
     {
         $tourismPlace = TourismPlace::find($tourismPlace_id);

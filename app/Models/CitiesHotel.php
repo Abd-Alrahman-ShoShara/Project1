@@ -16,7 +16,7 @@ class CitiesHotel extends Model
         'avarageOfPrice',
         'review',
     ];
-    
+
     protected $hidden=[
         'created_at',
         'updated_at',
@@ -24,19 +24,19 @@ class CitiesHotel extends Model
 
     public function city(){
         return $this->belongsTo(City::class,'city_id');
-    } 
+    }
     public function hotel(){
         return $this->belongsTo(Hotel::class,'hotel_id');
-    } 
+    }
     public function trip(){
         return $this->belongsTo(Trip::class);
-    } 
+    }
     public function roomHotel(){
         return $this->hasMany(RoomHotel::class);
-    } 
+    }
     public function publicTrip(){
         return $this->hasMany(PublicTrip::class);
-    } 
+    }
 
     use HasFactory;
 }

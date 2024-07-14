@@ -64,8 +64,56 @@ class CitiesHotelController extends Controller
             $citiesHotel->images = json_decode($citiesHotel->images);
             return $citiesHotel;
         });
+
         return response()->json([
             'numberOfHotel:' => $hotels->count(),
+            'hotel' => $hotels,
+        ], 200);
+    }
+    public function cityHotelsSortBy(Request $request, $trip_id)
+    {
+        $attrs = $request->validate([
+            'sortBy' => 'sometimes|in:Rating,Price High To Low,Price Low To High',
+            'search' => 'sometimes|string'
+        ]);
+
+        $sortHotels = function ($hotels) use ($attrs) {
+            if ($attrs['sortBy'] == 'Rating') {
+                $hotels = $hotels->sortByDesc('hotel.rate');
+            } elseif ($attrs['sortBy'] == 'Price High To Low') {
+                $hotels = $hotels->sortByDesc('averagePrice');
+            } elseif ($attrs['sortBy'] == 'Price Low To High') {
+                $hotels = $hotels->sortBy('averagePrice');
+            }
+
+            return $hotels;
+        };
+
+        $trip = Trip::find($trip_id);
+        $to = $trip->to;
+        $hotels = CitiesHotel::where('city_id', $to)->with('hotel');
+
+        if ($request->has('search')) {
+            $hotels->whereHas('hotel', function ($query) use ($attrs) {
+                $query->where('name', 'like', '%' . $attrs['search'] . '%');
+            });
+        }
+
+        $hotels = $hotels->get();
+
+        $hotels = $hotels->map(function ($citiesHotel) {
+            $citiesHotel->features = json_decode($citiesHotel->features);
+            $citiesHotel->review = json_decode($citiesHotel->review);
+            $citiesHotel->images = json_decode($citiesHotel->images);
+            return $citiesHotel;
+        });
+
+        if ($request->has('sortBy')) {
+            $hotels = $sortHotels($hotels)->values();
+        }
+
+        return response()->json([
+            'numberOfHotel' => $hotels->count(),
             'hotel' => $hotels,
         ], 200);
     }

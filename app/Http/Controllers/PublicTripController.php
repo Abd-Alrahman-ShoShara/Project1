@@ -391,6 +391,28 @@ class PublicTripController extends Controller
         ]);
     }
 
+    //help function:
+    private function publicTripSortByMapper()
+    {
+        $userId = auth()->id();
+
+        return function ($trip) use ($userId) {
+            // Calculate average price of trip points
+            $totalPrice = $trip->tripPoint()->sum('price');
+            $numberOfTripPoints = $trip->tripPoint()->count();
+            $averagePrice = $numberOfTripPoints > 0 ? $totalPrice / $numberOfTripPoints : 0;
+
+            // Add the average price to the trip object
+            $trip->averagePrice = $averagePrice;
+
+            // Check if the trip is a favorite
+            $trip->favorite = Favorite::where('user_id', $userId)
+                ->where('publicTrip_id', $trip->id)
+                ->exists();
+
+            return $trip;
+        };
+    }
     public function publicTripSortBy(Request $request)
     {
         $attrs = $request->validate([
@@ -435,16 +457,15 @@ class PublicTripController extends Controller
 
             $theTrips = PublicTrip::whereHas('publicTripClassification', function ($query) use ($classification) {
                 $query->where('classification_id', $classification);
-            })->get()->map($mm);
+            })->get()->map($this->publicTripSortByMapper());
 
             if ($request->has('sortBy')) {
-                $theTrips = $sortTrips($theTrips);
+                $theTrips = $sortTrips($theTrips)->values();
             }
-            
         } else {
             $theTrips = PublicTrip::where('display', true)
                 ->get()
-                ->map($mm);
+                ->map($this->publicTripSortByMapper());
 
             if ($request->has('sortBy')) {
                 $theTrips = $sortTrips($theTrips);
@@ -453,6 +474,18 @@ class PublicTripController extends Controller
 
         return response()->json([
             'theTrips' => $theTrips,
+        ]);
+    }
+
+    public function searchPublicTrip($name)
+    {
+        $theTrips = PublicTrip::where('display', true)
+            ->where('name', 'like', '%' . $name . '%')
+            ->get()
+            ->map($this->publicTripSortByMapper());
+
+        return response()->json([
+            'theTrips:' => $theTrips,
         ]);
     }
 

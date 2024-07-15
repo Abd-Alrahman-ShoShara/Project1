@@ -11,16 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::disableForeignKeyConstraints();
+        Schema::disableForeignKeyConstraints();
 
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('country');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
 
-         Schema::enableForeignKeyConstraints();
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

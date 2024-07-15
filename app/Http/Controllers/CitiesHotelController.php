@@ -81,9 +81,9 @@ class CitiesHotelController extends Controller
             if ($attrs['sortBy'] == 'Rating') {
                 $hotels = $hotels->sortByDesc('hotel.rate');
             } elseif ($attrs['sortBy'] == 'Price High To Low') {
-                $hotels = $hotels->sortByDesc('averagePrice');
+                $hotels = $hotels->sortByDesc('avarageOfPrice');
             } elseif ($attrs['sortBy'] == 'Price Low To High') {
-                $hotels = $hotels->sortBy('averagePrice');
+                $hotels = $hotels->sortBy('avarageOfPrice');
             }
 
             return $hotels;

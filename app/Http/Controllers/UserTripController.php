@@ -9,23 +9,38 @@ use Illuminate\Support\Facades\Auth;
 
 class UserTripController extends Controller
 {
+    private function mm() {
+        return function ($trip) {
+        $name = $trip->toCity->name;
+        $image = $trip->toCity->image;
+        // Add the average price to the trip object
+        $trip->name = $name;
+        $trip->image =$image;
+        $trip->type = 'private';
+        // Check if the trip is a favorite
+        return $trip;
+    };
+}
     public function activeTrips()
     {
         $user_id = auth()->user()->id;
         $activePrivateTrips = Trip::where([['user_id', $user_id], ['state', 'completed']])
-            ->whereDate('dateOfTrip', '>=', now()->startOfDay())
-            ->get();
+            ->whereDate('dateEndOfTrip', '>=', now()->startOfDay())
+            ->get()->map($this->mm())->select('id','name','image','dateOfTrip','dateEndOfTrip','type');
 
         $activePublicTrips = PublicTrip::whereHas('tripPoint.userPublicTrip', function ($query) use ($user_id) {
             $query->where('user_id', $user_id);
-        })->whereDate('dateOfTrip', '>=', now()->startOfDay())
-            ->get();
+        })->whereDate('dateEndOfTrip', '>=', now()->startOfDay())
+            ->get()->map(function ($trip) {
+                $trip->type = 'public';
+                return $trip;
+            })->select('id','name','image','dateOfTrip','dateEndOfTrip','type');
 
-        $AllActiveTrips = $activePrivateTrips->concat($activePublicTrips);
+        $AllActiveTrips = $activePrivateTrips->concat($activePublicTrips)->sortBy('id')->values();
 
         return response([
-            'activePrivateTrips' => $activePrivateTrips,
-            'activePublicTrips' => $activePublicTrips,
+            'AllActiveTrips' => $AllActiveTrips,
+           // 'activePublicTrips' => $activePublicTrips,
         ]);
     }
 
@@ -34,19 +49,21 @@ class UserTripController extends Controller
     {
         $user_id = auth()->user()->id;
         $pastPrivateTrips = Trip::where('user_id', $user_id)
-            ->whereDate('dateOfTrip', '<', now()->startOfDay())->with('toCity:id,name')
-            ->get();
+            ->whereDate('dateEndOfTrip', '<', now()->startOfDay())
+            ->get()->map($this->mm())->select('id','name','image','dateOfTrip','dateEndOfTrip','type');
 
         $pastPublicTrips = PublicTrip::whereHas('tripPoint.userPublicTrip', function ($query) use ($user_id) {
             $query->where('user_id', $user_id);
-        })->whereDate('dateOfTrip', '<', now()->startOfDay())
-            ->get();
+        })->whereDate('dateEndOfTrip', '<', now()->startOfDay())
+            ->get()->map(function ($trip) {
+                $trip->type = 'public';
+                return $trip;
+            })->select('id','name','image','dateOfTrip','dateEndOfTrip','type');
 
-        //$AllPastTrips = $pastPrivateTrips->concat($pastPublicTrips);
-
+            $AllPastTrips = $pastPrivateTrips->concat($pastPublicTrips)->sortBy('id')->values();
         return response()->json([
-            'pastPrivateTrips' => $pastPrivateTrips,
-            'pastPublicTrips' => $pastPublicTrips,
+            'AllPastTrips' => $AllPastTrips,
+           // 'pastPublicTrips' => $pastPublicTrips,
         ]);
     }
 

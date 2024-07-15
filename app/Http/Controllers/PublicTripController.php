@@ -417,7 +417,8 @@ class PublicTripController extends Controller
     {
         $attrs = $request->validate([
             'classification_id' => 'sometimes|integer',
-            'sortBy' => 'sometimes|in:Newest,Closet,Price High to Low,Price Low to High'
+            'sortBy' => 'sometimes|in:Newest,Closet,Price High to Low,Price Low to High',
+            'search'=>'sometimes|string'
         ]);
 
         $userId = auth()->id();
@@ -462,6 +463,9 @@ class PublicTripController extends Controller
             if ($request->has('sortBy')) {
                 $theTrips = $sortTrips($theTrips)->values();
             }
+            if ($request->has('search')) {
+                $theTrips = $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
+            }
         } else {
             $theTrips = PublicTrip::where('display', true)
                 ->get()
@@ -469,6 +473,10 @@ class PublicTripController extends Controller
 
             if ($request->has('sortBy')) {
                 $theTrips = $sortTrips($theTrips);
+            }
+            
+            if ($request->has('search')) {
+                $theTrips = $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
             }
         }
 

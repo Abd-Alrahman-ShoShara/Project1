@@ -11,9 +11,12 @@ class City extends Model
     protected $fillable=[
         'name',
         'country',
+        'image',
+
     ];
-    
+
     protected $hidden=[
+        'image',
         'created_at',
         'updated_at',
     ];

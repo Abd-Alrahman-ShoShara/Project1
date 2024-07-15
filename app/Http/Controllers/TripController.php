@@ -156,9 +156,23 @@ class TripController extends Controller
         }
     }
     public function getCancelledTrip(){
-        $cancelledPrivateTrip=Trip::where([['user_id',Auth::user()->id],['state','cancelled']])->get();
+    $mm= function ($trip) {
+            $name = $trip->toCity->name;
+            $image = $trip->toCity->image;
+
+            $trip->name = $name;
+            $trip->image =$image;
+            $trip->type = 'private';
+
+            return $trip;
+        };
+        $cancelledPrivateTrip=Trip::where([['user_id',Auth::user()->id],['state','cancelled']])
+        ->get()->map($mm)->select('id','name','image','dateOfTrip','dateEndOfTrip','type');
+
         $cancelledPublicTrip=UserPublicTrip::where([['user_id',Auth::user()->id],['state','cancelled']])
-        ->with('tripPoint.publicTrip')->get();
+        ->get();
+
+        $AllCancelledTrips = $cancelledPrivateTrip->concat($cancelledPublicTrip)->sortBy('id')->values();
 
         return response()->json([
 

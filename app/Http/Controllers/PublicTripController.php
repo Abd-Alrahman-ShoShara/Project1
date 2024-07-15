@@ -457,27 +457,31 @@ class PublicTripController extends Controller
             $classification = $attrs['classification_id'];
 
             $theTrips = PublicTrip::where('display', true)->whereHas('publicTripClassification', function ($query) use ($classification) {
-                $query->where('classification_id', $classification);
-            })->get()->map($this->publicTripSortByMapper());
+                $query->where('classification_id', $classification);});
+
+                if ($request->has('search')) {
+                    $theTrips = $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
+                }
+
+                $theTrips=$theTrips->get()->map($this->publicTripSortByMapper());
 
             if ($request->has('sortBy')) {
                 $theTrips = $sortTrips($theTrips)->values();
             }
-            if ($request->has('search')) {
-                $theTrips = $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
-            }
+
         } else {
-            $theTrips = PublicTrip::where('display', true)
-                ->get()
+            $theTrips = PublicTrip::where('display', true);
+            if ($request->has('search')) {
+                $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
+            }
+            $theTrips=$theTrips->get()
                 ->map($this->publicTripSortByMapper());
 
             if ($request->has('sortBy')) {
                 $theTrips = $sortTrips($theTrips);
             }
 
-            if ($request->has('search')) {
-                $theTrips = $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
-            }
+
         }
 
         return response()->json([

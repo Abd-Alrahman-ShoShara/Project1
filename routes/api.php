@@ -235,3 +235,8 @@ Route::get('/searchPublicTrip/{nameOfPublicTrip}',[PublicTripController::class,'
 Route::post('/searchTourismPlaces/{trip_id}',[TourismPlaceController::class,'searchTourismPlaces']);
 
 Route::post('/cityHotelsSortBy/{trip_id}',[CitiesHotelController::class,'cityHotelsSortBy']);
+
+Route::get('/getCancelledUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getCancelledUserPublicTrip'])->middleware('auth:api');
+Route::get('/getActiveUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getActiveUserPublicTrip'])->middleware('auth:api');
+
+Route::get('/getPastUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getPastUserPublicTrip'])->middleware('auth:api');

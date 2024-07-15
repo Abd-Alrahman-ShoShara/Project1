@@ -52,7 +52,7 @@ class TripController extends Controller
         // Return the response
         return response()->json([
             'message' => 'The trip was created successfully',
-            'trip_id' => Trip::where('id',$trip->id)->with('fromCity','toCity')->get(),
+            'trip_id' => Trip::where('id', $trip->id)->with('fromCity', 'toCity')->get(),
         ], 200);
     }
 
@@ -70,8 +70,8 @@ class TripController extends Controller
         }
 
         // Retrieve the ticket for the trip
-        $ticket = BookingTicket::where('trip_id', $trip_id)->with('ticket','ticket.airLine')->first();
-        $ticketP=$ticket?$ticket->price:0;
+        $ticket = BookingTicket::where('trip_id', $trip_id)->with('ticket', 'ticket.airLine')->first();
+        $ticketP = $ticket ? $ticket->price : 0;
 
         // if (!$ticket) {
         //     return response()->json([
@@ -84,7 +84,7 @@ class TripController extends Controller
 
         if ($rooms->isEmpty()) {
             $theHotel = null;
-            $totalPrice=0;
+            $totalPrice = 0;
         } else {
             $roomHotel_id = $rooms[0]->roomHotel_id;
             $roompmHotel = RoomHotel::find($roomHotel_id);
@@ -111,16 +111,16 @@ class TripController extends Controller
             ->with(['tripDayPlace.tourismPlace'])
             ->get();
 
-         // Decode images for each TripDay
-    $tripDays = $tripDays->map(function ($tripDay) {
-        foreach ($tripDay->tripDayPlace as $place) {
-            if (isset($place->tourismPlace->images)) {
-                $place->tourismPlace->images = is_string($place->tourismPlace->images)
-                ? json_decode($place->tourismPlace->images) : $place->tourismPlace->images;
+        // Decode images for each TripDay
+        $tripDays = $tripDays->map(function ($tripDay) {
+            foreach ($tripDay->tripDayPlace as $place) {
+                if (isset($place->tourismPlace->images)) {
+                    $place->tourismPlace->images = is_string($place->tourismPlace->images)
+                        ? json_decode($place->tourismPlace->images) : $place->tourismPlace->images;
+                }
             }
-        }
-        return $tripDay;
-    });
+            return $tripDay;
+        });
 
         // Return the response
         return response()->json([
@@ -132,63 +132,65 @@ class TripController extends Controller
         ], 200);
     }
 
-
-
-    public function allTrips(){
-        $Trips=Trip::with('user','fromCity','toCity')->get();
+    public function allTrips()
+    {
+        $Trips = Trip::with('user', 'fromCity', 'toCity')->get();
         return response()->json([
-            'Trips'=> $Trips,
-        ],200);
-
+            'Trips' => $Trips,
+        ], 200);
     }
-    public function cancelePrivateTripe($trip_id){
-        $cancelledTrip=Trip::find($trip_id);
-        $cancelledTrip->state='cancelled';
+    
+    public function cancelePrivateTripe($trip_id)
+    {
+        $cancelledTrip = Trip::find($trip_id);
+        $cancelledTrip->state = 'cancelled';
         $cancelledTrip->save();
-        $price=BookingHotel::where('trip_id',$trip_id)->sum('price');
-        $returnPrice=0.5*$price;
-        if($cancelledTrip){
+        $price = BookingHotel::where('trip_id', $trip_id)->sum('price');
+        $returnPrice = 0.5 * $price;
+        if ($cancelledTrip) {
             return response()->json([
-                'message'=>'cancelled successfully',
-                'thePrice'=>$price,
-                'theReturnPrice'=>$returnPrice,
+                'message' => 'cancelled successfully',
+                'thePrice' => $price,
+                'theReturnPrice' => $returnPrice,
             ]);
         }
     }
-    public function getCancelledTrip(){
-    $mm= function ($trip) {
+    public function getCancelledTrip()
+    {
+        $mm = function ($trip) {
             $name = $trip->toCity->name;
             $image = $trip->toCity->image;
 
             $trip->name = $name;
-            $trip->image =$image;
+            $trip->image = $image;
             $trip->type = 'private';
 
             return $trip;
         };
-        $mm1= function ($trip) {
-            $trip->name = $trip->tripPoint->publicTrip->name;
-            $trip->image = $trip->tripPoint->publicTrip->image;
-            $trip->dateOfTrip=$trip->tripPoint->publicTrip->dateOfTrip;
-            $trip->dateEndOfTrip=$trip->tripPoint->publicTrip->dateEndOfTrip;
-            $trip->type = 'publicBooking';
+        // $mm1= function ($trip) {
+        //     $trip->name = $trip->tripPoint->publicTrip->name;
+        //     $trip->image = $trip->tripPoint->publicTrip->image;
+        //     $trip->dateOfTrip=$trip->tripPoint->publicTrip->dateOfTrip;
+        //     $trip->dateEndOfTrip=$trip->tripPoint->publicTrip->dateEndOfTrip;
+        //     $trip->type = 'publicBooking';
 
+        //     return $trip;
+        // };
+        $cancelledPrivateTrip = Trip::where([['user_id', Auth::user()->id], ['state', 'cancelled']])
+            ->get()->map($mm)->select('id', 'name', 'image', 'dateOfTrip', 'dateEndOfTrip', 'type');
+
+        $cancelledPublicTrip = PublicTrip::whereHas('tripPoint.userPublicTrip', function ($query) {
+            $query->where('user_id', Auth::user()->id)->where('state', 'cancelled');
+        })->get()->map(function ($trip) {
+            $trip->type = 'public';
             return $trip;
-        };
-        $cancelledPrivateTrip=Trip::where([['user_id',Auth::user()->id],['state','cancelled']])
-        ->get()->map($mm)->select('id','name','image','dateOfTrip','dateEndOfTrip','type');
-
-        $cancelledPublicTrip=UserPublicTrip::where([['user_id',Auth::user()->id],['state','cancelled']])
-        ->get()->map($mm1)->select('id','name','image','dateOfTrip','dateEndOfTrip','type');
+        })->select('id', 'name', 'image', 'dateOfTrip', 'dateEndOfTrip', 'type');
 
         $AllCancelledTrips = $cancelledPrivateTrip->concat($cancelledPublicTrip)->sortBy('id')->values();
 
         return response()->json([
-
-            'AllCancelledTrips:'=>$AllCancelledTrips,
-           // 'thePublicCanclledTrip:'=>$cancelledPublicTrip,
-
+            'AllCancelledTrips:' => $AllCancelledTrips,
+            // 'thePublicCanclledTrip:'=>$cancelledPublicTrip,
         ]);
     }
-
 }

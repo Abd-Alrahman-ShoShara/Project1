@@ -238,5 +238,4 @@ Route::post('/cityHotelsSortBy/{trip_id}',[CitiesHotelController::class,'cityHot
 
 Route::get('/getCancelledUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getCancelledUserPublicTrip'])->middleware('auth:api');
 Route::get('/getActiveUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getActiveUserPublicTrip'])->middleware('auth:api');
-
 Route::get('/getPastUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getPastUserPublicTrip'])->middleware('auth:api');

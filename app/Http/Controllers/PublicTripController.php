@@ -456,7 +456,7 @@ class PublicTripController extends Controller
         if ($request->has('classification_id')) {
             $classification = $attrs['classification_id'];
 
-            $theTrips = PublicTrip::whereHas('publicTripClassification', function ($query) use ($classification) {
+            $theTrips = PublicTrip::where('display', true)->whereHas('publicTripClassification', function ($query) use ($classification) {
                 $query->where('classification_id', $classification);
             })->get()->map($this->publicTripSortByMapper());
 

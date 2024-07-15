@@ -21,14 +21,15 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        $this->call(CitySeeder::class);
-        $this->call(HotelSeeder::class);
-        $this->call(CitiesHotelSeeder::class);
+
+        //$this->call(CitySeeder::class);
+        //$this->call(HotelSeeder::class);
+        //$this->call(CitiesHotelSeeder::class);
         $this->call(AdminSeeder::class);
         $this->call(ClassificationSeeder::class);
-        $this->call(AirlineSeeder::class);
-        $this->call(AirportSeeder::class);
-        $this->call(RoomHotelSeeder::class);
-        $this->call(TourismPlaceSeeder::class);
+        //$this->call(AirlineSeeder::class);
+        //$this->call(AirportSeeder::class);
+        //$this->call(RoomHotelSeeder::class);
+       // $this->call(TourismPlaceSeeder::class);
     }
 }

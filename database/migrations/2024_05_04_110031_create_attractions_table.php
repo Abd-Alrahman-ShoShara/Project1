@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('publicTrip_id');
             $table->foreign('publicTrip_id')->references('id')->on('public_trips')->onDelete('cascade');
             $table->string('description');
+            $table->boolean('display')->default(0);
             $table->enum('type',['Discount On The Ticket','Points Discount','Special Event']);
             $table->Integer('discount_points');
             $table->timestamps();

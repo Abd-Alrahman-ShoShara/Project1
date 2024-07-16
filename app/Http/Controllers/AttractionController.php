@@ -8,14 +8,26 @@ use Illuminate\Support\Facades\URL;
 
 class AttractionController extends Controller
 {
-    public function addAttractions(Request $request){
+    public function addAttractions(Request $request) {
+       
         $attr = $request->validate([
-            'publicTrip_id' => 'required|exists:publicTrips,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
+            'publicTrip_id' => 'required|exists:public_trips,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
             'description' => 'required|string',
             'discount_points' => 'required|integer',
-            'type' => 'required|in:Discount On The Ticket,Points Discount,Special Event',
+            'type' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->discount_points > 0 && $value !== 'Points Discount') {
+                        $fail('The type must be "Points Discount" when the discount_points is greater than 0.');
+                    }
+                    if ($request->discount_points == 0 && !in_array($value, ['Discount On The Ticket', 'Special Event'])) {
+                        $fail('The type must be "Discount On The Ticket" or "Special Event" when the discount_points is 0.');
+                    }
+                }
+            ],
         ]);
+    
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->file('image')->getClientOriginalExtension();
             $request->file('image')->move(public_path('uploads/'), $imageName);
@@ -23,17 +35,19 @@ class AttractionController extends Controller
         } else {
             $imageUrl = null;
         }
+    
         $attraction = Attraction::create([
-            'publicTrip_id'=>$attr['publicTrip_id'],
+            'publicTrip_id' => $attr['publicTrip_id'],
             'image' => $imageUrl,
-            'description'=>$attr['description'],
-            'discount_points'=>$attr['discount_points'],
-            'type'=>$attr['type'],
+            'description' => $attr['description'],
+            'discount_points' => $attr['discount_points'],
+            'type' => $attr['type'],
         ]);
+    
         return response()->json([
-            'message'=> ' the attraction created successfully',
-            'attraction'=> $attraction,
-        ],200);
+            'message' => 'The attraction was created successfully.',
+            'attraction' => $attraction,
+        ], 200);
     }
     
     
@@ -67,11 +81,21 @@ class AttractionController extends Controller
 
     
     $attr = $request->validate([
-        'publicTrip_id' => 'required|exists:publicTrips,id',
-        'image' => 'image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
+        'publicTrip_id' => 'required|exists:public_trips,id',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,bmp|max:4096',
         'description' => 'required|string',
         'discount_points' => 'required|integer',
-        'type' => 'required|in:Discount On The Ticket,Points Discount,Special Event',
+        'type' => [
+            'required',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->discount_points > 0 && $value !== 'Points Discount') {
+                    $fail('The type must be "Points Discount" when the discount_points is greater than 0.');
+                }
+                if ($request->discount_points == 0 && !in_array($value, ['Discount On The Ticket', 'Special Event'])) {
+                    $fail('The type must be "Discount On The Ticket" or "Special Event" when the discount_points is 0.');
+                }
+            }
+        ],
     ]);
 
     
@@ -100,4 +124,37 @@ class AttractionController extends Controller
         'Attraction' => $Attraction,
     ], 200);
 }
+
+public function displayAttraction($attraction_id)
+{
+    $Attraction = Attraction::find($attraction_id);
+
+    if (!$Attraction) {
+        return response([
+            'message' => 'Attraction not found'
+        ], 403); 
+    }
+
+    $Attraction->display = $Attraction->display ? false : true;
+    $Attraction->save();
+    return response()->json([
+        'display' => $Attraction->display,
+    ]);
+}
+
+public function getAttractions()
+{
+    $attractions = Attraction::where('display', true)
+        ->get()
+        ->map(function ($attraction) {
+            $attraction->discount = $attraction->publicTrip->discountType;
+            unset($attraction->publicTrip);
+            return $attraction;
+        });
+
+    return response()->json([
+        'attractions' => $attractions,
+    ]);
+}
+
 }

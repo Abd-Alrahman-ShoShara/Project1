@@ -90,7 +90,6 @@ Route::post('/updateCity/{city_id}',[CityController::class,'updateCity']);
 Route::post('/deleteCity/{city_id}',[CityController::class,'deleteCity']);
 Route::get('/allCities',[CityController::class,'allCities']);
 
-
 Route::post('/addAirPort',[AirportController::class,'addAirPort']);
 Route::get('/getAirportInfo/{airport_id}',[AirportController::class,'getAirportInfo']);
 Route::post('/updateAirport/{airport_id}',[AirportController::class,'updateAirport']);
@@ -149,7 +148,15 @@ Route::post('/deleteQuastion/{Qusation_id}',[FAQController::class,'deleteQuastio
 Route::get('/allQuastions',[FAQController::class,'allQuastions']);
 Route::post('/allQuastionsByType',[FAQController::class,'allQuastionsByType']);
 
+Route::post('/addAttractions',[AttractionController::class,'addAttractions']);
+Route::get('/getAttractionInfo/{attraction_id}',[AttractionController::class,'getAttractionInfo']);
+Route::post('/updateAttraction/{attraction_id}',[AttractionController::class,'updateAttraction']);
+Route::delete('/deleteAttraction/{attraction_id}',[AttractionController::class,'deleteAttraction']);
+Route::post('/displayAttraction/{attraction_id}',[AttractionController::class,'displayAttraction']);
+Route::get('/allAttractions',[AttractionController::class,'allAttractions']);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 Route::post('/allPublicTrips',[PublicTripController::class,'allPublicTrips'])->middleware('auth:api');
 
 
@@ -242,9 +249,5 @@ Route::get('/getActiveUserPublicTrip/{publicTrip_id}',[UserTripController::class
 Route::get('/getPastUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getPastUserPublicTrip'])->middleware('auth:api');
 
 ////////////////////////////////////////////////////////////////////////////////////////Attractions
+Route::get('/getAttractions',[AttractionController::class,'getAttractions']);
 
-Route::post('/addAttractions',[AttractionController::class,'addAttractions']);
-Route::get('/getAttractionInfo/{attraction_id}',[AttractionController::class,'getAttractionInfo']);
-Route::post('/updateAttraction/{attraction_id}',[AttractionController::class,'updateAttraction']);
-Route::post('/deleteAttraction/{attraction_id}',[AttractionController::class,'deleteAttraction']);
-Route::get('/allAttractions',[AttractionController::class,'allAttractions']);

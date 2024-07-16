@@ -66,7 +66,7 @@ class TicketController extends Controller
             ['roundOrOne_trip', $attr['roundOrOne_trip']],
             ['dateOfTicket' , $trip->dateOfTrip],
             ['dateEndOfTicket' , $trip->dateEndOfTrip],
-        ])->with('airLine')->get();
+        ])->with('airLine','fromAirPort','toAirPort')->get();
 
         return response()->json([
             'message' => 'The ticket(s) created successfully',

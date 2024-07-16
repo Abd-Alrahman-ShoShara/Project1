@@ -189,7 +189,7 @@ class TripController extends Controller
         $AllCancelledTrips = $cancelledPrivateTrip->concat($cancelledPublicTrip)->sortBy('id')->values();
 
         return response()->json([
-            'AllCancelledTrips:' => $AllCancelledTrips,
+            'AllTrips:' => $AllCancelledTrips,
             // 'thePublicCanclledTrip:'=>$cancelledPublicTrip,
         ]);
     }

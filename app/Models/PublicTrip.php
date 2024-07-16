@@ -31,7 +31,7 @@ class PublicTrip extends Model
         return $this->hasMany(TripPoint::class,'publicTrip_id');
     }
     public function attraction(){
-        return $this->hasMany(Attraction::class);
+        return $this->hasMany(Attraction::class,'publicTrip_id');
     }
     public function publicTripPlace(){
         return $this->hasMany(PublicTripPlace::class,'publicTrip_id');

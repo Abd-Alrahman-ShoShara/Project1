@@ -40,7 +40,7 @@ class UserTripController extends Controller
         $AllActiveTrips = $activePrivateTrips->concat($activePublicTrips)->sortBy('id')->values();
 
         return response([
-            'AllActiveTrips' => $AllActiveTrips,
+            'AllTrips' => $AllActiveTrips,
             // 'activePublicTrips' => $activePublicTrips,
         ]);
     }
@@ -63,7 +63,7 @@ class UserTripController extends Controller
 
         $AllPastTrips = $pastPrivateTrips->concat($pastPublicTrips)->sortBy('id')->values();
         return response()->json([
-            'AllPastTrips' => $AllPastTrips,
+            'AllTrips' => $AllPastTrips,
             // 'pastPublicTrips' => $pastPublicTrips,
         ]);
     }

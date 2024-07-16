@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AirlineController;
 use App\Http\Controllers\AirportController;
+use App\Http\Controllers\AttractionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingHotelController;
 use App\Http\Controllers\BookingTicketController;
@@ -239,3 +240,11 @@ Route::post('/cityHotelsSortBy/{trip_id}',[CitiesHotelController::class,'cityHot
 Route::get('/getCancelledUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getCancelledUserPublicTrip'])->middleware('auth:api');
 Route::get('/getActiveUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getActiveUserPublicTrip'])->middleware('auth:api');
 Route::get('/getPastUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getPastUserPublicTrip'])->middleware('auth:api');
+
+////////////////////////////////////////////////////////////////////////////////////////Attractions
+
+Route::post('/addAttractions',[AttractionController::class,'addAttractions']);
+Route::get('/getAttractionInfo/{attraction_id}',[AttractionController::class,'getAttractionInfo']);
+Route::post('/updateAttraction/{attraction_id}',[AttractionController::class,'updateAttraction']);
+Route::post('/deleteAttraction/{attraction_id}',[AttractionController::class,'deleteAttraction']);
+Route::get('/allAttractions',[AttractionController::class,'allAttractions']);

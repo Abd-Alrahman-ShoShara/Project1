@@ -28,9 +28,18 @@ class Ticket extends Model
         'updated_at',
     ];
 
-    public function airPort(){
-        return $this->belongsTo(Airport::class);
+    // public function airPort(){
+    //     return $this->belongsTo(Airport::class,);
+    // }
+    public function fromAirPort()
+    {
+        return $this->belongsTo(Airport::class, 'airport_id1');
     }
+    public function toAirPort()
+    {
+        return $this->belongsTo(City::class, 'airport_id2');
+    }
+    
     public function airLine(){
         return $this->belongsTo(Airline::class,'airline_id');
     }

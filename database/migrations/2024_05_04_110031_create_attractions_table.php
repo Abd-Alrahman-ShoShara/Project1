@@ -15,11 +15,12 @@ return new class extends Migration
 
         Schema::create('attractions', function (Blueprint $table) {
             $table->id();
-            $table->string('images');
+            $table->string('image');
             $table->unsignedBigInteger('publicTrip_id');
             $table->foreign('publicTrip_id')->references('id')->on('public_trips')->onDelete('cascade');
             $table->string('description');
-            $table->bigInteger('discount-value');
+            $table->enum('type',['Discount On The Ticket','Points Discount','Special Event']);
+            $table->Integer('discount_points');
             $table->timestamps();
         });
 

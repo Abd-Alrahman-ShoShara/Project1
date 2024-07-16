@@ -144,7 +144,9 @@ public function displayAttraction($attraction_id)
 
 public function getAttractions()
 {
-    $attractions = Attraction::where('display', true)
+    $attractions = Attraction::where('display', true)->whereHas('publicTrip',function($query) {
+        $query->where('display',true);
+    })
         ->get()
         ->map(function ($attraction) {
             $attraction->discount = $attraction->publicTrip->discountType;

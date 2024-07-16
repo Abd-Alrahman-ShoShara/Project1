@@ -70,7 +70,7 @@ class TripController extends Controller
         }
 
         // Retrieve the ticket for the trip
-        $ticket = BookingTicket::where('trip_id', $trip_id)->with('ticket', 'ticket.airLine')->first();
+        $ticket = BookingTicket::where('trip_id', $trip_id)->with('ticket', 'ticket.airLine','ticket.fromAirport','ticket.toAirport')->first();
         $ticketP = $ticket ? $ticket->price : 0;
 
         // if (!$ticket) {

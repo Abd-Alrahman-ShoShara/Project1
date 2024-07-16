@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attraction;
 use App\Models\PublicTrip;
 use App\Models\TripPoint;
 use App\Models\User;
@@ -18,6 +19,7 @@ class UserPublicTripController extends Controller
             'numberOfTickets' => 'required|integer',
             'VIP' => 'required|boolean',
         ]);
+        $user=Auth::user();
 
         $tripPoint = TripPoint::find($request->tripPoint_id);
         $tripPointPrice = $tripPoint->price;
@@ -28,9 +30,35 @@ class UserPublicTripController extends Controller
             $totalPrice += 0.3 * $totalPrice;
         }
 
+        $publicTrip_id=$tripPoint->publicTrip_id;
+
+        $attractionPoint= Attraction::where([['publicTrip_id',$publicTrip_id],['type','Points Discount']])->first() ;
+
+       if($attractionPoint){
+        $request->validate([
+            'pointsOrNot' => 'required|boolean',
+        ]);
+        if($request->pointsOrNot){
+            if($attractionPoint->discount_points>$user->points){
+                return response()->json([
+                    'meesage'=>'your points dose not enough, you need more points '
+                ]);
+            }
+            else{
+                $user->points -= $attractionPoint->discount_points;
+                $user->save;
+            }
+        }
+
+       }else{
+
+        $discount=$tripPoint->publicTrip->discountType;
+        $totalPrice -= $totalPrice * $discount / 100 ;
+        
+       }
 
         $PointBooking = UserPublicTrip::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => $user->id,
             'tripPoint_id' => $request->tripPoint_id,
             'numberOfTickets' => $request->numberOfTickets,
             'price' => $totalPrice,
@@ -63,7 +91,6 @@ class UserPublicTripController extends Controller
         }
         $tripPoint = TripPoint::find($cancelledPublicTrip->tripPoint_id);
 
-        // Fetch the associated public trip to get the trip date
         $publicTrip = PublicTrip::where('id', $tripPoint->publicTrip_id)->first();
 
         if (!$publicTrip) {

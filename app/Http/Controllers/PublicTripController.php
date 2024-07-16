@@ -501,6 +501,19 @@ class PublicTripController extends Controller
         ]);
     }
 
+
+    public function addPublicTripDiscount($publicTrip_id,Request $request){
+        $publicTrip = PublicTrip::find($publicTrip_id);
+        $request->validate([
+            'discount'=>'required|integer|between:0,100'
+        ]);
+        $publicTrip->discountType=$request->discount;
+        $publicTrip->save();
+        return response()->json([
+            'message' => 'the discount added successfully',
+        ]);
+    }
+
     /*
     class
         // } elseif ($attrs['sortBy'] == 'Closet') {

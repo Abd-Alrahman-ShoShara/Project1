@@ -24,6 +24,13 @@ class AttractionController extends Controller
                     if ($request->discount_points == 0 && !in_array($value, ['Discount On The Ticket', 'Special Event'])) {
                         $fail('The type must be "Discount On The Ticket" or "Special Event" when the discount_points is 0.');
                     }
+                    
+                    $existingAttraction = Attraction::where('publicTrip_id', $request->publicTrip_id)
+                                                    ->where('type', $value)
+                                                    ->first();
+                    if ($existingAttraction) {
+                        $fail('An attraction with this public trip ID and type already exists.');
+                    }
                 }
             ],
         ]);

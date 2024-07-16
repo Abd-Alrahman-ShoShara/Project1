@@ -478,7 +478,7 @@ class PublicTripController extends Controller
                 ->map($this->publicTripSortByMapper());
 
             if ($request->has('sortBy')) {
-                $theTrips = $sortTrips($theTrips);
+                $theTrips = $sortTrips($theTrips)->values();
             }
 
 

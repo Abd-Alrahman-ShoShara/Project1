@@ -54,7 +54,7 @@ class TripDayPlaceController extends Controller
         if (!$tripDay) {
             return response()->json(['message' => 'TripDayPlace is not found'], 404);
         }
-        return response()->json(['message' => ' deleted successfully'], 200);
+        return response()->json(['message' => ' deleted successfully','tripDay_id:'=>$tripDay_id], 200);
     }
     public function deleteAllActivities($trip_id)
     {

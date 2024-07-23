@@ -74,7 +74,7 @@ class AirportController extends Controller
    }
    public function getAirportInfo($airport_id){
     return response([
-        'airpot'=>Airport::where('id',$airport_id)->with('city')->get(),
+        'airpot'=>Airport::where('id',$airport_id)->with('city')->first(),
     ]);
 }
 public function updateAirport(Request $request,$airport_id){

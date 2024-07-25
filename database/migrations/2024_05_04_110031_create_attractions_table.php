@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('description');
             $table->boolean('display')->default(0);
             $table->enum('type',['Discount On The Ticket','Points Discount','Special Event']);
+            $table->bigInteger('discount')->default(0);
             $table->Integer('discount_points');
             $table->timestamps();
         });

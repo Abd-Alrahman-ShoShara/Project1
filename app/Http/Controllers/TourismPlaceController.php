@@ -216,4 +216,18 @@ class TourismPlaceController extends Controller
             'tourismPlace' => $tourismPlace,
         ], 200);
     }
+
+    public function searchActivity($city)
+    {
+        $activities = TourismPlace::whereHas('city', function ($query) use ($city) {
+            $query->where('name', 'like', '%' . $city . '%');
+        })->with('city')->get();
+        foreach ($activities as $activitie) {
+            $activitie->images = json_decode($activitie->images, true);
+        }
+        return response()->json([
+            'activity'=>$activities
+        ]);
+        // $activities->where('name', 'like', '%' . $class['search'] . '%');
+    }
 }

@@ -12,10 +12,11 @@ class Attraction extends Model
         'publicTrip_id',
         'image',
         'description',
+        'discount',
         'discount_points',
         'type',
     ];
-    
+
     protected $hidden=[
         'created_at',
         'updated_at',

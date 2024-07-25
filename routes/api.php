@@ -252,3 +252,4 @@ Route::get('/getPastUserPublicTrip/{publicTrip_id}',[UserTripController::class,'
 Route::get('/getAttractions',[AttractionController::class,'getAttractions']);
 Route::post('/addPublicTripDiscount/{publicTrip_id}',[PublicTripController::class,'addPublicTripDiscount']);
 
+Route::get('/searchActivity/{nameOfCity}',[TourismPlaceController::class,'searchActivity']);

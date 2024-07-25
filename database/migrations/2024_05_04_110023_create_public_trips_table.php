@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('dateOfTrip');
             $table->date('dateEndOfTrip');
             $table->boolean('display')->default(false);
-            $table->bigInteger('discountType')->default(0);
+           // $table->bigInteger('discountType')->default(0);
             $table->timestamps();
         });
 

@@ -19,9 +19,17 @@ class UserPublicTripController extends Controller
             'numberOfTickets' => 'required|integer',
             'VIP' => 'required|boolean',
         ]);
-        $user=Auth::user();
+
+        $user = Auth::user();
 
         $tripPoint = TripPoint::find($request->tripPoint_id);
+
+        if ($request->numberOfTickets > $tripPoint->numberOfTickets) {
+            return response([
+                'the number of ticket you can book:' => $tripPoint->numberOfTickets,
+            ], 422);
+        }
+        
         $tripPointPrice = $tripPoint->price;
 
         $totalPrice = $request->numberOfTickets * $tripPointPrice;
@@ -29,33 +37,41 @@ class UserPublicTripController extends Controller
         if ($request->VIP) {
             $totalPrice += 0.3 * $totalPrice;
         }
+        $price=$totalPrice;
+        $publicTrip_id = $tripPoint->publicTrip_id;
 
-        $publicTrip_id=$tripPoint->publicTrip_id;
+        $attractionPoint = Attraction::where([
+                ['publicTrip_id', $publicTrip_id],
+                ['type', 'Points Discount'],
+                ['display', true]
+            ])->first();
 
-        $attractionPoint= Attraction::where([['publicTrip_id',$publicTrip_id],['type','Points Discount']])->first() ;
+        $attractionTicket = Attraction::where([
+                ['publicTrip_id', $publicTrip_id],
+                ['type', 'Discount On The Ticket'],
+                ['display', true]
+            ])->first();
 
-       if($attractionPoint){
-        $request->validate([
-            'pointsOrNot' => 'required|boolean',
-        ]);
-        if($request->pointsOrNot){
-            if($attractionPoint->discount_points>$user->points){
-                return response()->json([
-                    'meesage'=>'your points dose not enough, you need more points '
-                ]);
+        if ($attractionPoint) {
+            $request->validate([
+                'pointsOrNot' => 'required|boolean',
+            ]);
+            if ($request->pointsOrNot) {
+                if ($attractionPoint->discount_points > $user->points) {
+                    return response()->json([
+                        'meesage' => 'your points dose not enough, you need more points '
+                    ]);
+                } else {
+                    $user->points -= $attractionPoint->discount_points;
+                    $user->save();
+                    $totalPrice -= $totalPrice * $attractionPoint->discount / 100;
+                }
             }
-            else{
-                $user->points -= $attractionPoint->discount_points;
-                $user->save;
-            }
+        } elseif($attractionTicket){
+
+           // $discount = $tripPoint->publicTrip->discountType;
+            $totalPrice -= $totalPrice * $attractionTicket->discount / 100;
         }
-
-       }else{
-
-        $discount=$tripPoint->publicTrip->discountType;
-        $totalPrice -= $totalPrice * $discount / 100 ;
-        
-       }
 
         $PointBooking = UserPublicTrip::create([
             'user_id' => $user->id,
@@ -64,17 +80,13 @@ class UserPublicTripController extends Controller
             'price' => $totalPrice,
         ]);
 
-        if ($request->numberOfTickets > $tripPoint->numberOfTickets) {
-            return response([
-                'the number of ticket you can book:' => $tripPoint->numberOfTickets,
-            ], 422);
-        }
         TripPoint::where('id', $request->tripPoint_id)
             ->update(['numberOfTickets' => $tripPoint->numberOfTickets - $request->numberOfTickets]);
 
         return response([
             'message' => 'booking successfully.',
-            'theBooking:' => $PointBooking,
+            'theBooking' => $PointBooking,
+            'Price before discount if you have a discount'=>$price
         ], 200);
     }
 

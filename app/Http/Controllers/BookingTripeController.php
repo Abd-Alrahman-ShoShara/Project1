@@ -7,11 +7,15 @@ use App\Models\BookingTicket;
 use App\Models\BookingTripe;
 use App\Models\RoomHotel;
 use App\Models\Trip;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class BookingTripeController extends Controller
 {
     public function bookingTrip($trip_id) {
+        $theTrip = Trip::find($trip_id);
+        $user=User::find($theTrip->user_id);
+
         $bookingTicket = BookingTicket::where('trip_id', $trip_id)->first();
         $ticketPrice = $bookingTicket ? $bookingTicket->price : 0;
 
@@ -21,6 +25,11 @@ class BookingTripeController extends Controller
 
         $totalPrice = $hotelPrice + $ticketPrice;
 
+        if($user->wallet < $totalPrice){
+            return response()->json([
+                'messag'=>"you don't have enough money",
+            ], 422);
+        }
         foreach ($bookingHotels as $bookingHotel) {
             $roomHotel = RoomHotel::find($bookingHotel->roomHotel_id);
 
@@ -32,7 +41,6 @@ class BookingTripeController extends Controller
             }
         }
 
-        $theTrip = Trip::find($trip_id);
         if ($theTrip->state == 'UnderConstruction') {
             $alltrip = BookingTripe::create([
                 'trip_id' => $trip_id,
@@ -40,6 +48,10 @@ class BookingTripeController extends Controller
             ]);
             $theTrip->state = 'completed';
             $theTrip->save();
+
+            $user->wallet -= $totalPrice;
+            $user->save();
+
         } else {
             return response()->json([
                 'message' => 'The trip is already completed.',

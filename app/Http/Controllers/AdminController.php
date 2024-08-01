@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Validator;
 class AdminController extends Controller
 {
     //
@@ -102,5 +102,40 @@ class AdminController extends Controller
         return response()->json([
         'theAdmin:'=>NormalUser::where('role','admin')->select('user_id','phone')->with('user:id,name')->get(),
         ]);
+    }
+
+    public function addToWallet(Request $request)
+    {
+        // Define custom validation rules for 'EmailOrPhone'
+    Validator::extend('email_or_phone', function ($attribute, $value, $parameters, $validator) {
+        // Check if the value is a valid email or a valid phone number
+        return filter_var($value, FILTER_VALIDATE_EMAIL) || preg_match('/^[0-9]{10,15}$/', $value);
+    });
+    $attr = $request->validate([
+        'EmailOrPhone' => 'required|email_or_phone',
+        'amount' => 'required|numeric|min:0'
+    ], [
+        'email_or_phone' => 'The :attribute must be a valid email address or phone number.'
+    ]);
+
+        $user = User::whereHas('googleUser', function ($query) use ($attr) {
+            $query->where('email', $attr['EmailOrPhone']);
+        })->orWhereHas('normalUser', function ($query) use ($attr) {
+            $query->where('phone', $attr['EmailOrPhone']);
+        })->first();
+
+        if(!$user){
+        return response()->json([
+            'message'=>'email or phone not found...'
+        ]);}
+
+        $user->wallet=$attr['amount'];
+        $user->save();
+
+        return response()->json([
+            'message'=>'amount added successful',
+            'amount'=>$attr['amount']
+        ]);
+
     }
 }

@@ -31,26 +31,11 @@ use App\Models\Favorite;
 use App\Models\UserPublicTrip;
 use Illuminate\Support\Facades\Route;
 
-
-
-
-
 Route::middleware('auth:api')->group( function () {
-
-    Route::post('/createTrip',[TripController::class,'createTrip']);
 
 });
 
-
-Route::get('/adminInfo', [AdminController::class, 'adminInfo']);
-Route::post('/admin/login', [AdminController::class, 'login']);
-Route::post('/updateAdmin', [AdminController::class, 'updateAdmin'])->middleware('auth:api');
-Route::post('/updateAdminPassword', [AdminController::class, 'updateAdminPassword'])->middleware('auth:api');
-Route::post('/logoutAdmin',[AdminController::class,'logoutAdmin'])->middleware('auth:api');
-
-
-
-Route::post('/googleRegister',[GoogleUserController::class,'googleRegister']);
+/////////////Authentecation///////////////////////////////////
 
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/verifyCode',[AuthController::class,'verifyCode']);
@@ -58,31 +43,16 @@ Route::post('/login',[AuthController::class,'login']);
 Route::post('/forgetPassword',[AuthController::class,'forgetPassword']);
 Route::post('/verifyForgetPassword',[AuthController::class,'verifyForgetPassword']);
 Route::post('/resatPassword',[AuthController::class,'resatPassword']);
+Route::post('/googleRegister',[GoogleUserController::class,'googleRegister']);
 
+///////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////// profile Routs ///////////////////////////////////////////
-
-Route::post('/updateName',[AuthController::class,'updateName'])->middleware('auth:api');
-Route::post('/updatePhone',[NormalUserController::class,'updatePhone'])->middleware('auth:api');
-Route::post('/verifyNewPhone',[NormalUserController::class,'verifyNewPhone'])->middleware('auth:api');
-Route::post('/resatPasswordEnternal',[AuthController::class,'resatPasswordEnternal'])->middleware('auth:api');
-
-
-Route::post('/addReview',[ReviewController::class,'addReview'])->middleware('auth:api');
-Route::get('/allReview',[ReviewController::class,'allReview']);
-Route::get('/userInfo',[AuthController::class,'userInfo'])->middleware('auth:api');
-
-
-Route::delete('/deleteAccount',[AuthController::class,'deleteAccount'])->middleware('auth:api');
-
-Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:api');
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-///////////////////////////////////////////////// Dashboard Routs ///////////////////////////////////////////
-
+//////////////////////// Dashboard Routs ///////////////////////////////////////////
+Route::get('/adminInfo', [AdminController::class, 'adminInfo']);
+Route::post('/admin/login', [AdminController::class, 'login']);
+Route::post('/updateAdmin', [AdminController::class, 'updateAdmin'])->middleware('auth:api');
+Route::post('/updateAdminPassword', [AdminController::class, 'updateAdminPassword'])->middleware('auth:api');
+Route::post('/logoutAdmin',[AdminController::class,'logoutAdmin'])->middleware('auth:api');
 
 Route::post('/addCity',[CityController::class,'addCity']);
 Route::get('/getCityInfo/{city_id}',[CityController::class,'getCityInfo']);
@@ -141,6 +111,10 @@ Route::post('/updatePoint/{Point_id}',[PublicTripController::class,'updatePoint'
 Route::post('/deletePoint/{Point_id}',[PublicTripController::class,'deletePoint']);
 Route::get('/getPublicTripPoints/{TripPoint_id}',[PublicTripController::class,'getPublicTripPoints']);
 
+Route::get('/Classifications',[ClassificationController::class,'Classifications']);
+Route::post('/addClassification',[ClassificationController::class,'addClassification']);
+Route::post('/deleteClassification/{classification_id}',[ClassificationController::class,'deleteClassification']);
+
 Route::post('/addQuastion',[FAQController::class,'addQuastion']);
 Route::get('/getQuastionInfo/{Qusation_id}',[FAQController::class,'getQuastionInfo']);
 Route::post('/updateQuastion/{Qusation_id}',[FAQController::class,'updateQuastion']);
@@ -154,102 +128,102 @@ Route::post('/updateAttraction/{attraction_id}',[AttractionController::class,'up
 Route::delete('/deleteAttraction/{attraction_id}',[AttractionController::class,'deleteAttraction']);
 Route::post('/displayAttraction/{attraction_id}',[AttractionController::class,'displayAttraction']);
 Route::get('/allAttractions',[AttractionController::class,'allAttractions']);
+
+Route::post('/addToWallet',[AdminController::class,'addToWallet']);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Route::post('/allPublicTrips',[PublicTripController::class,'allPublicTrips'])->middleware('auth:api');
-
-
-
-
-
-
-
-Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);
-
-Route::get('/getAirportFrom/{trip_id}',[AirportController::class,'getAirportFrom']);
-
-Route::get('/getAirportTo/{trip_id}',[AirportController::class,'getAirportTo']);
-
-Route::post('/choseTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'choseTicket']);
-
-
-Route::post('/addBookingHotel/{trip_id}',[BookingHotelController::class,'addBookingHotel']);
-
-Route::post('/addPlane',[TripDayPlaceController::class,'addPlane']);
-
-
-
-Route::post('/getTourismPlaces/{trip_id}',[TourismPlaceController::class,'getTourismPlaces']);
-
-Route::get('/getTripDays/{trip_id}',[TripDayController::class,'getTripDays']);
-Route::get('/getUserPlane/{trip_id}',[TripController::class,'getUserPlane']);
-
-
-
-
-
-Route::get('/cityHotels/{trip_id}',[CitiesHotelController::class,'cityHotels']);
-
-
-Route::post('/bookingTrip/{trip_id}',[BookingTripeController::class,'bookingTrip']);
-
-Route::get('/searchCity/{nameOfCity}',[CityController::class,'searchCity']);
-
-Route::get('/allTrips',[TripController::class,'allTrips']);
-
-////////////////////////////////////////////////////////////////  public trip
-
-Route::get('/Classifications',[ClassificationController::class,'Classifications']);
-Route::post('/addClassification',[ClassificationController::class,'addClassification']);
-Route::post('/deleteClassification/{classification_id}',[ClassificationController::class,'deleteClassification']);
-
-
-
-
+/////////////public trip////////////mobile/////////////////////////////////////////////
 
 Route::post('/bookingPublicTrip',[UserPublicTripController::class,'bookingPublicTrip'])->middleware('auth:api');
+Route::post('/allPublicTrips',[PublicTripController::class,'allPublicTrips'])->middleware('auth:api');
+//getPublicTripInfo --> in wepRoute line()
+//getPublicTripPoints -->in wepRoute line()
+Route::get('/userPublicTripBooking/{publicTrip_id}',[UserTripController::class,'userPublicTripBooking'])->middleware('auth:api');
 
-////////////////////////////////////////////my trips /////////////
+//////////////////////////////////////////////////////////////////////////////////
 
-Route::get('/activeTrips',[UserTripController::class,'activeTrips'])->middleware('auth:api');
-Route::get('/pastTrips',[UserTripController::class,'pastTrips'])->middleware('auth:api');
-Route::get('/favorite',[FavoriteController::class,'favorite'])->middleware('auth:api');
+//////////////private trip///////////mobile///////////////////////////////////////
 
-Route::post('/faveOrNot/{publicTrip_id}',[FavoriteController::class,'faveOrNot'])->middleware('auth:api');
+// getAllCities -->in DashboardRoute line()
+Route::post('/createTrip',[TripController::class,'createTrip'])->middleware('auth:api');
+Route::get('/getAirportFrom/{trip_id}',[AirportController::class,'getAirportFrom']);
+Route::get('/getAirportTo/{trip_id}',[AirportController::class,'getAirportTo']);
+Route::post('/searchForTicket/{trip_id}',[TicketController::class,'searchForTicket']);
+Route::post('/choseTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'choseTicket']);
+Route::get('/cityHotels/{trip_id}',[CitiesHotelController::class,'cityHotels']);
+//getRooms -->in DashboardRoute line()
+Route::post('/addBookingHotel/{trip_id}',[BookingHotelController::class,'addBookingHotel']);
+Route::get('/getTripDays/{trip_id}',[TripDayController::class,'getTripDays']);
+Route::post('/getTourismPlaces/{trip_id}',[TourismPlaceController::class,'getTourismPlaces']);
+Route::post('/addPlane',[TripDayPlaceController::class,'addPlane']);
+Route::get('/getUserPlane/{trip_id}',[TripController::class,'getUserPlane']);
+Route::post('/bookingTrip/{trip_id}',[BookingTripeController::class,'bookingTrip']);
+Route::get('/searchCity/{nameOfCity}',[CityController::class,'searchCity']);
+Route::get('/allTrips',[TripController::class,'allTrips']);
+//delete parts
+Route::delete('/deleteAllActivities/{trip_id}',[TripDayPlaceController::class,'deleteAllActivities']);
 
+///////////////////////////////////////////////////////////////////////////
+
+///////////////// profile Routs ///////////////////////////////////////
+
+Route::post('/updateName',[AuthController::class,'updateName'])->middleware('auth:api');
+Route::post('/updatePhone',[NormalUserController::class,'updatePhone'])->middleware('auth:api');
+Route::post('/verifyNewPhone',[NormalUserController::class,'verifyNewPhone'])->middleware('auth:api');
+Route::post('/resatPasswordEnternal',[AuthController::class,'resatPasswordEnternal'])->middleware('auth:api');
+Route::post('/addReview',[ReviewController::class,'addReview'])->middleware('auth:api');
+Route::get('/allReview',[ReviewController::class,'allReview']);
+Route::delete('/deleteAccount',[AuthController::class,'deleteAccount'])->middleware('auth:api');
+Route::get('/userInfo',[AuthController::class,'userInfo'])->middleware('auth:api');
+Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:api');
+//allQuastions -->in DashboardRoute line()
+//allQuastionsByType -->in DashboardRoute line()
+
+///////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////my trips /////////////////////////////////
+
+//update ticket:
 Route::post('/updateTicket/{bookingTicket_id}',[BookingTicketController::class,'updateTicket']);
 Route::post('/updateBookingTicket/{trip_id}/{ticket_id}',[BookingTicketController::class,'updateBookingTicket']);
 Route::delete('/deleteTicket/{bookingTicket_id}',[BookingTicketController::class,'deleteTicket']);
-
+//update booking hotel:
 Route::post('/updateBookingHotel/{trip_id}',[BookingHotelController::class,'updateBookingHotel']);
 Route::delete('/deleteBookingHotel/{trip_id}/{citiesHotel_id}',[BookingHotelController::class,'deleteBookingHotel']);
 Route::delete('/deleteBookingRoom/{boolingHotel_id}',[BookingHotelController::class,'deleteBookingRoom']);
-
+//update activities:
 Route::delete('/deleteActivities/{tripDay_id}',[TripDayPlaceController::class,'deleteActivities']);
-Route::delete('/deleteAllActivities/{trip_id}',[TripDayPlaceController::class,'deleteAllAct-ivities']);
-
-Route::post('/cancelePrivateTripe/{trip_id}',[TripController::class,'cancelePrivateTripe']);
-Route::post('/cancelPublicTrip/{publicTrip_id}',[UserPublicTripController::class,'cancelPublicTrip']);
+//get trips with state:
+Route::get('/favorite',[FavoriteController::class,'favorite'])->middleware('auth:api');
+Route::get('/pastTrips',[UserTripController::class,'pastTrips'])->middleware('auth:api');
+Route::get('/getPastUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getPastUserPublicTrip'])->middleware('auth:api');
+Route::get('/activeTrips',[UserTripController::class,'activeTrips'])->middleware('auth:api');
+Route::get('/getActiveUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getActiveUserPublicTrip'])->middleware('auth:api');
 Route::get('/getCancelledTrip',[TripController::class,'getCancelledTrip'])->middleware('auth:api');
+Route::get('/getCancelledUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getCancelledUserPublicTrip'])->middleware('auth:api');
+//cancel and fav:
+Route::post('/faveOrNot/{publicTrip_id}',[FavoriteController::class,'faveOrNot'])->middleware('auth:api');
+Route::post('/cancelPublicTrip/{publicTrip_id}',[UserPublicTripController::class,'cancelPublicTrip']);
+Route::post('/cancelePrivateTripe/{trip_id}',[TripController::class,'cancelePrivateTripe']);
 
-Route::get('/userPublicTripBooking/{publicTrip_id}',[UserTripController::class,'userPublicTripBooking'])->middleware('auth:api');
+///////////////////////////////////////////////////////////////////
 
-
-
-Route::post('/publicTripSortBy',[PublicTripController::class,'publicTripSortBy'])->middleware('auth:api');
+//search:
 Route::get('/searchPublicTrip/{nameOfPublicTrip}',[PublicTripController::class,'searchPublicTrip'])->middleware('auth:api');
-
 Route::post('/searchTourismPlaces/{trip_id}',[TourismPlaceController::class,'searchTourismPlaces']);
+//wep
+Route::get('/searchActivity/{nameOfCity}',[TourismPlaceController::class,'searchActivity']);
 
+//sortBy:
+Route::post('/publicTripSortBy',[PublicTripController::class,'publicTripSortBy'])->middleware('auth:api');
 Route::post('/cityHotelsSortBy/{trip_id}',[CitiesHotelController::class,'cityHotelsSortBy']);
 
-Route::get('/getCancelledUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getCancelledUserPublicTrip'])->middleware('auth:api');
-Route::get('/getActiveUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getActiveUserPublicTrip'])->middleware('auth:api');
-Route::get('/getPastUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getPastUserPublicTrip'])->middleware('auth:api');
+//attractions:
+Route::get('/getAttractions',[AttractionController::class,'getAttractions']);
 
 ////////////////////////////////////////////////////////////////////////////////////////Attractions
-Route::get('/getAttractions',[AttractionController::class,'getAttractions']);
-Route::post('/addPublicTripDiscount/{publicTrip_id}',[PublicTripController::class,'addPublicTripDiscount']);
 
-Route::get('/searchActivity/{nameOfCity}',[TourismPlaceController::class,'searchActivity']);
+//Route::post('/addPublicTripDiscount/{publicTrip_id}',[PublicTripController::class,'addPublicTripDiscount']);
+
+

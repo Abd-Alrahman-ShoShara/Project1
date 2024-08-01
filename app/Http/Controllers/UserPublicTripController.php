@@ -29,7 +29,7 @@ class UserPublicTripController extends Controller
                 'the number of ticket you can book:' => $tripPoint->numberOfTickets,
             ], 422);
         }
-        
+
         $tripPointPrice = $tripPoint->price;
 
         $totalPrice = $request->numberOfTickets * $tripPointPrice;
@@ -73,6 +73,12 @@ class UserPublicTripController extends Controller
             $totalPrice -= $totalPrice * $attractionTicket->discount / 100;
         }
 
+        if($user->wallet < $totalPrice){
+            return response([
+                'message'=>"you don't have enough money"
+            ],200);
+        }
+
         $PointBooking = UserPublicTrip::create([
             'user_id' => $user->id,
             'tripPoint_id' => $request->tripPoint_id,
@@ -82,6 +88,9 @@ class UserPublicTripController extends Controller
 
         TripPoint::where('id', $request->tripPoint_id)
             ->update(['numberOfTickets' => $tripPoint->numberOfTickets - $request->numberOfTickets]);
+            
+            $user->wallet-=$totalPrice;
+            $user->save();
 
         return response([
             'message' => 'booking successfully.',

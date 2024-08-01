@@ -76,7 +76,7 @@ class UserPublicTripController extends Controller
         if($user->wallet < $totalPrice){
             return response([
                 'message'=>"you don't have enough money"
-            ],200);
+            ],422);
         }
 
         $PointBooking = UserPublicTrip::create([
@@ -88,7 +88,7 @@ class UserPublicTripController extends Controller
 
         TripPoint::where('id', $request->tripPoint_id)
             ->update(['numberOfTickets' => $tripPoint->numberOfTickets - $request->numberOfTickets]);
-            
+
             $user->wallet-=$totalPrice;
             $user->save();
 

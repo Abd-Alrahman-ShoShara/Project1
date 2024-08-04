@@ -139,7 +139,7 @@ class TripController extends Controller
             'Trips' => $Trips,
         ], 200);
     }
-    
+
     public function cancelePrivateTripe($trip_id)
     {
         $cancelledTrip = Trip::find($trip_id);
@@ -191,6 +191,18 @@ class TripController extends Controller
         return response()->json([
             'AllTrips' => $AllCancelledTrips,
             // 'thePublicCanclledTrip:'=>$cancelledPublicTrip,
+        ]);
+    }
+
+    public function getUnderConstructionTrip(){
+        $UnderConstructionTrip=Trip::where('state','UnderConstruction')
+        ->get()->map(function ($trip) {
+            $trip->image =$trip->toCity->image;
+            return $trip;
+        });
+
+        return response()->json([
+            'UnderConstructionTrip' => $UnderConstructionTrip,
         ]);
     }
 }

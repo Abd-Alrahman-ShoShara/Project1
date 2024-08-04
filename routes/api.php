@@ -202,6 +202,7 @@ Route::get('/activeTrips',[UserTripController::class,'activeTrips'])->middleware
 Route::get('/getActiveUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getActiveUserPublicTrip'])->middleware('auth:api');
 Route::get('/getCancelledTrip',[TripController::class,'getCancelledTrip'])->middleware('auth:api');
 Route::get('/getCancelledUserPublicTrip/{publicTrip_id}',[UserTripController::class,'getCancelledUserPublicTrip'])->middleware('auth:api');
+Route::get('/getUnderConstructionTrip',[TripController::class,'getUnderConstructionTrip'])->middleware('auth:api');
 //cancel and fav:
 Route::post('/faveOrNot/{publicTrip_id}',[FavoriteController::class,'faveOrNot'])->middleware('auth:api');
 Route::post('/cancelPublicTrip/{publicTrip_id}',[UserPublicTripController::class,'cancelPublicTrip']);

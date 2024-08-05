@@ -14,7 +14,7 @@ class ClassificationController extends Controller
     }
     public function Classifications(){
         $classification=Classification::all();
-        return response()->json(['message'=>'created successfully',$classification]);
+        return response()->json(['classification'=>$classification]);
     }
 
     public function deleteClassification($classification_id)

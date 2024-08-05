@@ -159,19 +159,38 @@ public function displayAttraction($attraction_id)
     ]);
 }
 
+// public function getAttractions1()
+// {
+//     $attractions = Attraction::where('display', true)
+//                             ->whereHas('publicTrip', function ($query) {
+//                                 $query->where('display', true);
+//                             })
+//                             ->get()
+//                             ->map(function ($attraction) {
+//                                 $attraction->diraction = $attraction->publicTrip->name;
+//                                 return $attraction;
+//                             });
+
+//     return response()->json([
+//         'Attraction' => $attractions,
+//     ]);
+// }
 public function getAttractions()
 {
-    $attractions = Attraction::where('display', true)->whereHas('publicTrip',function($query) {
-        $query->where('display',true);
-    })->get();
-        // ->map(function ($attraction) {
-        //     $attraction->discount = $attraction->publicTrip->discountType;
-        //     unset($attraction->publicTrip);
-        //     return $attraction;
-        // });
+    $attractions = Attraction::where('display', true)
+                            ->whereHas('publicTrip', function ($query) {
+                                $query->where('display', true);
+                            })
+                            ->get()
+                            ->map(function ($attraction) {
+                                $attraction->diraction = $attraction->publicTrip->name;
+                                return $attraction->only([
+                                    'id', 'image', 'publicTrip_id', 'description', 'display', 'type', 'discount', 'discount_points', 'diraction',
+                                ]);
+                            });
 
     return response()->json([
-        'attractions' => $attractions,
+        'Attraction' => $attractions,
     ]);
 }
 

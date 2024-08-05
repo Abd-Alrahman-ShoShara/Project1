@@ -222,7 +222,7 @@ Route::post('/cityHotelsSortBy/{trip_id}',[CitiesHotelController::class,'cityHot
 
 //attractions:
 Route::get('/getAttractions',[AttractionController::class,'getAttractions']);
-
+Route::get('/PublicTripAttraction/{publicTrip_id}',[AttractionController::class,'PublicTripAttraction']);
 ////////////////////////////////////////////////////////////////////////////////////////Attractions
 
 //Route::post('/addPublicTripDiscount/{publicTrip_id}',[PublicTripController::class,'addPublicTripDiscount']);

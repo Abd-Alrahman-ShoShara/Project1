@@ -63,7 +63,7 @@ class AttractionController extends Controller
     }
 
 
-    public function allAttractions()
+     public function allAttractions()
     {
         $Attractions = Attraction::all();
         return response()->json([

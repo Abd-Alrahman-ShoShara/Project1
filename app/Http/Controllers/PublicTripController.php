@@ -8,6 +8,7 @@ use App\Models\PublicTrip;
 use App\Models\publicTripClassification;
 use App\Models\PublicTripPlace;
 use App\Models\TripPoint;
+use App\Models\User;
 use App\Models\UserPublicTrip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -72,7 +73,7 @@ class PublicTripController extends Controller
     {
         // Find the PublicTrip record
         $publicTrip = PublicTrip::findOrFail($publicTrip_id);
-
+        $dateOfTrip=$publicTrip->dateOfTrip;
         // Validate the request data
         $attr = $request->validate([
             'name' => 'required|string',
@@ -98,6 +99,19 @@ class PublicTripController extends Controller
             $imageUrl = URL::asset('uploads/' . $imageName);
         } else {
             $imageUrl = $publicTrip->image;
+        }
+
+        if($dateOfTrip < $attr['dateOfTrip']){
+            $tripPoints = TripPoint::where('publicTrip_id', $publicTrip_id)->get();
+            if (!$tripPoints->isEmpty()) {
+                foreach ($tripPoints as $tripPoint) {
+                    $userPublicTrips = UserPublicTrip::where('tripPoint_id', $tripPoint->id)->get();
+                    foreach ($userPublicTrips as $userPublicTrip) {
+                        $user = User::find($userPublicTrip->user_id);
+                        //notification............
+                    }
+                }
+            }
         }
 
         // Update the PublicTrip record
@@ -132,6 +146,26 @@ class PublicTripController extends Controller
         return response()->json([
             'message' => 'Public trip updated successfully',
             'publicTrip' => $publicTrip,
+        ], 200);
+    }
+    public function restoreMoneyPublic($userPublicTrip_id)
+    {
+        $userPublicTrip = UserPublicTrip::where('id', $userPublicTrip_id)->first();
+
+        if (!$userPublicTrip) {
+            return response()->json([
+                'message' => 'User public trip not found.',
+            ], 404);
+        }
+        $user = User::find($userPublicTrip->user_id);
+        $user->wallet += $userPublicTrip->price;
+        $user->points += $userPublicTrip->price * 0.1;
+        $user->save();
+        $userPublicTrip->state='cancelled';
+        $userPublicTrip->save();
+
+        return response()->json([
+            'message' => 'The public trip was cancelled successfully.',
         ], 200);
     }
 
@@ -185,22 +219,21 @@ class PublicTripController extends Controller
                 'message' => 'trip not found.'
             ], 404);
         }
-        $publicTrip = PublicTrip::where('id', $publicTrip_id)->where('display', false)->delete();
 
-        if (!$publicTrip) {
-            $tripPoints = TripPoint::where('publicTrip_id', $publicTrip_id)->get();
-
+        $tripPoints = TripPoint::where('publicTrip_id', $publicTrip_id)->get();
+        if (!$tripPoints->isEmpty()) {
             foreach ($tripPoints as $tripPoint) {
-                $trueFalse = UserPublicTrip::where('tripPoint_id', $tripPoint->id)->first();
-                if ($trueFalse) {
-                    return response()->json([
-                        'message' => 'you cannot delete the trip.'
-                    ]);
+                $userPublicTrips = UserPublicTrip::where('tripPoint_id', $tripPoint->id)->get();
+                foreach ($userPublicTrips as $userPublicTrip) {
+                    $user = User::find($userPublicTrip->user_id);
+                    $user->wallet += $userPublicTrip->price;
+                    $user->points += $userPublicTrip->price * 0.1;
+                    $user->save();
+                    //notification............
                 }
             }
-            PublicTrip::where('id', $publicTrip_id)->delete();
         }
-
+        PublicTrip::where('id', $publicTrip_id)->delete();
         return response()->json([
             'message' => 'deleted successfully.'
         ]);
@@ -276,9 +309,17 @@ class PublicTripController extends Controller
     public function deletePoint($point_id)
     {
         $point = TripPoint::find($point_id);
+        $userPublicTrips = UserPublicTrip::where([['tripPoint_id', $point_id], ['state', 'completed']])->get();
 
         if (!$point) {
             return response()->json(['message' => 'point is not found'], 404);
+        }
+        foreach ($userPublicTrips as $userPublicTrip) {
+            $user = User::find($userPublicTrip->user_id);
+            $user->wallet += $userPublicTrip->price;
+            $user->points += $userPublicTrip->price * 0.1;
+            $user->save();
+            //notification............
         }
         $point->delete();
         return response()->json(['message' => ' deleted successfully'], 200);
@@ -384,6 +425,8 @@ class PublicTripController extends Controller
             ], 403);
         }
 
+
+
         $publicTrip->display = $publicTrip->display ? false : true;
         $publicTrip->save();
         return response()->json([
@@ -457,31 +500,29 @@ class PublicTripController extends Controller
             $classification = $attrs['classification_id'];
 
             $theTrips = PublicTrip::where('display', true)->whereHas('publicTripClassification', function ($query) use ($classification) {
-                $query->where('classification_id', $classification);});
+                $query->where('classification_id', $classification);
+            });
 
-                if ($request->has('search')) {
-                    $theTrips = $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
-                }
+            if ($request->has('search')) {
+                $theTrips = $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
+            }
 
-                $theTrips=$theTrips->get()->map($this->publicTripSortByMapper());
+            $theTrips = $theTrips->get()->map($this->publicTripSortByMapper());
 
             if ($request->has('sortBy')) {
                 $theTrips = $sortTrips($theTrips)->values();
             }
-
         } else {
             $theTrips = PublicTrip::where('display', true);
             if ($request->has('search')) {
                 $theTrips->where('name', 'like', '%' . $attrs['search'] . '%');
             }
-            $theTrips=$theTrips->get()
+            $theTrips = $theTrips->get()
                 ->map($this->publicTripSortByMapper());
 
             if ($request->has('sortBy')) {
                 $theTrips = $sortTrips($theTrips)->values();
             }
-
-
         }
 
         return response()->json([

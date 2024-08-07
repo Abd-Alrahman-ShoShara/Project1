@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Airport;
+use App\Models\BookingTicket;
+use App\Models\BookingTripe;
 use App\Models\NormalUser;
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -136,6 +140,30 @@ class AdminController extends Controller
             'message'=>'amount added successful',
             'amount'=>$attr['amount']
         ]);
+
+    }
+
+    public function distroyedAirport($airport_id){
+        $bookingTickets=BookingTicket::whereHas('ticket',function($query) use ($airport_id){
+            $query->where('airport_id1',$airport_id)->orWhere('airport_id2',$airport_id);
+        })->get();
+
+        foreach($bookingTickets as $bookingTicket){
+            $trip=Trip::where([['state','completed'],['id',$bookingTicket->trip_id]])->first();
+            if($trip){
+            $user=User::find($trip->user_id);
+            $bookingTrip=BookingTripe::where('trip_id',$trip->id);
+
+            $user->wallet+=$bookingTrip->price;
+            $user->points+=$bookingTrip->price*0.2;
+            $user->save();
+
+            $trip->state='cancelled';
+            $trip->save();
+
+            //noti.................
+            }
+        }
 
     }
 }

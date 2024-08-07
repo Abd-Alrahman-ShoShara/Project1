@@ -130,6 +130,7 @@ Route::post('/displayAttraction/{attraction_id}',[AttractionController::class,'d
 Route::get('/allAttractions',[AttractionController::class,'allAttractions']);
 
 Route::post('/addToWallet',[AdminController::class,'addToWallet']);
+Route::post('/distroyedAirport/{airport_id}',[AdminController::class,'distroyedAirport']);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

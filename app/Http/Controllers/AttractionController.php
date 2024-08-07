@@ -204,7 +204,7 @@ class AttractionController extends Controller
         foreach($attractions as $attraction){
             if($attraction->type=='Points Discount'){
                 $boolean=true;
-            }
+            } 
         }
 
         return response()->json([

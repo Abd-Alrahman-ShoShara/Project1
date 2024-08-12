@@ -20,6 +20,7 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
+
         $user = User::create([
             'name' => $request->name,
             'type' => 'normal',
@@ -37,6 +38,7 @@ class AuthController extends Controller
         $normalUser->save();
 
         $this->sendCode($normalUser['phone'], $code, $user['name']);
+
 
         return response([
             'message' => 'User registered successfully. Please enter the verification code.',
@@ -100,7 +102,8 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('auth_token')->accessToken;
-
+        
+        NotificationController::sendNotification($user->id,'login successfully!!!');
         return response([
             'token' => $token
         ], 200);

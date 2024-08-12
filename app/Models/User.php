@@ -29,6 +29,9 @@ class User extends Authenticatable
     public function normalUser(){
         return $this->hasOne(NormalUser::class,'user_id');
     }
+    public function notification(){
+        return $this->hasMany(Notification::class,'user_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

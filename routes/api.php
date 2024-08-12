@@ -45,6 +45,7 @@ Route::post('/verifyForgetPassword',[AuthController::class,'verifyForgetPassword
 Route::post('/resatPassword',[AuthController::class,'resatPassword']);
 Route::post('/googleRegister',[GoogleUserController::class,'googleRegister']);
 
+Route::post('/choseLanguage',[AuthController::class,'choseLanguage'])->middleware('auth:api');
 ///////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////// Dashboard Routs ///////////////////////////////////////////

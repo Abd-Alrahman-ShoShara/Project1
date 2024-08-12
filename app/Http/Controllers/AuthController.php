@@ -264,4 +264,18 @@ class AuthController extends Controller
             'user:'=>User::where('id',Auth::id())->with('googleUser','normalUser')->first(),
         ]);
     }
+    public function choseLanguage(Request $request) {
+        $request->validate([
+            'language' => 'required|in:English,Arabic', 
+        ]);
+    
+        $user = Auth::user(); 
+        $user->language = $request->language; 
+        $user->save(); 
+    
+        return response()->json([
+            'theUser' => $user, 
+        ]);
+    }
+    
 }

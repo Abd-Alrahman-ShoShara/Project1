@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('language',['English','Arabic'])->default('English');
+            $table->enum('language',['en','ar'])->default('en');
             $table->bigInteger('points')->default(0);
             $table->bigInteger('wallet')->default(0);
             $table->enum('type',['normal','google']);

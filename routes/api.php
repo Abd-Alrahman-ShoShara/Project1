@@ -228,4 +228,5 @@ Route::get('/PublicTripAttraction/{publicTrip_id}',[AttractionController::class,
 
 //Route::post('/addPublicTripDiscount/{publicTrip_id}',[PublicTripController::class,'addPublicTripDiscount']);
 
+Route::post('/restoreMoneyPublic/{userPublicTrip_id}',[PublicTripController::class,'restoreMoneyPublic']);
 

@@ -301,8 +301,8 @@ class PublicTripController extends Controller
     }
     public function getPointInfo($point_id)
     {
-        return response([
-            'TripPoint' => TripPoint::where('id', $point_id)->with('city')->get(),
+        return response()->json([
+            'TripPoint' => TripPoint::where('id', $point_id)->with('city')->get()
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class CityController extends Controller
 {
@@ -35,8 +36,17 @@ class CityController extends Controller
 
     public function allCities(){
         $cities = City::all();
+        $tr=new GoogleTranslate();
+        foreach($cities as $city){
+        $name1 = $tr->setTarget('en')->translate($city->name);
+        $country=$tr->setTarget('en')->translate($city->country);     
+        $translatedCities[] = [
+            'id' => $city->id,
+            'name' => $name1,
+            'country' => $country
+        ];   }
         return response()->json([
-            'CityData' => $cities,
+            'CityData' => $translatedCities,
         ]);
     }
 

@@ -30,7 +30,8 @@ class NotificationSent extends Event
     }
     public function broadcastOn()
     {
-        return new PrivateChannel('notifications.' . $this->user->id);
+        // return new PrivateChannel('notifications.' . $this->user->id);
+        return new Channel('notifications.' . $this->user->id);
     }
 
 

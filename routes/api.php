@@ -45,6 +45,7 @@ Route::post('/verifyForgetPassword',[AuthController::class,'verifyForgetPassword
 Route::post('/resatPassword',[AuthController::class,'resatPassword']);
 Route::post('/googleRegister',[GoogleUserController::class,'googleRegister']);
 
+Route::post('/choseLanguage',[AuthController::class,'choseLanguage'])->middleware('auth:api');
 ///////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////// Dashboard Routs ///////////////////////////////////////////
@@ -228,4 +229,5 @@ Route::get('/PublicTripAttraction/{publicTrip_id}',[AttractionController::class,
 
 //Route::post('/addPublicTripDiscount/{publicTrip_id}',[PublicTripController::class,'addPublicTripDiscount']);
 
+Route::post('/restoreMoneyPublic/{userPublicTrip_id}',[PublicTripController::class,'restoreMoneyPublic']);
 

@@ -283,8 +283,8 @@ class PublicTripController extends Controller
         };
 
         // Fetch the public trip with relationships
-        $publicTrip = PublicTrip::where('id', $publicTrip_id)
-            ->with('citiesHotel.hotel')
+        $publicTrip = PublicTrip::find( $publicTrip_id);
+        $publicTrip->with('citiesHotel.hotel')
             ->get()->map($mm);
 
         // Return the response
@@ -301,8 +301,8 @@ class PublicTripController extends Controller
     }
     public function getPointInfo($point_id)
     {
-        return response([
-            'TripPoint' => TripPoint::where('id', $point_id)->with('city')->get(),
+        return response()->json([
+            'TripPoint' => TripPoint::where('id', $point_id)->with('city')->first()
         ]);
     }
 

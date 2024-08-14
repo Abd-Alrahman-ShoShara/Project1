@@ -62,3 +62,17 @@ return [
     ],
 
 ];
+// 'pusher' => [
+//     'driver' => 'pusher',
+//     'key' => env('PUSHER_APP_KEY'),
+//     'secret' => env('PUSHER_APP_SECRET'),
+//     'app_id' => env('PUSHER_APP_ID'),
+//     'options' => [
+//         'host' => env('PUSHER_HOST', 'api-mt1.pusher.com'), // Use default if not set in environment
+//         'port' => env('PUSHER_PORT', 443),
+//         'scheme' => env('PUSHER_SCHEME', 'https'),
+//         'encrypted' => true,
+//         'useTLS' => true, // Set to true for HTTPS
+//         'cluster' => env('PUSHER_APP_CLUSTER', 'mt1'),
+//     ],
+// ],

@@ -2,42 +2,42 @@
 
 namespace App\Events;
 
-use App\Models\Notification;
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Event;
 
-class NotificationSent extends Event
+class NotificationSent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
-    public $user;
-    public $notification;
-
-    public function __construct(User $user, Notification $notification)
+    public $name;
+    public $user_id;
+    
+     
+    public function __construct($name,$user_id)
     {
-        $this->user = $user;
-        $this->notification = $notification;
-    }
-    public function broadcastOn()
-    {
-        // return new PrivateChannel('notifications.' . $this->user->id);
-        return new Channel('notifications.' . $this->user->id);
+        $this->name = $name;
+        $this->user_id = $user_id;
     }
 
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
+    public function broadcastOn(): array
+    {
+        return [
+            new Channel('popup-channel'),
+        ];
+    }
+
+    public function broadcastAs()
+    {
+        return 'user-register';
+    }
+
+    public function broadcastWith()
+    {
+        return ['name' => $this->name, 'user_id' => $this->user_id];
+    }
 }

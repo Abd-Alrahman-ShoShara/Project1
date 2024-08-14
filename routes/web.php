@@ -1,6 +1,5 @@
 <?php
 
-use App\Events\NotificationSent;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,21 +15,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
-Route::get('/', function () {
-    return view('welcome');
-    // $tr = new GoogleTranslate('en');
-    // return $tr->setSource('en')->setTarget('fr')->translate('hello world');
-});
-
-Route::get('/userRegisteration', function () {
-    return view('userRegisteration');
-});
-
-Route::post('/userRegisteration', function () {
-
-    $name=request()->name;
-    event(new NotificationSent($name,''));
-
-    return view('userRegisteration');
 });

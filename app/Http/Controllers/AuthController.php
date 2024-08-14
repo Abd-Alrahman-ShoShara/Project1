@@ -102,9 +102,8 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('auth_token')->accessToken;
-        
+
         NotificationController::sendNotification($user->id,'login successfully!!!');
-        
         return response([
             'token' => $token
         ], 200);
@@ -270,16 +269,16 @@ class AuthController extends Controller
     }
     public function choseLanguage(Request $request) {
         $request->validate([
-            'language' => 'required|in:en,ar', 
+            'language' => 'required|in:English,Arabic',
         ]);
-    
-        $user = Auth::user(); 
-        $user->language = $request->language; 
-        $user->save(); 
-    
+
+        $user = Auth::user();
+        $user->language = $request->language;
+        $user->save();
+
         return response()->json([
-            'theUser' => $user, 
+            'theUser' => $user,
         ]);
     }
-    
+
 }

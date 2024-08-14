@@ -13,31 +13,27 @@ class NotificationSent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $name;
-    public $user_id;
-    
-     
-    public function __construct($name,$user_id)
+    /**
+     * Create a new event instance.
+     */
+    public $user;
+    public $notification;
+
+    public function __construct(User $user, Notification $notification)
     {
-        $this->name = $name;
-        $this->user_id = $user_id;
+        $this->user = $user;
+        $this->notification = $notification;
+    }
+    public function broadcastOn()
+    {
+        // return new PrivateChannel('notifications.' . $this->user->id);
+        return new Channel('notifications.' . $this->user->id);
     }
 
 
-    public function broadcastOn(): array
-    {
-        return [
-            new Channel('popup-channel'),
-        ];
-    }
-
-    public function broadcastAs()
-    {
-        return 'user-register';
-    }
-
-    public function broadcastWith()
-    {
-        return ['name' => $this->name, 'user_id' => $this->user_id];
-    }
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array<int, \Illuminate\Broadcasting\Channel>
+     */
 }

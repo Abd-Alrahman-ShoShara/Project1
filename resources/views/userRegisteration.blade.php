@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> fd1582b (j)
 <form action="" method="POST">
     {{ csrf_field() }}
     <input type="text" name="name">

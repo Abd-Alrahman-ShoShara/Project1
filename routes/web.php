@@ -1,10 +1,6 @@
 <?php
 
-<<<<<<< HEAD
-=======
 use App\Events\NotificationSent;
-use App\Http\Controllers\NotificationController;
->>>>>>> fd1582b (j)
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,14 +13,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-<<<<<<< HEAD
-Route::get('/', function () {
-    return view('welcome');
-=======
-
-Route::get('/sendNotification',[NotificationController::class,'sendNotification']);
-
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,5 +30,4 @@ Route::post('/userRegisteration', function () {
     event(new NotificationSent($name,''));
 
     return view('userRegisteration');
->>>>>>> fd1582b (j)
 });

@@ -102,6 +102,7 @@ Route::get('/getTourismPlacesWep/{city_id}',[TourismPlaceController::class,'getT
 
 Route::post('/addPublicTrip',[PublicTripController::class,'addPublicTrip']);
 Route::get('/getPublicTripInfo/{TripPoint_id}', [PublicTripController::class,'getPublicTripInfo']);
+Route::get('/getPublicTripInfoWeb/{TripPoint_id}', [PublicTripController::class,'getPublicTripInfoWeb']);
 Route::post('/updatePublicTrip/{publicTrip_id}',[PublicTripController::class,'updatePublicTrip']);
 Route::post('/deletePublicTrip/{publicTrip_id}',[PublicTripController::class,'deletePublicTrip']);
 Route::post('/displayPublicTrip/{publicTrip_id}',[PublicTripController::class,'displayPublicTrip']);

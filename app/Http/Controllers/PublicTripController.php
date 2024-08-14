@@ -283,6 +283,59 @@ class PublicTripController extends Controller
         };
 
         // Fetch the public trip with relationships
+        $publicTrip = PublicTrip::where('id',$publicTrip_id)
+        ->with('citiesHotel.hotel')
+            ->get()->map($mm);
+
+        // Return the response
+        return response()->json([
+            'publicTrip' => $publicTrip,
+        ]);
+    }
+    public function getPublicTripInfoWeb($publicTrip_id)
+    {
+        // Helper function to decode tourismPlace fields
+        $mm = function ($trip) {
+            $decodeTourismPlaceFields = function ($tourismPlace) {
+                if ($tourismPlace) {
+                    $tourismPlace->images = json_decode($tourismPlace->images);
+                }
+                return $tourismPlace;
+            };
+            // Decode specific attributes in cities_hotel
+            if (isset($trip->citiesHotel)) {
+                if (is_string($trip->citiesHotel->images)) {
+                    $trip->citiesHotel->images = json_decode($trip->citiesHotel->images, true);
+                }
+                if (is_string($trip->citiesHotel->features)) {
+                    $trip->citiesHotel->features = json_decode($trip->citiesHotel->features, true);
+                }
+                if (is_string($trip->citiesHotel->review)) {
+                    $trip->citiesHotel->review = json_decode($trip->citiesHotel->review, true);
+                }
+            }
+
+            // Decode the tourismPlace fields
+            if (isset($trip->publicTripPlace)) {
+                foreach ($trip->publicTripPlace as $tripPlace) {
+                    if ($tripPlace->tourismPlace) {
+                        $decodeTourismPlaceFields($tripPlace->tourismPlace);
+                    }
+                }
+            }
+
+            // Calculate average price of trip points
+            $totalPrice = $trip->tripPoint()->sum('price');
+            $numberOfTripPoints = $trip->tripPoint()->count();
+            $averagePrice = $numberOfTripPoints > 0 ? $totalPrice / $numberOfTripPoints : 0;
+
+            // Add the average price to the trip object
+            $trip->averagePrice = $averagePrice;
+
+            return $trip;
+        };
+
+        // Fetch the public trip with relationships
         $publicTrip = PublicTrip::find( $publicTrip_id);
         $publicTrip->with('citiesHotel.hotel')
             ->get()->map($mm);

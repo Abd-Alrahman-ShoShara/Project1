@@ -270,7 +270,7 @@ class AuthController extends Controller
     }
     public function choseLanguage(Request $request) {
         $request->validate([
-            'language' => 'required|in:English,Arabic', 
+            'language' => 'required|in:en,ar', 
         ]);
     
         $user = Auth::user(); 

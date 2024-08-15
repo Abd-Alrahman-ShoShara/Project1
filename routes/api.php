@@ -233,3 +233,4 @@ Route::get('/PublicTripAttraction/{publicTrip_id}',[AttractionController::class,
 
 Route::post('/restoreMoneyPublic/{userPublicTrip_id}',[PublicTripController::class,'restoreMoneyPublic']);
 
+Route::get('/getAllNotifications',[NotificationController::class,'getAllNotifications'])->middleware('auth:api');

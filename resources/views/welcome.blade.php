@@ -20,10 +20,10 @@
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
          <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
          <script>
- 
+
          // Enable pusher logging - don't include this in production
          Pusher.logToConsole = true;
- 
+
          var pusher = new Pusher('645e69e0cf30d1ca3934', {
              cluster: 'ap1'
          });
@@ -32,7 +32,7 @@
              toastr.info(JSON.stringify(data.name) +' has joined our wepsite');
          });
          </script>
- 
+
     </head>
     <body class="antialiased">
         <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">

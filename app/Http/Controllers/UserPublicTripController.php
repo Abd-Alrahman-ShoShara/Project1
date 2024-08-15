@@ -154,6 +154,8 @@ class UserPublicTripController extends Controller
         if ($user) {
             $user->wallet += $amount;
             $user->save();
+
+            NotificationController::sendNotification( 'your trip canceled, '.$amount.'$ has been added to your wallet',$user->id,'canceled_puplic');
         }
     }
 }

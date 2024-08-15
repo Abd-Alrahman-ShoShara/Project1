@@ -38,8 +38,8 @@ class CityController extends Controller
         $cities = City::all();
         $tr=new GoogleTranslate();
         foreach($cities as $city){
-        $name1 = $tr->setTarget('en')->translate($city->name);
-        $country=$tr->setTarget('en')->translate($city->country);     
+        $name1 = $tr->setTarget('ar')->translate($city->name);
+        $country=$tr->setTarget('ar')->translate($city->country);
         $translatedCities[] = [
             'id' => $city->id,
             'name' => $name1,

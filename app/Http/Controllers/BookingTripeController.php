@@ -52,6 +52,8 @@ class BookingTripeController extends Controller
             $user->wallet -= $totalPrice;
             $user->save();
 
+            NotificationController::sendNotification($totalPrice.'$ has been deducted from your wallet',$user->id,'booking_private_trip');
+
         } else {
             return response()->json([
                 'message' => 'The trip is already completed.',

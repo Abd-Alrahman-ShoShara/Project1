@@ -33,6 +33,8 @@ class BookingTicketController extends Controller
             'message' => 'you have already booked',
         ], 403);
     }
+
+
     public function updateTicket(Request $request, $bookingTicket_id)
     {
 
@@ -144,10 +146,10 @@ class BookingTicketController extends Controller
         if(!$BookingTicket){
             return response()->json(['message' => 'BookingTicket is not found'], 404);
         }
-        $BookingTicket->delete(); 
+        $BookingTicket->delete();
 
-       return response()->json(['message' => ' deleted successfully'], 200);    
+       return response()->json(['message' => ' deleted successfully'], 200);
    }
 
-    
+
 }

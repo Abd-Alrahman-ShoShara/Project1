@@ -103,9 +103,9 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->accessToken;
 
-        NotificationController::sendNotification($user->id,'login successfully!!!');
+        //NotificationController::sendNotification($user->id,'login successfully!!!');
         return response([
-            'token' => $token
+            'token' => $token,
         ], 200);
     }
 

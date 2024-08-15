@@ -136,6 +136,8 @@ class AdminController extends Controller
         $user->wallet=$attr['amount'];
         $user->save();
 
+        NotificationController::sendNotification($attr['amount'].'$ has been added to your wallet',$user->id,'add_to_wallet');
+
         return response()->json([
             'message'=>'amount added successful',
             'amount'=>$attr['amount']
@@ -152,7 +154,7 @@ class AdminController extends Controller
             $trip=Trip::where([['state','completed'],['id',$bookingTicket->trip_id]])->first();
             if($trip){
             $user=User::find($trip->user_id);
-            $bookingTrip=BookingTripe::where('trip_id',$trip->id);
+            $bookingTrip=BookingTripe::where('trip_id',$trip->id)->first();
 
             $user->wallet+=$bookingTrip->price;
             $user->points+=$bookingTrip->price*0.2;
@@ -161,9 +163,16 @@ class AdminController extends Controller
             $trip->state='cancelled';
             $trip->save();
 
-            //noti.................
+            $message=$bookingTrip->price.'$ has been added to your wallet, Due to a glitch at the airport, your trip has been cancelled.
+            You have been compensated with '.$bookingTrip->price*0.2.' points as an expression of our regret';
+
+            NotificationController::sendNotification($message,$user->id,'distroyed_airport');
+
             }
         }
+        return response()->json([
+            'message'=>'The airport has been stopped'
+        ]);
 
     }
 }

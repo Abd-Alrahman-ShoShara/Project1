@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BookingHotel;
 use App\Models\RoomHotel;
 use App\Models\Trip;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -92,21 +93,21 @@ class BookingHotelController extends Controller
             'rooms.*.roomHotel_id' => 'required|integer|exists:room_hotels,id',
             'rooms.*.numberOfRoom' => 'required|integer|min:1',
         ]);
-    
+
         $rooms = $attr['rooms'];
         $checkIn = $attr['checkIn'];
         $checkOut = $attr['checkOut'];
-    
+
         $bookings = [];
         $totalPrice = 0;
-    
+
         $start = Carbon::parse($checkIn);
         $end = Carbon::parse($checkOut);
         $numberOfNights = $start->diffInDays($end);
-        
+
         foreach ($rooms as $room) {
             $roomHotel = RoomHotel::find($room['roomHotel_id']);
-            
+
             $pastPrice=0;
             $pastPrice = BookingHotel::where([
                 ['roomHotel_id', $room['roomHotel_id']],
@@ -118,7 +119,7 @@ class BookingHotelController extends Controller
                     'message' => 'Room hotel not found',
                 ], 404);
             }
-            
+
             $roomTotalPrice = $room['numberOfRoom'] * $roomHotel->price * $numberOfNights;
 
             // discount where paid if (diffPrice>0)
@@ -126,7 +127,7 @@ class BookingHotelController extends Controller
             $diffPric=$roomTotalPrice-$pastPrice;
 
             if($diffPric<0){
-                $backkMonye= 0.5* abs($diffPric);//يضاف عند الدفع 
+                $backkMonye= 0.5* abs($diffPric);//يضاف عند الدفع
                 $roomTotalPrice+= $backkMonye;
             }
 
@@ -142,11 +143,11 @@ class BookingHotelController extends Controller
                     'price' => $roomTotalPrice
                 ]
             );
-    
+
             $totalPrice += $roomTotalPrice;
             $bookings[] = $bookingHotelRoom;
         }
-        
+
         return response()->json([
             'message' => 'The rooms were booked successfully',
             'bookings' => $bookings,
@@ -165,15 +166,21 @@ class BookingHotelController extends Controller
             ->with('roomHotel')
             ->get();
             $pp=$bookingHotels->sum('price');
-            
+
         if ($bookingHotels->isNotEmpty()) {
             foreach ($bookingHotels as $bookingHotel) {
                 $bookingHotel->delete();
             }
         }
-        // if($trip->state=='completed'){
-        // dd(0.5 * $pp);
-        // }
+        if($trip->state=='completed'){
+            $user=User::find($trip->user_id);
+
+            $user->wallet += 0.5 * $pp;
+            $user->save();
+
+            NotificationController::sendNotification(0.5 * $pp.'$ has been added to your wallet',$user->id,'delete_booking_hotel');
+
+        }
 
         return response()->json([
             'message' => 'Bookings deleted successfully.',
@@ -194,6 +201,6 @@ public function deleteBookingRoom($boolingHotel_id){
     $boolingHotel->delete();
     return response()->json(['message' => ' deleted successfully'], 200);
 }
-    
+
 
 }

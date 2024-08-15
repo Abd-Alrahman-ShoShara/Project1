@@ -27,7 +27,7 @@ Route::get('/userRegisteration', function () {
 Route::post('/userRegisteration', function () {
 
     $name=request()->name;
-    event(new NotificationSent($name,''));
+    event(new NotificationSent($name,'','kk'));
 
     return view('userRegisteration');
 });

@@ -51,13 +51,14 @@ class PublicTripController extends Controller
             ]);
         }
         $publicTripPlaces = [];
+        if($request->activities){
         foreach ($request->activities as $activitie) {
             $publicTripPlace = PublicTripPlace::create([
                 'tourismPlaces_id' => $activitie,
                 'publicTrip_id' => $publicTrip->id,
             ]);
             $publicTripPlaces[] = $publicTripPlace;
-        }
+        }}
 
 
         if ($publicTrip) {
@@ -109,6 +110,11 @@ class PublicTripController extends Controller
                     foreach ($userPublicTrips as $userPublicTrip) {
                         $user = User::find($userPublicTrip->user_id);
                         //notification............
+                        NotificationController::sendNotification(
+                            '"message" = The trip (' . $publicTrip->name . ') has been updated. You can go cancel it.
+                            "publicTrip_id" ='.$publicTrip_id,
+                            $user->id,'update_public');
+
                     }
                 }
             }
@@ -164,6 +170,7 @@ class PublicTripController extends Controller
         $userPublicTrip->state='cancelled';
         $userPublicTrip->save();
 
+        NotificationController::sendNotification($userPublicTrip->price.'$ has been added to your wallet and '.$userPublicTrip->price * 0.1.'points has been added to your points',$user->id,'restore_money_public');
         return response()->json([
             'message' => 'The public trip was cancelled successfully.',
         ], 200);
@@ -213,8 +220,8 @@ class PublicTripController extends Controller
 
     public function deletePublicTrip($publicTrip_id)
     {
-        $publicTripID = PublicTrip::find($publicTrip_id);
-        if (!$publicTripID) {
+        $publicTrip = PublicTrip::find($publicTrip_id);
+        if (!$publicTrip) {
             return response()->json([
                 'message' => 'trip not found.'
             ], 404);
@@ -230,6 +237,10 @@ class PublicTripController extends Controller
                     $user->points += $userPublicTrip->price * 0.1;
                     $user->save();
                     //notification............
+                    $message='the trip ('.$publicTrip->name.')has been cancelled,'.
+                    $userPublicTrip->price.'$ has been added to your wallet and You have been compensated with '.
+                    $userPublicTrip->price * 0.1 .' points as an expression of our regret';
+                    NotificationController::sendNotification($message,$user->id,'delete-public');
                 }
             }
         }
@@ -362,6 +373,7 @@ class PublicTripController extends Controller
     public function deletePoint($point_id)
     {
         $point = TripPoint::find($point_id);
+        $publicTrip=PublicTrip::find($point->publicTrip_id);
         $userPublicTrips = UserPublicTrip::where([['tripPoint_id', $point_id], ['state', 'completed']])->get();
 
         if (!$point) {
@@ -373,6 +385,12 @@ class PublicTripController extends Controller
             $user->points += $userPublicTrip->price * 0.1;
             $user->save();
             //notification............
+
+            $message='the trip ('.$publicTrip->name.')has been cancelled From your area,'.
+                    $userPublicTrip->price.'$ has been added to your wallet and You have been compensated with '.
+                    $userPublicTrip->price * 0.1 .' points as an expression of our regret';
+                    NotificationController::sendNotification($message,$user->id,'delete-public-point');
+
         }
         $point->delete();
         return response()->json(['message' => ' deleted successfully'], 200);
@@ -653,4 +671,8 @@ class PublicTripController extends Controller
         //     'theTrips' => $theTrips,
         // ]);
          */
+
+         public function gg(){
+            echo('snmdvhck');
+         }
 }

@@ -147,7 +147,12 @@ class TripController extends Controller
         $cancelledTrip->save();
         $price = BookingHotel::where('trip_id', $trip_id)->sum('price');
         $returnPrice = 0.5 * $price;
+
+
         if ($cancelledTrip) {
+
+            NotificationController::sendNotification( 'your trip canceled, '.$returnPrice.'$ has been added to your wallet',$cancelledTrip->user_id,'canceled_private');
+
             return response()->json([
                 'message' => 'cancelled successfully',
                 'thePrice' => $price,

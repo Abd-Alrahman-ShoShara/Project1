@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewAttraction;
 use App\Models\Attraction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -155,6 +156,10 @@ class AttractionController extends Controller
 
         $Attraction->display = $Attraction->display ? false : true;
         $Attraction->save();
+
+        if($Attraction->display){
+            event(new NewAttraction('New offer on trips. Go to attractions to see it'));
+        }
         return response()->json([
             'display' => $Attraction->display,
         ]);
@@ -204,7 +209,7 @@ class AttractionController extends Controller
         foreach($attractions as $attraction){
             if($attraction->type=='Points Discount'){
                 $boolean=true;
-            } 
+            }
         }
 
         return response()->json([

@@ -151,7 +151,7 @@ class TripController extends Controller
 
         if ($cancelledTrip) {
 
-            NotificationController::sendNotification( 'your trip canceled, '.$returnPrice.'$ has been added to your wallet',$cancelledTrip->user_id,'canceled_private');
+            NotificationController::sendNotification( 'your trip canceled, '.$returnPrice.'$ has been added to your wallet',$cancelledTrip->user_id,$trip_id,'canceledPrivateTrip');
 
             return response()->json([
                 'message' => 'cancelled successfully',

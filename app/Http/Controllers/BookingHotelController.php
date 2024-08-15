@@ -178,7 +178,7 @@ class BookingHotelController extends Controller
             $user->wallet += 0.5 * $pp;
             $user->save();
 
-            NotificationController::sendNotification(0.5 * $pp.'$ has been added to your wallet',$user->id,'delete_booking_hotel');
+            NotificationController::sendNotification(0.5 * $pp.'$ has been added to your wallet',$user->id,$trip_id,'delete_booking_hotel');
 
         }
 

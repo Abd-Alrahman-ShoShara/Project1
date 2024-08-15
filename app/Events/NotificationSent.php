@@ -15,11 +15,13 @@ class NotificationSent implements ShouldBroadcast
 
     public $message;
     public $user_id;
+    public $trip_id;
     public $event;
-    public function __construct($message,$user_id,$event)
+    public function __construct($message,$user_id,$trip_id,$event)
     {
         $this->message = $message;
         $this->user_id = $user_id;
+        $this->trip_id = $trip_id;
         $this->event = $event;
     }
 
@@ -38,6 +40,6 @@ class NotificationSent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return ['name' => $this->message, 'userId' => $this->user_id];
+        return ['name' => $this->message, 'userId' => $this->user_id,'tripId' => $this->trip_id];
     }
 }

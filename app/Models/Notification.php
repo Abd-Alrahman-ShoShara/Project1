@@ -11,6 +11,8 @@ class Notification extends Model
     protected $fillable=[
         'body',
         'user_id',
+        'event',
+        'trip_id'
 
     ];
     protected $hidden=[

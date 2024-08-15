@@ -64,6 +64,7 @@ class UserPublicTripController extends Controller
                 } else {
                     $user->points -= $attractionPoint->discount_points;
                     $user->save();
+                    NotificationController::sendNotification($attractionPoint->discount_points.'points has been deducted from your points',$user->id,$publicTrip_id,'public-deductedPoints');
                     $totalPrice -= $totalPrice * $attractionPoint->discount / 100;
                 }
             }
@@ -91,6 +92,8 @@ class UserPublicTripController extends Controller
 
             $user->wallet-=$totalPrice;
             $user->save();
+
+            NotificationController::sendNotification($totalPrice.'$ has been deducted from your wallet',$user->id,$publicTrip_id,'public-deductedWallet');
 
         return response([
             'message' => 'booking successfully.',
@@ -135,7 +138,7 @@ class UserPublicTripController extends Controller
         }
 
         // Process the refund
-        $this->processRefund($cancelledPublicTrip->user_id, $refundAmount);
+        $this->processRefund($cancelledPublicTrip->user_id, $refundAmount,$publicTrip->id);
 
         $cancelledPublicTrip->state = 'cancelled';
         $cancelledPublicTrip->save();
@@ -147,7 +150,7 @@ class UserPublicTripController extends Controller
         ], 200);
     }
 
-    private function processRefund($userId, $amount)
+    private function processRefund($userId, $amount,$publicTrip_id)
     {
         // Fetch the user
         $user = User::find($userId);
@@ -155,7 +158,7 @@ class UserPublicTripController extends Controller
             $user->wallet += $amount;
             $user->save();
 
-            NotificationController::sendNotification( 'your trip canceled, '.$amount.'$ has been added to your wallet',$user->id,'canceled_puplic');
+            NotificationController::sendNotification( 'your trip canceled, '.$amount.'$ has been added to your wallet',$user->id,$publicTrip_id,'canceledPuplicTrip');
         }
     }
 }

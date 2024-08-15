@@ -31,7 +31,7 @@ class NewAttraction implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('popup-channel1'),
+            new Channel('popup-channel'),
         ];
     }
 

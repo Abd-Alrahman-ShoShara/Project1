@@ -111,9 +111,8 @@ class PublicTripController extends Controller
                         $user = User::find($userPublicTrip->user_id);
                         //notification............
                         NotificationController::sendNotification(
-                            '"message" = The trip (' . $publicTrip->name . ') has been updated. You can go cancel it.
-                            "publicTrip_id" ='.$publicTrip_id,
-                            $user->id,'update_public');
+                            'The trip (' . $publicTrip->name . ') has been updated. You can go cancel it',
+                            $user->id,$publicTrip_id,'updatePublicTrip');
 
                     }
                 }
@@ -157,7 +156,8 @@ class PublicTripController extends Controller
     public function restoreMoneyPublic($userPublicTrip_id)
     {
         $userPublicTrip = UserPublicTrip::where('id', $userPublicTrip_id)->first();
-
+        $tripPoint=TripPoint::find($userPublicTrip->tripPoint_id);
+       // $trip=PublicTrip::find($tripPoint->publicTrip_id);
         if (!$userPublicTrip) {
             return response()->json([
                 'message' => 'User public trip not found.',
@@ -170,7 +170,8 @@ class PublicTripController extends Controller
         $userPublicTrip->state='cancelled';
         $userPublicTrip->save();
 
-        NotificationController::sendNotification($userPublicTrip->price.'$ has been added to your wallet and '.$userPublicTrip->price * 0.1.'points has been added to your points',$user->id,'restore_money_public');
+        NotificationController::sendNotification($userPublicTrip->price.'$ has been added to your wallet and '.$userPublicTrip->price * 0.1.'points has been added to your points'
+        ,$user->id, $tripPoint->publicTrip_id,'restore_money_publicTrip');
         return response()->json([
             'message' => 'The public trip was cancelled successfully.',
         ], 200);
@@ -237,10 +238,10 @@ class PublicTripController extends Controller
                     $user->points += $userPublicTrip->price * 0.1;
                     $user->save();
                     //notification............
-                    $message='the trip ('.$publicTrip->name.')has been cancelled,'.
+                    $message='the trip ('.$publicTrip->name.')has been cancelled, '.
                     $userPublicTrip->price.'$ has been added to your wallet and You have been compensated with '.
                     $userPublicTrip->price * 0.1 .' points as an expression of our regret';
-                    NotificationController::sendNotification($message,$user->id,'delete-public');
+                    NotificationController::sendNotification($message,$user->id,$publicTrip_id,'deletePublicTrip');
                 }
             }
         }
@@ -389,7 +390,7 @@ class PublicTripController extends Controller
             $message='the trip ('.$publicTrip->name.')has been cancelled From your area,'.
                     $userPublicTrip->price.'$ has been added to your wallet and You have been compensated with '.
                     $userPublicTrip->price * 0.1 .' points as an expression of our regret';
-                    NotificationController::sendNotification($message,$user->id,'delete-public-point');
+                    NotificationController::sendNotification($message,$user->id,$publicTrip->id,'deletePublicTripPoint');
 
         }
         $point->delete();

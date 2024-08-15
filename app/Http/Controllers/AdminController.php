@@ -136,7 +136,7 @@ class AdminController extends Controller
         $user->wallet=$attr['amount'];
         $user->save();
 
-        NotificationController::sendNotification($attr['amount'].'$ has been added to your wallet',$user->id,'add_to_wallet');
+        NotificationController::sendNotification($attr['amount'].'$ has been added to your wallet',$user->id,null,'add_to_wallet');
 
         return response()->json([
             'message'=>'amount added successful',
@@ -166,7 +166,7 @@ class AdminController extends Controller
             $message=$bookingTrip->price.'$ has been added to your wallet, Due to a glitch at the airport, your trip has been cancelled.
             You have been compensated with '.$bookingTrip->price*0.2.' points as an expression of our regret';
 
-            NotificationController::sendNotification($message,$user->id,'distroyed_airport');
+            NotificationController::sendNotification($message,$user->id,$trip->id,'private-distroyedAirport');
 
             }
         }

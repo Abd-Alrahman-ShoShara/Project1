@@ -12,28 +12,19 @@ class NotificationController extends Controller
 {
 
 
-    public static function sendNotification($message,$user_id,$event)
+    public static function sendNotification($message,$user_id,$trip_id,$event)
     {
 
-        // Validate the request data
-        // $validatedData = $request->validate([
-        //     'user_id' => 'required|exists:users,id',
-        //     'message' => 'required|string',
-        // ]);
-
-        // Find the user
-        // $user = User::findOrFail($validatedData['user_id']);
-
-
-        // Create the notification
-        // $user=User::find($user_id);
         $notification = Notification::create([
             'user_id' => $user_id,
             'body' => $message,
+            'event' => $event,
+            'trip_id' => $trip_id,
+
         ]);
 
         // Broadcast the notification event
-        event(new NotificationSent($message,$user_id,$event));
+        event(new NotificationSent($message,$user_id,$trip_id,$event));
     }
 
     public function getAllNotifications(){

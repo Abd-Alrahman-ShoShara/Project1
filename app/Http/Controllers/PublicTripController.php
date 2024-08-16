@@ -7,9 +7,11 @@ use App\Models\Favorite;
 use App\Models\PublicTrip;
 use App\Models\publicTripClassification;
 use App\Models\PublicTripPlace;
+use App\Models\Trip;
 use App\Models\TripPoint;
 use App\Models\User;
 use App\Models\UserPublicTrip;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 
@@ -424,11 +426,30 @@ class PublicTripController extends Controller
 
     public function allPublicTrips(Request $request)
     {
+        $userId = auth()->id();
+        $theDate=Carbon::now()->addDay();
+        $publicTrips = PublicTrip::where('dateOfTrip', $theDate)
+        ->whereHas('tripPoint', function ($query) use ($userId) {
+            $query->whereHas('userPublicTrip', function ($query) use ($userId) {
+                $query->where([['state','completed'],['user_id', $userId]]);
+            });
+        })
+        ->get();
+
+        $userPrivatTrips=Trip::where([['dateOfTrip', $theDate],['user_id',$userId],['state','completed']])->get();
+        if(!$publicTrips->isEmpty()){
+            foreach($publicTrips as $publicTrip){
+                NotificationController::sendNotification('your trip '.$publicTrip->name .' is tomorrow ',$userId,$publicTrip->id,'tomorrowPublicTrip');
+            }
+        if(!$userPrivateTrips->isEmpty()){
+            foreach($userPrivateTrips as $userPrivateTrip){
+                NotificationController::sendNotification(' your Private Trip is tomorrow ',$userId,$userPrivateTrip->id,'tomorrowPrivateTrip');
+            }
+        }
         $attrs = $request->validate([
             'classification_id' => 'sometimes|integer',
         ]);
 
-        $userId = auth()->id();
         $mm = function ($trip) use ($userId) {
             // Calculate average price of trip points
             $totalPrice = $trip->tripPoint()->sum('price');

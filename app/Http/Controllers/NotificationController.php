@@ -14,7 +14,12 @@ class NotificationController extends Controller
 
     public static function sendNotification($message,$user_id,$trip_id,$event)
     {
+        $found=Notification::where(['user_id' => $user_id,
+            'body' => $message,
+            'event' => $event,
+            'trip_id' => $trip_id,])->first();
 
+            if(!$found){
         $notification = Notification::create([
             'user_id' => $user_id,
             'body' => $message,
@@ -25,6 +30,8 @@ class NotificationController extends Controller
 
         // Broadcast the notification event
         event(new NotificationSent($message,$user_id,$trip_id,$event));
+        }
+        
     }
 
     public function getAllNotifications(){

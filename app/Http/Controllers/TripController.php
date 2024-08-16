@@ -200,7 +200,7 @@ class TripController extends Controller
     }
 
     public function getUnderConstructionTrip(){
-        $UnderConstructionTrip=Trip::where('state','UnderConstruction')
+        $UnderConstructionTrip=Trip::where([['state','UnderConstruction'],['user_id',Auth::user()->id]])
         ->get()->map(function ($trip) {
             $trip->image =$trip->toCity->image;
             return $trip;

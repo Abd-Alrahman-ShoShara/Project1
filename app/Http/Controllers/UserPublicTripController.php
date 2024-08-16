@@ -91,8 +91,10 @@ class UserPublicTripController extends Controller
             ->update(['numberOfTickets' => $tripPoint->numberOfTickets - $request->numberOfTickets]);
 
             $user->wallet-=$totalPrice;
+            $user->points+=$totalPrice*0.1;
             $user->save();
 
+            NotificationController::sendNotification($totalPrice*0.1.'points has been added to your points',$user->id,$publicTrip_id,'add-points');
             NotificationController::sendNotification($totalPrice.'$ has been deducted from your wallet',$user->id,$publicTrip_id,'public-deductedWallet');
 
         return response([

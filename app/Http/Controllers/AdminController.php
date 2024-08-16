@@ -8,8 +8,10 @@ use App\Models\BookingTripe;
 use App\Models\NormalUser;
 use App\Models\Trip;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 class AdminController extends Controller
@@ -145,34 +147,64 @@ class AdminController extends Controller
 
     }
 
-    public function distroyedAirport($airport_id){
-        $bookingTickets=BookingTicket::whereHas('ticket',function($query) use ($airport_id){
-            $query->where('airport_id1',$airport_id)->orWhere('airport_id2',$airport_id);
+    public function distroyedAirport(Request $request, $airport_id) {
+        $request->validate([
+            'from' => 'required|date',
+            'to' => 'required|date|after:from'
+        ]);
+    
+        $from = Carbon::parse($request->from);
+        $to = Carbon::parse($request->to);
+    
+        $bookingTickets = BookingTicket::whereHas('ticket', function ($query) use ($airport_id) {
+            $query->where('airport_id1', $airport_id)->orWhere('airport_id2', $airport_id);
         })->get();
-
-        foreach($bookingTickets as $bookingTicket){
-            $trip=Trip::where([['state','completed'],['id',$bookingTicket->trip_id]])->first();
-            if($trip){
-            $user=User::find($trip->user_id);
-            $bookingTrip=BookingTripe::where('trip_id',$trip->id)->first();
-
-            $user->wallet+=$bookingTrip->price;
-            $user->points+=$bookingTrip->price*0.2;
-            $user->save();
-
-            $trip->state='cancelled';
-            $trip->save();
-
-            $message=$bookingTrip->price.'$ has been added to your wallet, Due to a glitch at the airport, your trip has been cancelled.
-            You have been compensated with '.$bookingTrip->price*0.2.' points as an expression of our regret';
-
-            NotificationController::sendNotification($message,$user->id,$trip->id,'private-distroyedAirport');
-
+    
+        $cancelledTrips = []; // Track cancelled trips
+    
+        foreach ($bookingTickets as $bookingTicket) {
+            $trip = Trip::where([
+                ['state', 'completed'],
+                ['id', $bookingTicket->trip_id]
+            ])
+            ->whereBetween('dateOfTrip', [$from, $to])
+            ->first();
+    
+            if ($trip) {
+                DB::transaction(function () use ($trip, $bookingTicket, &$cancelledTrips) {
+                    $user = User::find($trip->user_id);
+                    $bookingTrip = BookingTripe::where('trip_id', $trip->id)->first();
+    
+                    if ($bookingTrip) {
+                        $user->wallet += $bookingTrip->price;
+                        $user->points += $bookingTrip->price * 0.2;
+                        $user->save();
+    
+                        $trip->state = 'cancelled';
+                        $trip->save();
+    
+                        $notificationMessage = $bookingTrip->price . '$ has been added to your wallet. Due to a glitch at the airport, your trip has been cancelled. You have been compensated with ' . $bookingTrip->price * 0.2 . ' points as an expression of our regret.';
+    
+                        NotificationController::sendNotification($notificationMessage, $user->id, $trip->id, 'private-distroyedAirport');
+    
+                        // Add to cancelled trips array
+                        $cancelledTrips[] = $trip->id;
+                    }
+                });
+            } else {
+                // No trip found, continue to the next booking
             }
         }
-        return response()->json([
-            'message'=>'The airport has been stopped'
-        ]);
-
+    
+        if (count($cancelledTrips) > 0) {
+            return response()->json([
+                'message' => 'The airport has been stopped. The following trips have been cancelled: ' . implode(', ', $cancelledTrips) 
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'There are no trips in this date range.'
+            ]);
+        }
     }
+    
 }

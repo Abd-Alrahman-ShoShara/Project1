@@ -50,8 +50,10 @@ class BookingTripeController extends Controller
             $theTrip->save();
 
             $user->wallet -= $totalPrice;
+            $user->points += $totalPrice*0.1;
             $user->save();
 
+            NotificationController::sendNotification($totalPrice*0.1.'points has been added to your points',$user->id,$trip_id,'add-points');
             NotificationController::sendNotification($totalPrice.'$ has been deducted from your wallet',$user->id,$trip_id,'booking_private_trip');
 
         } else {

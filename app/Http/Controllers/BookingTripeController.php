@@ -27,7 +27,7 @@ class BookingTripeController extends Controller
 
         if($user->wallet < $totalPrice){
             return response()->json([
-                'messag'=>"you don't have enough money",
+                'message'=>"you don't have enough money",
             ], 422);
         }
         foreach ($bookingHotels as $bookingHotel) {

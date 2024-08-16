@@ -427,20 +427,20 @@ class PublicTripController extends Controller
     public function allPublicTrips(Request $request)
     {
         $userId = auth()->id();
-        $theDate=Carbon::now()->addDay();
-        $publicTrips = PublicTrip::where('dateOfTrip', $theDate)
+        $theDate = Carbon::now()->addDay()->addDay();
+                
+        $publicTrips = PublicTrip::whereDate('dateOfTrip', $theDate)
         ->whereHas('tripPoint', function ($query) use ($userId) {
             $query->whereHas('userPublicTrip', function ($query) use ($userId) {
                 $query->where([['state','completed'],['user_id', $userId]]);
             });
-        })
-        ->get();
+        })->get();
 
-        $userPrivatTrips=Trip::where([['dateOfTrip', $theDate],['user_id',$userId],['state','completed']])->get();
+        $userPrivateTrips=Trip::whereDate('dateOfTrip', $theDate)->where([['user_id',$userId],['state','completed']])->get();
         if(!$publicTrips->isEmpty()){
             foreach($publicTrips as $publicTrip){
                 NotificationController::sendNotification('your trip '.$publicTrip->name .' is tomorrow ',$userId,$publicTrip->id,'tomorrowPublicTrip');
-            }
+            }}
         if(!$userPrivateTrips->isEmpty()){
             foreach($userPrivateTrips as $userPrivateTrip){
                 NotificationController::sendNotification(' your Private Trip is tomorrow ',$userId,$userPrivateTrip->id,'tomorrowPrivateTrip');

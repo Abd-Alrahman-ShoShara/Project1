@@ -16,3 +16,11 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+config/app.php
+app/Providers/TelescopeServiceProvider.php
+config/telescope.php
+config/app.php
+config/app.php
+config/app.php
+database/migrations/2018_08_08_100000_create_telescope_entries_table.php
+config/app.php

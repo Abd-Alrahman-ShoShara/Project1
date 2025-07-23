@@ -43,7 +43,7 @@ class FavoriteController extends Controller
         ],200);
     }
 
-    public function favorite()
+    public function allFavoriteMeal()
     {
     return response([
         'your favorite'
